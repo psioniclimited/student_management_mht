@@ -17,9 +17,7 @@ use Entrust;
 
 class StudentsWebController extends Controller {
 
-	public function index(){
-		return view('Directory::view_member');
-	}
+
 
     /******************************************************
     * Show the information of all Members in a data table *
