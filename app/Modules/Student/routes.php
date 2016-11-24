@@ -12,31 +12,39 @@
 Route::group(['middleware' => ['web']], function () {
 
 
-    #######################################
-    # Member Routes releated to Dashboard #
-    #######################################
+
 
 
     /******************************************************
-    * Show the information of all Members in a data table *
+    * Show the information of all Students in a data table *
     *******************************************************/
-    Route::get('allStudents', 'App\Modules\Student\Controllers\StudentsWebController@allStudents');
-    Route::get('getStudents', 'App\Modules\Student\Controllers\StudentsWebController@getStudents')
-    ->middleware(['permission:member.read']);
+    Route::get('all_students', 'App\Modules\Student\Controllers\StudentsWebController@allStudents');
+    Route::get('get_students', 'App\Modules\Student\Controllers\StudentsWebController@getStudents');
     
     /**********************************************
     * Show the information of a Particular Student *
     ***********************************************/
-    Route::get('student/{user}/show/', 'App\Modules\Student\Controllers\StudentsWebController@get_one_Student');
+    Route::get('student/{student}/show/', 'App\Modules\Student\Controllers\StudentsWebController@get_one_Student');
+
 
     /**********************
     * Create a new Student *
-    ***********************/    
+    ***********************/   
     Route::get('create_student', 'App\Modules\Student\Controllers\StudentsWebController@addStudent');
     Route::post('create_student_process', 'App\Modules\Student\Controllers\StudentsWebController@addStudentProcess');
-    
 
 
+    /**********************
+    * Create a new School *
+    ***********************/
+    Route::get('create_school', 'App\Modules\Student\Controllers\StudentsWebController@addSchool');
+    Route::post('create_school_process', 'App\Modules\Student\Controllers\StudentsWebController@addSchoolProcess');
+
+    Route::get('create_batch', 'App\Modules\Student\Controllers\StudentsWebController@addBatch');
+    Route::post('create_batch_process', 'App\Modules\Student\Controllers\StudentsWebController@addBatchProcess');    
+
+    Route::get('create_batch_type', 'App\Modules\Student\Controllers\StudentsWebController@addBatchType');
+    Route::post('create_batch_type_process', 'App\Modules\Student\Controllers\StudentsWebController@addBatchTypeProcess');
 
 
 
@@ -47,14 +55,14 @@ Route::group(['middleware' => ['web']], function () {
     /***************************
     * Edit and Update a Student *
     ****************************/    
-    Route::get('member/{user}/edit/', 'App\Modules\Directory\Controllers\MembersWebController@editMember')
-    ->middleware(['permission:member.create']);
-    Route::patch('/member_update/{MembersDetail}/', 'App\Modules\Directory\Controllers\MembersWebController@memberUpdate')
-    ->middleware(['permission:member.create']);
-    
+    Route::get('student/{student}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editStudent');
+    Route::patch('/student_update_process/{student}/', 'App\Modules\Student\Controllers\StudentsWebController@studentUpdate');
+
+
+
     /******************
     * Delete a Student *
     *******************/     
-    Route::post('member/{user}/delete', 'App\Modules\Directory\Controllers\MembersWebController@deleteMember');
+    Route::post('student/{student}/delete', 'App\Modules\Student\Controllers\StudentsWebController@deleteStudent');
     
 });

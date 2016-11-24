@@ -4,9 +4,9 @@ namespace App\Modules\Student\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class School extends Model
+class Grade extends Model
 {
-    protected $table = 'schools';
+    protected $table = 'grades';
 
     public $timestamps = false;
 
@@ -18,12 +18,11 @@ class School extends Model
      */
     protected $fillable = [
         'name',
-        'description',
-        'address'
     ];
     
-    public function student()
+    public function batch()
     {
-        return $this->hasmany('App\Modules\Student\Models\Student');
+        return $this->hasmany('App\Modules\Student\Models\Batch');
     }
+
 }

@@ -15,7 +15,9 @@ class VerifyCsrfToken extends BaseVerifier
         'image',
         'fireBaseSaveREGID',
         'users/*/delete',
-        'member/*/delete',
+        'student/*/delete',
         'event/*/delete',
+        'create_school_process',
+        'create_batch_process',
     ];
 }

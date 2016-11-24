@@ -4,12 +4,11 @@ namespace App\Modules\Student\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class School extends Model
+class Subject extends Model
 {
-    protected $table = 'schools';
+    protected $table = 'subjects';
 
     public $timestamps = false;
-
 
      /**
      * The attributes that are mass assignable.
@@ -19,11 +18,10 @@ class School extends Model
     protected $fillable = [
         'name',
         'description',
-        'address'
     ];
-    
+
     public function student()
     {
-        return $this->hasmany('App\Modules\Student\Models\Student');
+        return $this->belongsToMany('App\Modules\Student\Models\Subject', 'students_has_subjects', 'subjects_id','students_id');
     }
 }

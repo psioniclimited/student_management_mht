@@ -20,7 +20,7 @@
             <li {!! Request::is('*create_users*') ? ' class="active"' : null !!}><a href="{{url('create_users')}}"><i class="fa fa-circle-o"></i> New User</a></li>
         </ul>
     </li>
-    <li {!! Request::is('*students*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+    <li {!! Request::is('*student*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
         <a href="#">
             <i class="fa fa-files-o"></i>
             <span>Students</span>
@@ -30,9 +30,12 @@
         </a>
         <ul class="treeview-menu">
         
-            <li {!! Request::is('*allStudents*') ? ' class="active"' : null !!}><a href="{{url('allstudents')}}"><i class="fa fa-circle-o"></i> All Students</a></li>
+            <li {!! Request::is('*all_students*') ? ' class="active"' : null !!}><a href="{{url('all_students')}}"><i class="fa fa-circle-o"></i> All Students</a></li>
         
             <li {!! Request::is('*create_student*') ? ' class="active"' : null !!}><a href="{{url('create_student')}}"><i class="fa fa-circle-o"></i> New Student</a></li>
+            <li {!! Request::is('*create_school*') ? ' class="active"' : null !!}><a href="{{url('create_school')}}"><i class="fa fa-circle-o"></i> New School</a></li>
+            <li {!! Request::is('*create_batch*') ? ' class="active"' : null !!}><a href="{{url('create_batch')}}"><i class="fa fa-circle-o"></i> New Batch</a></li>
+            <li {!! Request::is('*create_batch_type*') ? ' class="active"' : null !!}><a href="{{url('create_batch_type')}}"><i class="fa fa-circle-o"></i> New Batch Type</a></li>
         </ul>
     </li>
     <li {!! Request::is('*roles*') || Request::is('*permissions*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">

@@ -5,8 +5,13 @@ namespace App\Modules\Student\Controllers;
 use App\Http\Controllers\Controller;
 use App\Modules\User\Models\User;
 use App\Modules\User\Models\Role;
-use App\Modules\Directory\Models\MembersDetail;
-use App\Modules\Directory\Models\MemberType;
+use App\Modules\Student\Models\School;
+use App\Modules\Student\Models\Student;
+use App\Modules\Student\Models\Batch;
+use App\Modules\Student\Models\BatchType;
+use App\Modules\Student\Models\Grade;
+use App\Modules\Student\Models\Subject;
+
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
@@ -23,23 +28,18 @@ class StudentsWebController extends Controller {
     * Show the information of all Members in a data table *
     *******************************************************/
 	public function allStudents() {
+		// return "AAA";
 		return view('Student::all_students');
     }
 
 	public function getStudents() {
-	
-    $members = User::join('members_details', 'users.id', '=', 'members_details.user_id')
-            ->select('users.id','members_details.id as member_id', 'users.name as name','users.email as email','members_details.mobile_number as mobile_number')
-            ->get();
-
-    
-    /* Note: $members->id represents the users id and $members->member_id represents member id */
-    return Datatables::of($members)
-    				->addColumn('Link', function ($members) {
-    					if(Entrust::can('user.update') && Entrust::can('user.delete')) {
-                        return '<a href="' . url('/member') . '/' . $members->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a href="' . url('/member') . '/' . $members->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a class="btn btn-xs btn-danger" id="'. $members->id .'" data-toggle="modal" data-target="#confirm_delete">
+	$students = Student::with('school', 'batch')->get();
+	return Datatables::of($students)
+    				->addColumn('Link', function ($students) {
+    					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                        return '<a href="' . url('/student') . '/' . $students->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+                        		'<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                        		'<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
                         }
@@ -48,54 +48,114 @@ class StudentsWebController extends Controller {
                         }
                     })
                     ->make(true);
+    }
+
+
+    /**********************************************
+    * Show the information of a Particular Member *
+    ***********************************************/
+    public function get_one_Student($id) {
+
+    	$getStudent = Student::with('school', 'batch','subject')->find($id);
+    	// return $getStudent;
+
+    	return view('Student::show_a_student_details',compact('getStudent'));
+    }
+
+    /**********************
+    * Create a new Student *
+    ***********************/
+
+	public function addStudent() {
+		$Schools = School::all();
+		$Batches = Batch::with('batchType','grade')->get();
+		$Subjects = Subject::all();
+		return view('Student::create_student',compact("Schools","Batches","Subjects"));
 	}
 
 
-    /**********************
-    * Create a new Member *
-    ***********************/
-	public function addStudent() {
-		// return "AAA";
-		// $memberType = MemberType::all();
+	public function addStudentProcess(Request $request) {
+		$student = Student::create($request->all());
+		$student->subject()->attach($request->input('subject'));
+		return redirect("all_students");
 
-		return view('Student::create_student');
+    }
+
+    public function editStudent($id) {
+
+    	$getStudent = Student::with('school', 'batch','subject')->find($id);
+    	// return response()->json($getStudent);
+    	// dd($getStudent->subject()->get());
+    	$schools = School::all();
+		$batches = Batch::all();
+		$subjects = Subject::all();
+
+		// return response()->json($getStudent);
+		return view('Student::edit_student')
+		->with('getStudent', $getStudent)
+		->with('Schools', $schools)
+		->with('Batches', $batches)
+		->with('Subjects', $subjects);
+	}
+
+    public function studentUpdate(Request $request, $id) {
+    	$student = Student::find($id);
+    	if( !$student->update( $request->all()) ){
+    		return "error";
+    	}
+    	
+    	$student->subject()->sync($request->input('subject'));
+    	// dd('successs');
+    	return redirect('all_students');
+    }
+
+    
+    /******************
+    * Delete a Student *
+    *******************/
+	public function deleteStudent(Request $request, $id) {
+		Student::where('id', $id)->delete();
+		return redirect('all_students');
+	}
+
+
+
+	public function addSchool() {
+		return view('Student::create_school');
+	}
+
+
+
+	public function addSchoolProcess(Request $request){
+		School::create($request->all());
+     	return "Saved";		
+ 	}
+
+	public function addBatch() {
+		$batchType = BatchType::all();
+		$getGrades = Grade::all();
+		return view('Student::create_batch',compact("batchType", "getGrades"));
+	}
+
+
+
+	public function addBatchProcess(Request $request) {
+		Batch::create($request->all());
+  	}
+
+	public function addBatchType() {
+		$batchType = BatchType::all();
+		return view('Student::create_batch_type',compact("batchType"));
 	}
 
 	
+	public function addBatchTypeProcess(Request $request){  	
 
-	public function addStudentProcess(Request $request){  	
+  
 
-  //       $getUser = new User();
-
-		// $getUser->name = $request->input('fullname');
-		// $getUser->email = $request->input('email');
-		// $getUser->password = bcrypt($request->input('password'));
-
-		// $getUser->save();
-
-
-		// $getMemberDetail = new MembersDetail();
-
-		// $getMemberDetail->dob = $request->input('date_of_birth');
-		// $getMemberDetail->mobile_number = $request->input('mob_num');
-		// $getMemberDetail->office_number = $request->input('off_num');
-		// $getMemberDetail->address = $request->input('addrs');
-		// $getMemberDetail->member_type_id = $request->member_type;
-		// $getMemberDetail->user_id = $getUser->id;
-
-		// $filename = \Carbon\Carbon::now();
-  //       $filename = $filename->timestamp;
-  //       $filename = $getMemberDetail->mobile_number . "_" . $filename;
-
-  //       $request->file('pic')->move(storage_path('app/images/'), $filename);
-  //      	$getMemberDetail->user_image = 'app/images/' . $filename;
-
-		// $getMemberDetail->save();
-
-
-		// $getUser->attachRole(3);
-
-		// return redirect('allMembers');
 	}
+
+
+
 
 }

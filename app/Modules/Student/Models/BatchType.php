@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Modules\Directory\Models;
+namespace App\Modules\Student\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class BatchType extends Model
 {
-    protected $table = 'types';
+    protected $table = 'batch_types';
 
     public $timestamps = false;
 
@@ -18,12 +18,12 @@ class BatchType extends Model
      */
     protected $fillable = [
         'name',
-        'description'
+        'description',
     ];
     
     public function batch()
     {
-        return $this->hasmany('App\Modules\Student\Models\Student');
+        return $this->hasmany('App\Modules\Student\Models\Batch');
     }
 
 }

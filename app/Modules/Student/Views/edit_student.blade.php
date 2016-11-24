@@ -39,22 +39,13 @@ $(document).ready(function () {
             name: {required: true, minlength: 4},
             fathers_name: {required: true, minlength: 4},
             mothers_name: {required: true, minlength: 4},
-            phone_home: {required: true},
-            phone_away: {required: true},
-            schools_id: {valueNotEquals: "default"},
-            batch_id: {valueNotEquals: "default"},
-            subjects_id: {required: true},
-
         },
         messages: {
-            name: {required: "Enter Student Name"},
-            fathers_name: {required: "Enter Student's Father Name"},
-            mothers_name: {required: "Enter Student's Mother's Name"},
-            phone_home: {required: "Enter Home Phone Number"},
-            phone_away: {required: "Enter Additional Phone Number"},
-            schools_id: {valueNotEquals: "Select a School"},
-            batch_id: {valueNotEquals: "Select a Batch"},
-            subjects_id: {required: "Choose Subjects"},
+            fullname: {required: "Please give fullname"},
+            uemail: {required: "Insert email address"},
+            upassword: {required: "Six digit password"},
+            upassword_re: {required: "Re-enter same password"},
+            uroles: {required: "Please select a role"}
         }
     });
 
@@ -72,7 +63,6 @@ $(document).ready(function () {
 @endsection
 
 @section('content')
-
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
@@ -95,7 +85,11 @@ $(document).ready(function () {
         </div>
         <!-- /.box-header -->
         <!-- form starts here -->
-        {!! Form::open(array('url' => 'create_student_process', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
+        
+		{!! Form::open(array('url' => '/student_update_process/'.$getStudent->id.'/', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
+        
+        {!! csrf_field() !!}
+		{{ method_field('PATCH') }}
 
         <div class="box-body">
             <div class="col-md-1"></div>
@@ -103,31 +97,31 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="name">Fullname*</label>
                     
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name" value="{{$getStudent->name}}">
                     
                 </div>
                 <div class="form-group">
                     <label for="fathers_name">Father's name*</label>
                     
-                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name">
+                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name" value="{{$getStudent->fathers_name}}">
                     
                 </div>
                 <div class="form-group">
                     <label for="mothers_name">Mother's name*</label>
                     
-                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name">
+                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name" value="{{$getStudent->mothers_name}}">
                     
                 </div>
                 <div class="form-group">
                     <label for="phone_home">Phone Number*</label>
                     
-                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number">
+                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number" value="{{$getStudent->phone_home}}">
                     
                 </div>
                 <div class="form-group">
                     <label for="phone_away">Edditional Phone Number*</label>
                     
-                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number">
+                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{$getStudent->phone_away}}">
                     
                 </div>
             </div>
@@ -137,7 +131,7 @@ $(document).ready(function () {
                     <label for="schools_id" >School*</label>
                     
                         <select class="form-control" name="schools_id">
-                                <option value="default">Choose...</option>
+                                <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
                                 @foreach ($Schools as $school)
                                     <option value="{{ $school->id }}">{{ $school->name }}</option>
                                 @endforeach
@@ -145,36 +139,34 @@ $(document).ready(function () {
                         
                 </div>
                 <div class="form-group">
-                    <label for="batch_id" >Batch*</label>
+                    <label for="batch_idf" >Batch*</label>
                     
                         <select class="form-control" name="batch_id">
-                                <option value="default">Choose...</option>
-                                @foreach ($Batches as $batch)
-                                    <option value="{{ $batch->id }}">{{ $batch->name }} </option>
-                                @endforeach
-                            </select>
+                            <option value="{{$getStudent->batch->id}}">{{$getStudent->batch->name}}</option>
+                            @foreach ($Batches as $batch)
+                                <option value="{{ $batch->id }}">{{ $batch->name }}</option>
+                            @endforeach
+                        </select>
                     
                 </div>
                 <!-- checkbox -->
                 <div class="form-group">
-                <label for="subjects_id" >Choose Subject*</label>
-                @foreach ($Subjects as $subject)
-                <div class="checkbox">
-                    <label>
-                      <input type="checkbox" name="subject[]" value="{{ $subject->id }}" >
-                      {{ $subject->name }}
-                    </label>
-                </div>
-                @endforeach
-                </div>
-                <div class="form-group">
-                        <label for="pic" >Upload Photo*</label>
-                        
-                            <!-- {{Form::file('pic')}} -->
-                            <input type="file" name="pic" id="pic">
-                            <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
-                        
+                    <label for="batch_idf" >Choose Subject*</label>
+                    @foreach ($Subjects as $subject)
+                    <div class="checkbox">
+                        <label>
+                        @foreach($getStudent->subject as $selected_subject)
+                            @if($selected_subject->id === $subject->id)
+    	                	  <input type="checkbox" name="subject[]" value="{{ $subject->id }}" checked/>
+                            @else
+                              <input type="checkbox" name="subject[]" value="{{ $subject->id }}"/>
+                            @endif
+                        @endforeach
+    					{{ $subject->name }}
+                        </label>
                     </div>
+                    @endforeach
+                </div>
             </div>
             <!-- /.col -->
             <div class="col-md-1"></div>

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Directory\Models;
+namespace App\Modules\Student\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Student extends Model
+class Batch extends Model
 {
     protected $table = 'batch';
 
@@ -18,7 +18,10 @@ class Student extends Model
      */
     protected $fillable = [
         'name',
-        'description'
+        'type',
+        'price',
+        'batch_types_id',
+        'grades_id'
     ];
     
     public function student()
@@ -28,6 +31,11 @@ class Student extends Model
 
     public function batchType()
     {
-        return $this->belongsTo('App\Modules\Student\Models\School');
+        return $this->belongsTo('App\Modules\Student\Models\BatchType', 'batch_types_id');
+    }
+
+    public function grade()
+    {
+        return $this->belongsTo('App\Modules\Student\Models\Grade','grades_id');
     }
 }
