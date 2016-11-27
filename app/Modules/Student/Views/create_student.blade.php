@@ -2,11 +2,13 @@
 
 @section('css')
 <link rel="stylesheet" href="{{asset('plugins/tooltipster/tooltipster.css')}}">
+<link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
 @endsection
 
 @section('scripts')
 <script src="{{asset('plugins/validation/dist/jquery.validate.js')}}"></script>
 <script src="{{asset('plugins/tooltipster/tooltipster.js')}}"></script>
+<script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script>
 
 $(document).ready(function () {
@@ -55,6 +57,38 @@ $(document).ready(function () {
             schools_id: {valueNotEquals: "Select a School"},
             batch_id: {valueNotEquals: "Select a Batch"},
             subjects_id: {required: "Choose Subjects"},
+        }
+    });
+
+    $('#batch_id').select2({
+        allowClear: true,
+        placeholder: 'Select batch',
+        ajax: {
+            url: "/getallbatch",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                page: params.page
+              };
+            },
+            processResults: function (data, params) {
+              // parse the results into the format expected by Select2
+              // since we are using custom formatting functions we do not need to
+              // alter the remote JSON data, except to indicate that infinite
+              // scrolling can be used
+              params.page = params.page || 1;
+              console.log(data);
+              return {
+                results: data,
+                pagination: {
+                  more: (params.page * 30) < data.total_count
+                }
+
+              };
+            },
+            cache: true
         }
     });
 
@@ -146,14 +180,7 @@ $(document).ready(function () {
                 </div>
                 <div class="form-group">
                     <label for="batch_id" >Batch*</label>
-                    
-                        <select class="form-control" name="batch_id">
-                                <option value="default">Choose...</option>
-                                @foreach ($Batches as $batch)
-                                    <option value="{{ $batch->id }}">{{ $batch->name }} </option>
-                                @endforeach
-                            </select>
-                    
+                    <select class="form-control select2" name="batch_id" id="batch_id"></select>
                 </div>
                 <!-- checkbox -->
                 <div class="form-group">
@@ -161,20 +188,20 @@ $(document).ready(function () {
                 @foreach ($Subjects as $subject)
                 <div class="checkbox">
                     <label>
-                      <input type="checkbox" name="subject[]" value="{{ $subject->id }}" >
+                      <input type="checkbox" name="subject[]" value="{{ $subject->id }}" class="flat-red">
                       {{ $subject->name }}
                     </label>
                 </div>
                 @endforeach
                 </div>
-                <div class="form-group">
-                        <label for="pic" >Upload Photo*</label>
+                <!-- <div class="form-group"> -->
+                        <!-- <label for="pic" >Upload Photo*</label> -->
                         
                             <!-- {{Form::file('pic')}} -->
-                            <input type="file" name="pic" id="pic">
+                            <!-- <input type="file" name="pic" id="pic"> -->
                             <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
                         
-                    </div>
+                <!-- </div> -->
             </div>
             <!-- /.col -->
             <div class="col-md-1"></div>

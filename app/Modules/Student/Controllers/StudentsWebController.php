@@ -65,8 +65,7 @@ class StudentsWebController extends Controller {
     /**********************
     * Create a new Student *
     ***********************/
-
-	public function addStudent() {
+    public function addStudent() {
 		$Schools = School::all();
 		$Batches = Batch::with('batchType','grade')->get();
 		$Subjects = Subject::all();
@@ -81,6 +80,10 @@ class StudentsWebController extends Controller {
 
     }
 
+
+    /***************************
+    * Edit and Update a Student*
+    ****************************/
     public function editStudent($id) {
 
     	$getStudent = Student::with('school', 'batch','subject')->find($id);
@@ -105,7 +108,6 @@ class StudentsWebController extends Controller {
     	}
     	
     	$student->subject()->sync($request->input('subject'));
-    	// dd('successs');
     	return redirect('all_students');
     }
 
@@ -120,30 +122,90 @@ class StudentsWebController extends Controller {
 
 
 
-	public function addSchool() {
-		return view('Student::create_school');
-	}
+    /******************************************************
+    * Show the information of all Batches in a data table *
+    *******************************************************/
+    public function allBatches() {
+        return view('Student::all_batches');
+    }
+
+    public function getBatches() {
+    $batches = Batch::with('batchType', 'grade')->get();
+    return Datatables::of($batches)
+                    ->addColumn('Link', function ($batches) {
+                        if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                        return '<a href="' . url('/batch') . '/' . $batches->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+                                '<a href="' . url('/batch') . '/' . $batches->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                                '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
+                                <i class="glyphicon glyphicon-trash"></i> Delete
+                                </a>';
+                        }
+                        else {
+                            return 'N/A';
+                        }
+                    })
+                    ->make(true);
+    }
+
+
+    /*********************
+    * Create a new Batch *
+    **********************/
+    public function addBatch() {
+        $batchType = BatchType::all();
+        $getGrades = Grade::all();
+        return view('Student::create_batch',compact("batchType", "getGrades"));
+    }
+
+    public function addBatchProcess(Request $request) {
+        Batch::create($request->all());
+        return redirect("/all_batches");
+    }
+
+    /**************************
+    * Select2 helper Function *
+    ***************************/
+    public function getAllBatch(Request $request) {
+        $batch = Batch::get(['id', 'name as text']);
+        // $batch = Batch::with('batchType', 'grade')->get();
+        // dd($batch->toArray());
+        return response()->json($batch);
+    }
+
+    /**************************
+    * Edit and Update a Batch *
+    ***************************/
+    public function editBatch($id) {
+        $getBatch = Batch::with('batchType', 'grade')->find($id);
+        $batchType = BatchType::all();
+        $getGrades = Grade::all();
+
+        // return response()->json($getBatch);
+        return view('Student::edit_batch')
+        ->with('getBatch', $getBatch)
+        ->with('batchType', $batchType)
+        ->with('getGrades', $getGrades);
+    }
+
+    public function batchUpdate(Request $request, Batch $batch) {
+        $batch->update( $request->all()); 
+        return redirect('all_batches');
+    }
+
+    /*****************
+    * Delete a Batch *
+    ******************/
+    public function deleteBatch(Request $request, $id) {
+        Batch::where('id', $id)->delete();
+        return back();
+    }
 
 
 
-	public function addSchoolProcess(Request $request){
-		School::create($request->all());
-     	return "Saved";		
- 	}
-
-	public function addBatch() {
-		$batchType = BatchType::all();
-		$getGrades = Grade::all();
-		return view('Student::create_batch',compact("batchType", "getGrades"));
-	}
-
-
-
-	public function addBatchProcess(Request $request) {
-		Batch::create($request->all());
-  	}
-
-	public function addBatchType() {
+    /******************************************
+    * BatchType related Functions. Incomplete *
+    *******************************************/
+    public function addBatchType() {
 		$batchType = BatchType::all();
 		return view('Student::create_batch_type',compact("batchType"));
 	}
@@ -151,11 +213,17 @@ class StudentsWebController extends Controller {
 	
 	public function addBatchTypeProcess(Request $request){  	
 
-  
+    }
 
-	}
+    /***************************************
+    * School related Functions. Incomplete *
+    ****************************************/
+    public function addSchool() {
+        return view('Student::create_school');
+    }
 
-
-
-
+    public function addSchoolProcess(Request $request){
+        School::create($request->all());
+        return "Saved";     
+    }
 }

@@ -34,6 +34,7 @@
         
             <li {!! Request::is('*create_student*') ? ' class="active"' : null !!}><a href="{{url('create_student')}}"><i class="fa fa-circle-o"></i> New Student</a></li>
             <li {!! Request::is('*create_school*') ? ' class="active"' : null !!}><a href="{{url('create_school')}}"><i class="fa fa-circle-o"></i> New School</a></li>
+            <li {!! Request::is('*all_batches*') ? ' class="active"' : null !!}><a href="{{url('all_batches')}}"><i class="fa fa-circle-o"></i> All Batches</a></li>
             <li {!! Request::is('*create_batch*') ? ' class="active"' : null !!}><a href="{{url('create_batch')}}"><i class="fa fa-circle-o"></i> New Batch</a></li>
             <li {!! Request::is('*create_batch_type*') ? ' class="active"' : null !!}><a href="{{url('create_batch_type')}}"><i class="fa fa-circle-o"></i> New Batch Type</a></li>
         </ul>

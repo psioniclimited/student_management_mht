@@ -17,6 +17,7 @@ class VerifyCsrfToken extends BaseVerifier
         'users/*/delete',
         'student/*/delete',
         'event/*/delete',
+        'batch/*/delete',
         'create_school_process',
         'create_batch_process',
     ];

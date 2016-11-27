@@ -16,11 +16,11 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{asset('dist/css/skins/_all-skins.min.css')}}">
 
+        @yield('css')
         <!-- AdminLTE Skins. Choose a skin from the css/skins
         folder instead of downloading all of them to reduce the load. -->
         <link rel="stylesheet" href="{{asset('dist/css/AdminLTE.min.css')}}">
         
-        @yield('css')
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,7 +39,7 @@
                     <!-- mini logo for sidebar mini 50x50 pixels -->
                     <span class="logo-mini"><b>D</b></span>
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>D</b>irectory</span>
+                    <span class="logo-lg"><b>S</b>tudent <b>M</b>anagement</span>
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">

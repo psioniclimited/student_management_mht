@@ -36,9 +36,11 @@ $(document).ready(function () {
             $(element).tooltipster('hide');
         },
         rules: {
-            name: {required: true, minlength: 4},
-            fathers_name: {required: true, minlength: 4},
-            mothers_name: {required: true, minlength: 4},
+            name: {required: true},
+            batch_types_id: {required: true},
+            upassword: {required: true, minlength: 6},
+            upassword_re: {required: true, equalTo: "#upassword"},
+            uroles: {required: true}
         },
         messages: {
             fullname: {required: "Please give fullname"},
@@ -63,16 +65,17 @@ $(document).ready(function () {
 @endsection
 
 @section('content')
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Student Module
+        School Module
         <small>it all starts here</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Student</a></li>
-        <li class="active">Create Student</li>
+        <li><a href="#">School</a></li>
+        <li class="active">Create School</li>
     </ol>
 </section>
 <!-- Main content -->
@@ -81,12 +84,11 @@ $(document).ready(function () {
     <!-- Horizontal Form -->
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title">Student Create Page</h3>
+            <h3 class="box-title">School Create Page</h3>
         </div>
         <!-- /.box-header -->
         <!-- form starts here -->
-        
-		{!! Form::open(array('url' => '/student_update_process/'.$getStudent->id.'/', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
+        {!! Form::open(array('url' => '/batch_update_process/'.$getBatch->id.'/', 'id' => 'add_user_form', 'class' => 'form-horizontal')) !!}
         
         {!! csrf_field() !!}
 		{{ method_field('PATCH') }}
@@ -95,79 +97,50 @@ $(document).ready(function () {
             <div class="col-md-1"></div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="name">Fullname*</label>
+                    <label for="name">Batch Name*</label>
                     
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name" value="{{$getStudent->name}}">
-                    
-                </div>
-                <div class="form-group">
-                    <label for="fathers_name">Father's name*</label>
-                    
-                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name" value="{{$getStudent->fathers_name}}">
+                        <input type="text" class="form-control" id="name" name="name" value="{{$getBatch->name}}">
                     
                 </div>
                 <div class="form-group">
-                    <label for="mothers_name">Mother's name*</label>
+                    <label for="type" >Type*</label>
                     
-                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name" value="{{$getStudent->mothers_name}}">
-                    
-                </div>
-                <div class="form-group">
-                    <label for="phone_home">Phone Number*</label>
-                    
-                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number" value="{{$getStudent->phone_home}}">
+                        <input type="text" class="form-control" id="type" name="type" value="{{$getBatch->type}}">
                     
                 </div>
                 <div class="form-group">
-                    <label for="phone_away">Edditional Phone Number*</label>
+                    <label for="price" >Price*</label>
                     
-                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{$getStudent->phone_away}}">
+                        <input type="number" step="1" class="form-control" id="price" name="price" value="{{$getBatch->price}}">
                     
                 </div>
+                <div class="form-group">
+                    <label for="batch_types_id" >Batch Type*</label>
+                    
+                        <select class="form-control" name="batch_types_id">
+                                <option value="{{ $getBatch->grade->id }}">{{ $getBatch->grade->name }}</option>
+                                @foreach ($batchType as $batch)
+                                    <option value="{{ $batch->id }}">{{ $batch->name }}</option>
+                                @endforeach
+                            </select>
+                    
+                </div>
+                <div class="form-group">
+                    <label for="grades_id" >Grade*</label>
+                    
+                        <select class="form-control" name="grades_id">
+                                <option value="{{ $getBatch->grade->id }}">{{ $getBatch->grade->name }}</option>
+                                @foreach ($getGrades as $grade)
+                                    <option value="{{ $grade->id }}">{{ $grade->name }}</option>
+                                @endforeach
+                            </select>
+                    
+                </div>
+                
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
-                <div class="form-group">
-                    <label for="schools_id" >School*</label>
-                    
-                        <select class="form-control" name="schools_id">
-                                <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
-                                @foreach ($Schools as $school)
-                                    <option value="{{ $school->id }}">{{ $school->name }}</option>
-                                @endforeach
-                            </select>
-                        
-                </div>
-                <div class="form-group">
-                    <label for="batch_idf" >Batch*</label>
-                    
-                        <select class="form-control" name="batch_id">
-                            <option value="{{$getStudent->batch->id}}">{{$getStudent->batch->name}}</option>
-                            @foreach ($Batches as $batch)
-                                <option value="{{ $batch->id }}">{{ $batch->name }}</option>
-                            @endforeach
-                        </select>
-                    
-                </div>
-                <!-- checkbox -->
-                <div class="form-group">
-                    <label for="batch_idf" >Choose Subject*</label>
-                    @foreach ($Subjects as $subject)
-                    <div class="checkbox">
-                        <label>
-                        @foreach($getStudent->subject as $selected_subject)
-                            @if($selected_subject->id === $subject->id)
-    	                	  <input class="flat-red" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked/>
-                              @break
-                            @else 
-                              <input class="flat-red" type="checkbox" name="subject[]" value="{{ $subject->id }}"/>
-                            @endif
-                        @endforeach
-    					{{ $subject->name }}
-                        </label>
-                    </div>
-                    @endforeach
-                </div>
+
             </div>
             <!-- /.col -->
             <div class="col-md-1"></div>
