@@ -159,7 +159,7 @@ $(document).ready(function () {
                     
                 </div>
                 <div class="form-group">
-                    <label for="phone_away">Edditional Phone Number*</label>
+                    <label for="phone_away">Additional Phone Number*</label>
                     
                         <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number">
                     

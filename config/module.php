@@ -10,5 +10,6 @@ return  [
        'Product',
        'Directory',
        'Student',
+       'Teacher',
     ]
 ];

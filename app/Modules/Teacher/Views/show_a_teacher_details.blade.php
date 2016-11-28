@@ -19,6 +19,53 @@
     }, "Value must not equal arg.");
 
     $(document).ready(function () {
+        var table = $('#all_user_list').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": "{{URL::to('/get_teachers')}}",
+            "columns": [
+                    {"data": "id"},
+                    {"data": "user.name"},
+                    {"data": "user.email"},                    
+                    {"data": "subject.name"},
+                    {"data": "Link", name: 'link', orderable: false, searchable: false}
+                ]
+        });
+
+        // Delete Batch
+        $('#confirm_delete').on('show.bs.modal', function(e) {
+           var $modal = $(this),
+               user_id = e.relatedTarget.id;
+               console.log(user_id);
+
+           $('#delete_customer').click(function(e){    
+               // event.preventDefault();
+               $.ajax({
+                   cache: false,
+                   type: 'POST',
+                   url: 'teacher/' + user_id + '/delete',
+                   data: user_id,
+                   success: function(data) {
+                       console.log("Deleted Successfully");
+                       table.ajax.reload(null, false);
+                       $('#confirm_delete').modal('toggle');
+                   }
+               });
+           });
+        });
+
+
+
+
+
+
+
         // initialize tooltipster on text input elements
         $('form input,select,textarea').tooltipster({
             trigger: 'custom',
@@ -133,13 +180,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Member Information
-        
+        Teacher Information
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Examples</a></li>
-        <li class="active">Blank page</li>
+        <li><a href="#">Teacher</a></li>
+        <li class="active">Teacher Detail Page</li>
     </ol>
 </section>
 
@@ -148,65 +194,121 @@
     <!-- Horizontal Form -->
     <div class="box box-info">
         
-        <!-- /.box-header -->
-        <!-- form starts here -->        
-        {!! Form::open(array('url' => 'create_member_process', 'id' => 'add_member_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
+        
             <div class="box-body">
-            
             
                 <div class="col-md-4">
                     <div class="form-group">
-                        
-                      <!-- Profile Image -->
-                      
-                        <div class="box-body box-profile">
-                          <img class="profile-user-img img-responsive img-circle" src="http://4.bp.blogspot.com/-dqWQXNlSC7Y/VXb5yU9zHjI/AAAAAAAAruc/mp42uTS_vc8/s1600/Obama%2BA.png" alt="User profile picture">
-
-                          <h3 class="profile-username text-center">{{ $getStudent->name }}</h3>
-
-                          <p class="text-muted text-center">Batch Type : {{ $getStudent->batch->name }}</p>
-
-                        </div>
-                        <!-- /.box-body -->
-                      
-                      <!-- /.box -->
-                        
+                        <label for="name" >Teacher Name</label>
+                        <p>{{ $getTeacher->user->name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" >Email</label>
+                        <p>{{ $getTeacher->user->email }}</p>
+                    </div>
+                    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="addrs" >Description</label>
+                        <p>{{ $getTeacher->description }}</p>  
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <p>{{ $getTeacher->subject->name }}</p>
                     </div>
                 </div>
                 
                 <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="name" >Student's Name</label>
-                        <p>{{ $getStudent->name }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="fathers_name" >Student's Father Name</label>
-                        <p>{{ $getStudent->fathers_name }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="mothers_name" >Student's Mother Name</label>
-                        <p>{{ $getStudent->mothers_name }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone_home" >Phone Number(Home)</label>
-                        <p>{{ $getStudent->phone_home }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone_away" >Phone Number(Additional)</label>
-                        <p>{{ $getStudent->phone_away }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone_away" >Batch</label>
-                        <p>{{ $getStudent->batch->name }}</p>
-                    </div>
-
-
+                </div>
             </div>
             <!-- /.box-body -->
 
             <!-- /.box-footer -->
-        </form>
-        <!-- /.form ends here -->
+    </div>
+    <!-- /.box -->
+
+    <h3>
+        Create a new Batch
+    </h3>
+
+
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+        
+        
+            <div class="box-body">
+            
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="name" >Teacher Name</label>
+                        <p>{{ $getTeacher->user->name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" >Email</label>
+                        <p>{{ $getTeacher->user->email }}</p>
+                    </div>
+                    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="addrs" >Description</label>
+                        <p>{{ $getTeacher->description }}</p>  
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <p>{{ $getTeacher->subject->name }}</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                </div>
+            </div>
+            <!-- /.box-body -->
+
+            <!-- /.box-footer -->
+    </div>
+    <!-- /.box -->
+
+    
+
+    <h3>
+        All Batches under this Teacher
+    </h3>
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+        
+        
+            <div class="box-body">
+            
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="name" >Teacher Name</label>
+                        <p>{{ $getTeacher->user->name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" >Email</label>
+                        <p>{{ $getTeacher->user->email }}</p>
+                    </div>
+                    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="addrs" >Description</label>
+                        <p>{{ $getTeacher->description }}</p>  
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <p>{{ $getTeacher->subject->name }}</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                </div>
+            </div>
+            <!-- /.box-body -->
+
+            <!-- /.box-footer -->
     </div>
     <!-- /.box -->
 </section>

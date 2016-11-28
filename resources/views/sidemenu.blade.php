@@ -54,6 +54,20 @@
             <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> New Teacher</a></li>
         </ul>
     </li>
+    <li {!! Request::is('*batch*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+        <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Batch</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li {!! Request::is('*all_batches*') ? ' class="active"' : null !!}><a href="{{url('all_teachers')}}"><i class="fa fa-circle-o"></i> Physics</a></li>
+            <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> Chemistry</a></li>
+            <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> Mathematics</a></li>
+        </ul>
+    </li>
     <li {!! Request::is('*roles*') || Request::is('*permissions*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
         <a href="#">
             <i class="fa fa-gears"></i>

@@ -21,12 +21,12 @@ Route::group(['middleware' => ['web']], function () {
     /**********************************************
     * Show the information of a Particular Teacher *
     ***********************************************/
-    Route::get('Teacher/{Teacher}/show/', 'App\Modules\Teacher\Controllers\TeachersWebController@get_one_Teacher');
+    Route::get('teacher/{Teacher}/show/', 'App\Modules\Teacher\Controllers\TeachersWebController@get_one_Teacher');
 
 
-    /**********************
+    /***********************
     * Create a new Teacher *
-    ***********************/   
+    ************************/
     Route::get('create_teacher', 'App\Modules\Teacher\Controllers\TeachersWebController@addTeacher');
     Route::post('create_teacher_process', 'App\Modules\Teacher\Controllers\TeachersWebController@addTeacherProcess');
 
@@ -35,7 +35,7 @@ Route::group(['middleware' => ['web']], function () {
     * Edit and Update a Teacher *
     ****************************/    
     Route::get('teacher/{teacher}/edit/', 'App\Modules\Teacher\Controllers\TeachersWebController@editTeacher');
-    Route::patch('/teacher_update_process/{teacher}/', 'App\Modules\Teacher\Controllers\TeachersWebController@teacherUpdate');
+    Route::patch('/teacher_update_process/{teacherdetail}/', 'App\Modules\Teacher\Controllers\TeachersWebController@teacherUpdate');
 
 
     /******************

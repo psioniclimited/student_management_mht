@@ -21,12 +21,12 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_students')}}",
+            "ajax": "{{URL::to('/get_teachers')}}",
             "columns": [
                     {"data": "id"},
-                    {"data": "name"},
-                    {"data": "school.name"},                    
-                    {"data": "batch.name"},
+                    {"data": "user.name"},
+                    {"data": "user.email"},                    
+                    {"data": "subject.name"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -42,7 +42,7 @@
                $.ajax({
                    cache: false,
                    type: 'POST',
-                   url: 'student/' + user_id + '/delete',
+                   url: 'teacher/' + user_id + '/delete',
                    data: user_id,
                    success: function(data) {
                        console.log("Deleted Successfully");
@@ -251,10 +251,10 @@
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Student Id</th>
-                                <th>Student Name</th>
-                                <th>School</th>
-                                <th>Batch</th>
+                                <th>Teacher Id</th>
+                                <th>Teacher Name</th>
+                                <th>Teacher Email</th>
+                                <th>Subject</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

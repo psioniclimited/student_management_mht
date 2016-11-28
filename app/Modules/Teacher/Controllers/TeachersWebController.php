@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\Student\Controllers;
+namespace App\Modules\Teacher\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Modules\User\Models\User;
@@ -11,6 +11,7 @@ use App\Modules\Student\Models\Batch;
 use App\Modules\Student\Models\BatchType;
 use App\Modules\Student\Models\Grade;
 use App\Modules\Student\Models\Subject;
+use App\Modules\Teacher\Models\TeacherDetail;
 
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -26,18 +27,17 @@ class TeachersWebController extends Controller {
     * Show the information of all Teachers in a data table *
     *******************************************************/
 	public function allTeachers() {
-		// return "AAA";
 		return view('Teacher::all_teachers');
     }
-
+    
 	public function getTeachers() {
-	$students = Student::with('school', 'batch')->get();
-	return Datatables::of($students)
-    				->addColumn('Link', function ($students) {
+	$teachers = TeacherDetail::with('user', 'subject')->get();
+    return Datatables::of($teachers)
+    				->addColumn('Link', function ($teachers) {
     					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/student') . '/' . $students->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        return '<a href="' . url('/teacher') . '/' . $teachers->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+                        		'<a href="' . url('/teacher') . '/' . $teachers->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                        		'<a class="btn btn-xs btn-danger" id="'. $teachers->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
                         }
@@ -49,33 +49,37 @@ class TeachersWebController extends Controller {
     }
 
 
-    /**********************************************
-    * Show the information of a Particular Teacher *
-    ***********************************************/
+    /***********************************************************
+    * Show the information of a Particular Teacher. Incomplete *
+    ************************************************************/
     public function get_one_Teacher($id) {
+        $getTeacher = TeacherDetail::with('user','subject')->find($id);
+    	// return $getTeacher;
 
-    	$getStudent = Student::with('school', 'batch','subject')->find($id);
-    	// return $getStudent;
-
-    	return view('Teacher::show_a_teacher_details',compact('getStudent'));
+    	return view('Teacher::show_a_teacher_details')
+        ->with('getTeacher', $getTeacher);
     }
 
-    /**********************
+    /***********************
     * Create a new Teacher *
-    ***********************/
+    ************************/
     public function addTeacher() {
-		$Schools = School::all();
-		$Batches = Batch::with('batchType','grade')->get();
 		$Subjects = Subject::all();
-		return view('Teacher::create_teacher',compact("Schools","Batches","Subjects"));
+		return view('Teacher::create_teacher')
+        ->with('getSubjects', $Subjects);
 	}
 
 
 	public function addTeacherProcess(Request $request) {
-		$student = Student::create($request->all());
-		$student->subject()->attach($request->input('subject'));
-		return redirect("all_teachers");
+        $user = User::create($request->all());
+        $teacher = new TeacherDetail($request->all());
+        $teacher->user()->associate($user);
+        $teacher->save();
 
+        $user->attachRole(2); 
+               
+        return "Saved";
+        return redirect("all_teachers");
     }
 
 
@@ -83,28 +87,20 @@ class TeachersWebController extends Controller {
     * Edit and Update a Teacher*
     ****************************/
     public function editTeacher($id) {
-        $getStudent = Student::with('school', 'batch','subject')->find($id);
-    	// return response()->json($getStudent);
-    	// dd($getStudent->subject()->get());
-    	$schools = School::all();
-		$batches = Batch::all();
-		$subjects = Subject::all();
+        $getTeacher = TeacherDetail::with('user', 'subject')->find($id);
+        $subjects = Subject::all();
 
-		// return response()->json($getStudent);
+		// return response()->json($getTeacher);
 		return view('Teacher::edit_teacher')
-		->with('getStudent', $getStudent)
-		->with('Schools', $schools)
-		->with('Batches', $batches)
-		->with('Subjects', $subjects);
+		->with('getTeacher', $getTeacher)
+		->with('getSubjects', $subjects);
 	}
 
     public function teacherUpdate(Request $request, $id) {
-    	$student = Student::find($id);
-    	if( !$student->update( $request->all()) ){
-    		return "error";
-    	}
-    	
-    	$student->subject()->sync($request->input('subject'));
+        $teacherdetail = TeacherDetail::with('user','subject')->find($id);
+        $teacherdetail->update( $request->all());
+        $user = User::find($teacherdetail->user->id);
+        $user->update( $request->all());
     	return redirect('all_teachers');
     }
 

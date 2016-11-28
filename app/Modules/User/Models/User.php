@@ -40,4 +40,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function role_user() {
         return $this->hasOne('App\Modules\User\Models\RoleUser');
     }
+
+    public function setPasswordAttribute($value){
+        $this->attributes['password'] = bcrypt($value);
+    }
+    
 }

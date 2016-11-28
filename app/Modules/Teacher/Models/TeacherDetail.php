@@ -8,7 +8,7 @@ class TeacherDetail extends Model
 {
     protected $table = 'teacher_details';
 
-    // public $timestamps = false;
+    public $timestamps = false;
 
      /**
      * The attributes that are mass assignable.
@@ -16,7 +16,6 @@ class TeacherDetail extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
         'description',
         'users_id',
         'subjects_id',
@@ -24,7 +23,7 @@ class TeacherDetail extends Model
 
     public function user()
     {
-        return $this->belongsTo('App\Modules\User\Models\School', 'users_id');
+        return $this->belongsTo('App\Modules\User\Models\User', 'users_id');
     }
 
     public function subject()

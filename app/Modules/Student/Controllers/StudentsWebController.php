@@ -28,7 +28,6 @@ class StudentsWebController extends Controller {
     * Show the information of all Members in a data table *
     *******************************************************/
 	public function allStudents() {
-		// return "AAA";
 		return view('Student::all_students');
     }
 
@@ -55,16 +54,13 @@ class StudentsWebController extends Controller {
     * Show the information of a Particular Member *
     ***********************************************/
     public function get_one_Student($id) {
-
-    	$getStudent = Student::with('school', 'batch','subject')->find($id);
-    	// return $getStudent;
-
+        $getStudent = Student::with('school', 'batch','subject')->find($id);
     	return view('Student::show_a_student_details',compact('getStudent'));
     }
 
-    /**********************
+    /***********************
     * Create a new Student *
-    ***********************/
+    ************************/
     public function addStudent() {
 		$Schools = School::all();
 		$Batches = Batch::with('batchType','grade')->get();

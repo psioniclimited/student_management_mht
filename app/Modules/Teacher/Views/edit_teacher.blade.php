@@ -36,16 +36,18 @@ $(document).ready(function () {
             $(element).tooltipster('hide');
         },
         rules: {
-            name: {required: true, minlength: 4},
-            fathers_name: {required: true, minlength: 4},
-            mothers_name: {required: true, minlength: 4},
+            fullname: {required: true, minlength: 4},
+            email: {required: true, email: true},
+            password: {required: true, minlength: 6},
+            password_re: {required: true, equalTo: "#password"},
+            roles: {required: true}
         },
         messages: {
             fullname: {required: "Please give fullname"},
-            uemail: {required: "Insert email address"},
-            upassword: {required: "Six digit password"},
-            upassword_re: {required: "Re-enter same password"},
-            uroles: {required: "Please select a role"}
+            email: {required: "Insert email address"},
+            password: {required: "Six digit password"},
+            password_re: {required: "Re-enter same password"},
+            roles: {required: "Please select a role"}
         }
     });
 
@@ -63,16 +65,17 @@ $(document).ready(function () {
 @endsection
 
 @section('content')
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Student Module
+        User Module
         <small>it all starts here</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Student</a></li>
-        <li class="active">Create Student</li>
+        <li><a href="#">User</a></li>
+        <li class="active">Create Users</li>
     </ol>
 </section>
 <!-- Main content -->
@@ -81,92 +84,57 @@ $(document).ready(function () {
     <!-- Horizontal Form -->
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title">Student Create Page</h3>
+            <h3 class="box-title">User Create Page</h3>
         </div>
         <!-- /.box-header -->
         <!-- form starts here -->
-        
-		{!! Form::open(array('url' => '/student_update_process/'.$getStudent->id.'/', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
-        
+        {!! Form::open(array('url' => 'teacher_update_process'.'/'.$getTeacher->id.'/', 'id' => 'add_user_form', 'class' => 'form-horizontal')) !!}
         {!! csrf_field() !!}
-		{{ method_field('PATCH') }}
-
+        {{ method_field('PATCH') }}
         <div class="box-body">
             <div class="col-md-1"></div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="name">Fullname*</label>
                     
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name" value="{{$getStudent->name}}">
+                        <input type="text" class="form-control" id="name" name="name" value="{{ $getTeacher->user->name }}">
                     
                 </div>
                 <div class="form-group">
-                    <label for="fathers_name">Father's name*</label>
+                    <label for="email" >Email*</label>
                     
-                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name" value="{{$getStudent->fathers_name}}">
-                    
-                </div>
-                <div class="form-group">
-                    <label for="mothers_name">Mother's name*</label>
-                    
-                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name" value="{{$getStudent->mothers_name}}">
+                        <input type="email" class="form-control" id="email" name="email" value="{{ $getTeacher->user->email }}">
                     
                 </div>
                 <div class="form-group">
-                    <label for="phone_home">Phone Number*</label>
+                    <label for="description">description*</label>
                     
-                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number" value="{{$getStudent->phone_home}}">
+                        <input type="text" class="form-control" id="description" name="description" value="{{ $getTeacher->description }}">
                     
                 </div>
                 <div class="form-group">
-                    <label for="phone_away">Edditional Phone Number*</label>
-                    
-                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{$getStudent->phone_away}}">
-                    
+                    <label for="subjects_id" >Subject*</label>
+                        <select class="form-control" name="subjects_id">
+                            <option value="{{ $getTeacher->subject->id }}">{{ $getTeacher->subject->name }}</option>
+                            @foreach ($getSubjects as $subject)
+                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            @endforeach
+                        </select>
                 </div>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="schools_id" >School*</label>
+                    <label for="password">Password*</label>
                     
-                        <select class="form-control" name="schools_id">
-                                <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
-                                @foreach ($Schools as $school)
-                                    <option value="{{ $school->id }}">{{ $school->name }}</option>
-                                @endforeach
-                            </select>
-                        
-                </div>
-                <div class="form-group">
-                    <label for="batch_idf" >Batch*</label>
-                    
-                        <select class="form-control" name="batch_id">
-                            <option value="{{$getStudent->batch->id}}">{{$getStudent->batch->name}}</option>
-                            @foreach ($Batches as $batch)
-                                <option value="{{ $batch->id }}">{{ $batch->name }}</option>
-                            @endforeach
-                        </select>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
                     
                 </div>
-                <!-- checkbox -->
                 <div class="form-group">
-                    <label for="batch_idf" >Choose Subject*</label>
-                    @foreach ($Subjects as $subject)
-                    <div class="checkbox">
-                        <label>
-                        @foreach($getStudent->subject as $selected_subject)
-                            @if($selected_subject->id === $subject->id)
-    	                	  <input class="flat-red" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked/>
-                              @break
-                            @else 
-                              <input class="flat-red" type="checkbox" name="subject[]" value="{{ $subject->id }}"/>
-                            @endif
-                        @endforeach
-    					{{ $subject->name }}
-                        </label>
-                    </div>
-                    @endforeach
+                    <label for="upassword_re">Confirm Password*</label>
+                    
+                        <input type="password" class="form-control" id="password_re" name="password_re" placeholder="Enter password again">
+                    
                 </div>
             </div>
             <!-- /.col -->
