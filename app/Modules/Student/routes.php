@@ -82,9 +82,30 @@ Route::group(['middleware' => ['web']], function () {
     *****************/     
     Route::post('batch/{batch}/delete', 'App\Modules\Student\Controllers\StudentsWebController@deleteBatch');
 
+    /*****************************************************
+    * Show the information of all Grades in a data table *
+    ******************************************************/
+    Route::get('all_grades', 'App\Modules\Student\Controllers\StudentsWebController@allGrades');
+    Route::get('get_grades', 'App\Modules\Student\Controllers\StudentsWebController@getGrades');
+
+    /**************************
+    * Edit and Update a Grade *
+    ***************************/
+    Route::get('grade/{grade}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editGrade');
+    Route::patch('grade_update_process/{grade}/', 'App\Modules\Student\Controllers\StudentsWebController@gradeUpdate');
+
+    /*****************
+    * Delete a Grade *
+    ******************/     
+    Route::post('grade/{grade}/delete', 'App\Modules\Student\Controllers\StudentsWebController@deleteGrade');
+
+    /******************************
+    * Create a new Grade or Class *
+    *******************************/
+    Route::get('create_grade', 'App\Modules\Student\Controllers\StudentsWebController@addGrade');
+    Route::post('create_grade_process', 'App\Modules\Student\Controllers\StudentsWebController@addGradeProcess');
 
     
-
     /******************************************
     * BatchType related Functions. Incomplete *
     *******************************************/

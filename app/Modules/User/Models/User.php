@@ -33,8 +33,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'password', 'remember_token',
     ];
 
-    public function members_detail() {
-        return $this->hasOne('App\Modules\Directory\Models\MembersDetail');
+    public function teacher_detail() {
+        return $this->hasOne('App\Modules\Teacher\Models\TeacherDetail');
     }
 
     public function role_user() {

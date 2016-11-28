@@ -1,0 +1,47 @@
+<?php
+
+/*
+  |--------------------------------------------------------------------------
+  | User Routes
+  |--------------------------------------------------------------------------
+  |
+  | All the routes for User module has been written here
+  |
+  |
+ */
+Route::group(['middleware' => ['web']], function () {
+
+    /*******************************************************
+    * Show the information of all Teachers in a data table *
+    ********************************************************/
+    Route::get('all_teachers', 'App\Modules\Teacher\Controllers\TeachersWebController@allTeachers');
+    Route::get('get_teachers', 'App\Modules\Teacher\Controllers\TeachersWebController@getTeachers');
+    
+
+    /**********************************************
+    * Show the information of a Particular Teacher *
+    ***********************************************/
+    Route::get('Teacher/{Teacher}/show/', 'App\Modules\Teacher\Controllers\TeachersWebController@get_one_Teacher');
+
+
+    /**********************
+    * Create a new Teacher *
+    ***********************/   
+    Route::get('create_teacher', 'App\Modules\Teacher\Controllers\TeachersWebController@addTeacher');
+    Route::post('create_teacher_process', 'App\Modules\Teacher\Controllers\TeachersWebController@addTeacherProcess');
+
+
+    /***************************
+    * Edit and Update a Teacher *
+    ****************************/    
+    Route::get('teacher/{teacher}/edit/', 'App\Modules\Teacher\Controllers\TeachersWebController@editTeacher');
+    Route::patch('/teacher_update_process/{teacher}/', 'App\Modules\Teacher\Controllers\TeachersWebController@teacherUpdate');
+
+
+    /******************
+    * Delete a Teacher *
+    *******************/     
+    Route::post('teacher/{teacher}/delete', 'App\Modules\Teacher\Controllers\TeachersWebController@deleteTeacher');
+
+
+});
