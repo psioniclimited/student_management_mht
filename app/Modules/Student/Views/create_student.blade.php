@@ -175,7 +175,7 @@ $(document).ready(function () {
                                 @foreach ($Schools as $school)
                                     <option value="{{ $school->id }}">{{ $school->name }}</option>
                                 @endforeach
-                            </select>
+                        </select>
                         
                 </div>
                 <div class="form-group">

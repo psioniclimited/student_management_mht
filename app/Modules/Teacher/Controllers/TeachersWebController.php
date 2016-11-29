@@ -54,10 +54,12 @@ class TeachersWebController extends Controller {
     ************************************************************/
     public function get_one_Teacher($id) {
         $getTeacher = TeacherDetail::with('user','subject')->find($id);
-    	// return $getTeacher;
-
+        $batchType = BatchType::all();
+        $getGrades = Grade::all();
     	return view('Teacher::show_a_teacher_details')
-        ->with('getTeacher', $getTeacher);
+        ->with('getTeacher', $getTeacher)
+        ->with('batchType', $batchType)
+        ->with('getGrades', $getGrades);
     }
 
     /***********************

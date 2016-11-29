@@ -119,18 +119,18 @@ $(document).ready(function () {
                                 @foreach ($batchType as $batch)
                                     <option value="{{ $batch->id }}">{{ $batch->name }}</option>
                                 @endforeach
-                            </select>
+                        </select>
                     
                 </div>
                 <div class="form-group">
                     <label for="grades_id" >Grade*</label>
                     
                         <select class="form-control" name="grades_id">
-                                <option value="default">Choose...</option>
-                                @foreach ($getGrades as $grade)
-                                    <option value="{{ $grade->id }}">{{ $grade->name }}</option>
-                                @endforeach
-                            </select>
+                            <option value="default">Choose...</option>
+                            @foreach ($getGrades as $grade)
+                                <option value="{{ $grade->id }}">{{ $grade->name }}</option>
+                            @endforeach
+                        </select>
                     
                 </div>
                 

@@ -11,14 +11,15 @@ use App\Modules\Student\Models\Batch;
 use App\Modules\Student\Models\BatchType;
 use App\Modules\Student\Models\Grade;
 use App\Modules\Student\Models\Subject;
-
+use App\Modules\Student\Models\BatchDay;
+use App\Modules\Student\Models\BatchTime;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
 use Storage;
 use File;
 use Entrust;
-
+use DB;
 
 class StudentsWebController extends Controller {
 
@@ -158,14 +159,31 @@ class StudentsWebController extends Controller {
         return redirect("/all_batches");
     }
 
+    public function addNewBatchProcess(Request $request) {
+        // dd($request->all());
+        return $request->all();
+        // return redirect("/all_batches");
+    }
+
     /**************************
     * Select2 helper Function *
     ***************************/
     public function getAllBatch(Request $request) {
-        $batch = Batch::get(['id', 'name as text']);
+
+        $query_batch = "
+        SELECT  batch_days_has_batch_times.id, 
+        concat(batch_days.name, ' ', batch_times.time) AS text
+        FROM batch_days_has_batch_times
+        JOIN batch_days ON batch_days_id = batch_days.id
+        JOIN batch_times ON batch_times_id = batch_times.id
+        ";
+        
+        $batch_information = DB::select($query_batch);
+        // $batch = Batch::get(['id', 'name as text']);
+        // $batch = BatchDay::with('batchTime')->get();
         // $batch = Batch::with('batchType', 'grade')->get();
         // dd($batch->toArray());
-        return response()->json($batch);
+        return response()->json($batch_information);
     }
 
     /**************************

@@ -22,5 +22,6 @@ class VerifyCsrfToken extends BaseVerifier
         'teacher/*/delete',
         'create_school_process',
         'create_batch_process',
+        'create_new_batch_process'
     ];
 }

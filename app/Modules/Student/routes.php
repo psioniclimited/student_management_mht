@@ -63,12 +63,13 @@ Route::group(['middleware' => ['web']], function () {
     **********************/
     Route::get('create_batch', 'App\Modules\Student\Controllers\StudentsWebController@addBatch');
     Route::post('create_batch_process', 'App\Modules\Student\Controllers\StudentsWebController@addBatchProcess');
-    
+    Route::post('create_new_batch_process', 'App\Modules\Student\Controllers\StudentsWebController@addNewBatchProcess');
 
     /**************************
     * Select2 helper Function *
     ***************************/       
     Route::get('getallbatch', 'App\Modules\Student\Controllers\StudentsWebController@getAllBatch');
+
     
     /**************************
     * Edit and Update a Batch *
