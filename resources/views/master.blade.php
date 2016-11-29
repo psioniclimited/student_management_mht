@@ -37,9 +37,9 @@
                 <!-- Logo -->
                 <a href="{{url('/')}}" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini"><b>D</b></span>
+                    <span class="logo-mini">MHT</span>
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>S</b>tudent <b>M</b>anagement</span>
+                    <span class="logo-lg"><b>MHT</b></span>
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
@@ -56,13 +56,13 @@
                         <!-- User Account: style can be found in dropdown.less -->
                            <li class="dropdown user user-menu">
                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                   <span class="hidden-xs">Signed in as: </span>
+                                   <span class="hidden-xs">Signed in as: {{auth()->user()->name}}</span>
                                </a>
                                <ul class="dropdown-menu">
                                    <!-- User image -->
                                    <li class="user-header">
                                        <p>
-                                           
+                                           Email: {{auth()->user()->email}}
                                        </p>
                                    </li>
                                    <!-- Menu Body -->
@@ -126,10 +126,10 @@
 
             <footer class="main-footer">
                 <div class="pull-right hidden-xs">
-                    <b>Version</b> 2.3.6
+                    <b>Version</b> 1.0
                 </div>
-                <strong>Copyright &copy; 2016 <a href="#">iERP System</a>.</strong> All rights
-                reserved.
+                <strong>Copyright &copy; 2016 <a href="#">Student Management System(MHT)</a>.</strong> All rights
+                reserved. Powered by <a href="http://psionicinteractive.com/" target="_blank"><b>Psionic Interactive Limited</b></a>.
             </footer>
 
             <!-- Control Sidebar -->

@@ -196,7 +196,9 @@
         
         
             <div class="box-body">
-            
+            <div class="box-header with-border">
+              <h3 class="box-title">Create a New Batch</h3>
+            </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="name" >Teacher Name</label>
@@ -228,52 +230,37 @@
     </div>
     <!-- /.box -->
 
-    <h3>
-        Create a new Batch
-    </h3>
-
-
     <!-- Horizontal Form -->
-    <div class="box box-info">
+    <div class="box box-success">
         
+        <div class="box-body">
         
+            <div class="box-header with-border">
+              <h3 class="box-title">Create a New Batch</h3>
+            </div>
             <div class="box-body">
-            
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="name" >Teacher Name</label>
-                        <p>{{ $getTeacher->user->name }}</p>
-                    </div>
-                    <div class="form-group">
-                        <label for="email" >Email</label>
-                        <p>{{ $getTeacher->user->email }}</p>
-                    </div>
-                    
+              <div class="row">
+                <div class="col-xs-3">
+                  <input type="text" class="form-control" placeholder=".col-xs-3">
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="addrs" >Description</label>
-                        <p>{{ $getTeacher->description }}</p>  
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <p>{{ $getTeacher->subject->name }}</p>
-                    </div>
+                <div class="col-xs-4">
+                  <input type="text" class="form-control" placeholder=".col-xs-4">
                 </div>
-                
-                <div class="col-md-4">
+                <div class="col-xs-5">
+                  <input type="text" class="form-control" placeholder=".col-xs-5">
                 </div>
+              </div>
             </div>
             <!-- /.box-body -->
-
-            <!-- /.box-footer -->
+        </div>
+        <!-- /.box-body -->
     </div>
     <!-- /.box -->
 
     
 
     <h3>
-        All Batches under this Teacher
+        All Batches under <b>{{ $getTeacher->user->name }}</b>
     </h3>
     <!-- Horizontal Form -->
     <div class="box box-info">

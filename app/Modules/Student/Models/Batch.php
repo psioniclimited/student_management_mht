@@ -24,9 +24,14 @@ class Batch extends Model
         'grades_id'
     ];
     
+    // public function student()
+    // {
+    //     return $this->hasmany('App\Modules\Student\Models\Student');
+    // }
+
     public function student()
     {
-        return $this->hasmany('App\Modules\Student\Models\Student');
+        return $this->belongsToMany('App\Modules\Student\Models\Student', 'batch_has_students', 'batch_id', 'students_id');
     }
 
     public function batchType()

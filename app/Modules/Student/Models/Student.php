@@ -30,9 +30,14 @@ class Student extends Model
         return $this->belongsTo('App\Modules\Student\Models\School', 'schools_id');
     }
 
+    // public function batch()
+    // {
+    //     return $this->belongsTo('App\Modules\Student\Models\Batch', 'batch_id');
+    // }
+
     public function batch()
     {
-        return $this->belongsTo('App\Modules\Student\Models\Batch', 'batch_id');
+        return $this->belongsToMany('App\Modules\Student\Models\Batch', 'batch_has_students', 'students_id', 'batch_id');
     }
 
     public function subject()
