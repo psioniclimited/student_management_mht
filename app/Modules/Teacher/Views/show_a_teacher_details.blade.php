@@ -33,12 +33,15 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_batches')}}",
+            "ajax": "{{URL::to('/get_batches/'.$getTeacher->id)}}",
             "columns": [
-                    {"data": "id"},
+                    {"data": "Schedule"},
                     {"data": "name"},
+                    {"data": "price"},
                     {"data": "batch_type.name"},                    
                     {"data": "grade.name"},
+                    {"data": "start_date"},
+                    {"data": "end_date"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -212,6 +215,18 @@
             } 
         });
 
+        //Date picker for Start Date
+        $('#start_date').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
+        //Date picker End Date
+        $('#end_date').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
 
 
 
@@ -277,6 +292,11 @@
     </div>
     <!-- /.box -->
 
+
+
+
+
+
     <!-- Horizontal Form -->
     <div class="box box-success">
         
@@ -288,7 +308,7 @@
             <div class="box-body">
                 <div class="row">
                 {!! Form::open(array('id' => 'add_batch_form')) !!}
-                <div class="col-xs-2">
+                <div class="col-xs-1">
                     <label for="name" >Batch name*</label>
                     <input type="text" class="form-control" name="name" id="name" placeholder="Batch name">
                 </div>
@@ -296,7 +316,7 @@
                     <label for="price" >Price*</label>
                     <input type="text" class="form-control" name="price" id="price" placeholder="Price">
                 </div>
-                <div class="col-xs-2">
+                <div class="col-xs-1">
                     <div class="form-group">
                         <label for="batch_types_id" >Batch Type*</label>
                         <select class="form-control" name="batch_types_id">
@@ -318,10 +338,32 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-2">
                     <div class="form-group">
                         <label for="batch_id" >Schedule*</label>
                         <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        <label for="start_date" >Start Date</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control" id="start_date" name="start_date" placeholder="Select Start Date">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        <label for="end_date" >End Date</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="Select end date">
+                        </div>
                     </div>
                 </div>
                 <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
@@ -351,10 +393,13 @@
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Batch Id</th>
+                                <th>Schedule</th>
                                 <th>Batch Name</th>
+                                <th>Price Tk/=</th>
                                 <th>Batch Type</th>
                                 <th>Grade</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

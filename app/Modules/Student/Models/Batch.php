@@ -18,17 +18,15 @@ class Batch extends Model
      */
     protected $fillable = [
         'name',
-        'type',
         'price',
         'batch_types_id',
-        'grades_id'
+        'grades_id',
+        'teacher_details_id',
+        'teacher_details_users_id',
+        'start_date',
+        'end_date'
     ];
     
-    // public function student()
-    // {
-    //     return $this->hasmany('App\Modules\Student\Models\Student');
-    // }
-
     public function student()
     {
         return $this->belongsToMany('App\Modules\Student\Models\Student', 'batch_has_students', 'batch_id', 'students_id');
@@ -42,5 +40,32 @@ class Batch extends Model
     public function grade()
     {
         return $this->belongsTo('App\Modules\Student\Models\Grade','grades_id');
+    }
+
+    public function teacherDetail()
+    {
+        return $this->belongsTo('App\Modules\Teacher\Models\TeacherDetail','teacher_details_id');
+    }
+
+    public function dayAndtime()
+    {
+        return $this->belongsToMany('App\Modules\Student\Models\BatchDaysHasBatchTime', 'batch_has_days_and_times', 'batch_id', 'batch_days_has_batch_times_id');
+    }
+
+    
+    public function setStartDateAttribute($value) {
+        $this->attributes['start_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
+    }
+
+    public function setEndDateAttribute($value) {
+        $this->attributes['end_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
+    }
+
+    public function getStartDateAttribute($value) {
+        return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');
+    }
+    
+    public function getEndDateAttribute($value) {
+        return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');
     }
 }

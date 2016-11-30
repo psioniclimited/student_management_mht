@@ -31,4 +31,9 @@ class TeacherDetail extends Model
         return $this->belongsTo('App\Modules\Student\Models\Subject', 'subjects_id');
     }
 
+    public function batch()
+    {
+        return $this->hasmany('App\Modules\Student\Models\Batch');
+    }
+
 }

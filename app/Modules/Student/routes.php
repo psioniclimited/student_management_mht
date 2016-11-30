@@ -55,7 +55,7 @@ Route::group(['middleware' => ['web']], function () {
     * Show the information of all Batches in a data table *
     *******************************************************/
     Route::get('all_batches', 'App\Modules\Student\Controllers\StudentsWebController@allBatches');
-    Route::get('get_batches', 'App\Modules\Student\Controllers\StudentsWebController@getBatches');
+    Route::get('get_batches/{teacherDetailID}/', 'App\Modules\Student\Controllers\StudentsWebController@getBatches');
 
 
     /*********************
