@@ -338,10 +338,16 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-2">
+                <!-- <div class="col-xs-2">
                     <div class="form-group">
                         <label for="batch_id" >Schedule*</label>
                         <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
+                    </div>
+                </div> -->
+                <div class="col-xs-2">
+                    <div class="form-group">
+                        <label for="batch_id" >Schedule*</label>
+                        <input type="text" class="form-control" name="schedule" id="schedule" placeholder="Schedule">
                     </div>
                 </div>
                 <div class="col-xs-2">
