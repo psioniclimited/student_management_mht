@@ -130,39 +130,36 @@ class StudentsWebController extends Controller {
     }
 
     public function getBatches($teacherDetailID) {
-    $batches = Batch::with('batchType', 'grade','dayAndtime')->where('teacher_details_id', $teacherDetailID)->get();
-    $batch_id = 9;
+    $batches = Batch::with('batchType', 'grade')->where('teacher_details_id', $teacherDetailID)->get();
+    // $batch_id = 9;
     
-    $query_batch = "SELECT batch.id, concat(batch_days.name, ' ', batch_times.time) as schedule
-        FROM batch_has_days_and_times
-        JOIN batch ON batch_has_days_and_times.batch_id = batch.id
-        JOIN batch_days_has_batch_times ON batch_has_days_and_times.batch_days_has_batch_times_id
-        JOIN batch_days ON batch_has_days_and_times.batch_days_has_batch_times_batch_days_id = batch_days.id
-        JOIN batch_times ON batch_has_days_and_times.batch_days_has_batch_times_batch_times_id = batch_times.id
-        WHERE batch_has_days_and_times.batch_id = 8
-        GROUP BY batch.id, concat(batch_days.name, ' ', batch_times.time)";
+    // $query_batch = "SELECT batch.id, concat(batch_days.name, ' ', batch_times.time) as schedule
+    //     FROM batch_has_days_and_times
+    //     JOIN batch ON batch_has_days_and_times.batch_id = batch.id
+    //     JOIN batch_days_has_batch_times ON batch_has_days_and_times.batch_days_has_batch_times_id
+    //     JOIN batch_days ON batch_has_days_and_times.batch_days_has_batch_times_batch_days_id = batch_days.id
+    //     JOIN batch_times ON batch_has_days_and_times.batch_days_has_batch_times_batch_times_id = batch_times.id
+    //     WHERE batch_has_days_and_times.batch_id = 8
+    //     GROUP BY batch.id, concat(batch_days.name, ' ', batch_times.time)";
 
-        $batch_times = DB::select($query_batch);
+    //     $batch_times = DB::select($query_batch);
 
-        foreach ($batch_times as $batch_time) {
-            $this->schedule = $this->schedule . $batch_time->schedule . " - ";
-        }
-            return Datatables::of($batches)
-                ->addColumn('Link', function ($batches) {
-                    if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    return '<a href="' . url('/batch') . '/' . $batches->id . '/edit/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                            '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
-                            <i class="glyphicon glyphicon-trash"></i> Delete
-                            </a>';
-                    }
-                    else {
-                        return 'N/A';
-                    }
-                })
-                ->addColumn('Schedule', function($batches){
-                    return $this->schedule;
-                })
-                ->make(true);
+        // foreach ($batch_times as $batch_time) {
+        //     $this->schedule = $this->schedule . $batch_time->schedule . " - ";
+        // }
+        return Datatables::of($batches)
+            ->addColumn('Link', function ($batches) {
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                return '<a href="' . url('/batch') . '/' . $batches->id . '/edit/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                        '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        <i class="glyphicon glyphicon-trash"></i> Delete
+                        </a>';
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->make(true);
     }
 
 

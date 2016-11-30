@@ -35,7 +35,7 @@
             "serverSide": true,
             "ajax": "{{URL::to('/get_batches/'.$getTeacher->id)}}",
             "columns": [
-                    {"data": "Schedule"},
+                    {"data": "schedule"},
                     {"data": "name"},
                     {"data": "price"},
                     {"data": "batch_type.name"},                    
