@@ -46,27 +46,7 @@
                 ]
         });
 
-        // Delete Customer
-       $('#confirm_delete').on('show.bs.modal', function(e) {
-           var $modal = $(this),
-               user_id = e.relatedTarget.id;
-               console.log(user_id);
 
-           $('#delete_customer').click(function(e){    
-               // event.preventDefault();
-               $.ajax({
-                   cache: false,
-                   type: 'POST',
-                   url: 'batch/' + user_id + '/delete',
-                   data: user_id,
-                   success: function(data) {
-                       console.log("Deleted Successfully");
-                       table.ajax.reload(null, false);
-                       $('#confirm_delete').modal('toggle');
-                   }
-               });
-           });
-        });
 
        $('#batch_id').select2({
             allowClear: true,
@@ -102,6 +82,111 @@
         });
 
 
+        //Date picker for Start Date
+        $('#start_date').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
+        //Date picker End Date
+        $('#end_date').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
+        //Date picker for Start Date Edit
+        $('#start_date_edit').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
+        //Date picker End Date Edit
+        $('#end_date_edit').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
+
+
+
+        $("#add_batch_form").ajaxForm({
+            url: '/create_new_batch_process', 
+            type: 'post',
+            clearForm: true,
+            success:  function(e) { 
+                console.log(e); 
+            } 
+        });
+
+
+
+        // Edit Customer
+        $('#confirm_edit').on('shown.bs.modal', function(e) {
+            // if(!(e.relatedTarget.id)) {
+                // e.preventDefault();
+            // }
+           var $modal = $(this),
+            user_id = e.relatedTarget.id;
+            console.log(user_id);
+           
+
+            $.ajax({
+               cache: false,
+               type: 'GET',
+               url: '/batch/' + user_id + '/edit',
+               data: user_id,
+               success: function(data) {
+                   console.log(data);
+                   $('input#name').val(data.name);
+                   $('input#price').val(data.price);
+                   $('input#schedule').val(data.schedule);
+                   $('input#start_date_edit').val(data.start_date);
+                   $('input#end_date_edit').val(data.end_date);
+                   $('input#batch_id').val(data.id);
+                   //table.ajax.reload(null, false);
+                   // $('#confirm_edit').modal('toggle');
+               }
+            });   
+           
+            $('#edit_batch').click(function(e) {    
+               // event.preventDefault();
+               $.ajax({
+                   cache: false,
+                   type: 'POST',
+                   url: '/batch/' + user_id + '/edit',
+                   data: user_id,
+                   success: function(data) {
+                       console.log("Edited Successfully");
+                       console.log(data);
+                       table.ajax.reload(null, false);
+                       $('#confirm_edit').modal('toggle');
+                   }
+               });
+           });
+        });
+
+
+        // Delete Customer
+       $('#confirm_delete').on('show.bs.modal', function(e) {
+           var $modal = $(this),
+           user_id = e.relatedTarget.id;
+               console.log(user_id);
+
+           $('#delete_customer').click(function(e){    
+               // event.preventDefault();
+               $.ajax({
+                   cache: false,
+                   type: 'POST',
+                   url: '/batch/' + user_id + '/delete',
+                   data: user_id,
+                   success: function(data) {
+                       console.log("Deleted Successfully");
+                       table.ajax.reload(null, false);
+                       $('#confirm_delete').modal('toggle');
+                   }
+               });
+           });
+        });
 
 
 
@@ -199,36 +284,6 @@
         //         }
         //     }
         // });
-
-        //Date picker
-        $('#datepicker').datepicker({
-          format: 'dd/mm/yyyy',
-          autoclose: true
-        });
-
-        $("#add_batch_form").ajaxForm({
-            url: '/create_new_batch_process', 
-            type: 'post',
-            clearForm: true,
-            success:  function(e) { 
-                console.log(e); 
-            } 
-        });
-
-        //Date picker for Start Date
-        $('#start_date').datepicker({
-          format: 'dd/mm/yyyy',
-          autoclose: true
-        });
-
-        //Date picker End Date
-        $('#end_date').datepicker({
-          format: 'dd/mm/yyyy',
-          autoclose: true
-        });
-
-
-
 
     });
 </script>
@@ -368,12 +423,13 @@
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="Select end date">
+                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="Select End date">
                         </div>
                     </div>
                 </div>
                 <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
                 <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
+                <input type="hidden" name="subjects_id" value="{{ $getTeacher->subject->id }}">
                 <div class="col-xs-2">
                     <label for="" ></label>
                     <button type="submit" class="btn btn-block btn-success">Add Batch</button>
@@ -386,6 +442,8 @@
         <!-- /.box-body -->
     </div>
     <!-- /.box -->
+    
+
 
     <!-- Horizontal Form -->
     <div class="box box-warning">
@@ -417,6 +475,137 @@
                 <!-- /.box-body -->
     </div>
     <!-- /.box -->
+
+
+
+
+   <!-- Edit Customer Modal -->
+   <div class="modal fade" id="confirm_edit" role="dialog">
+       <div class="modal-dialog">
+           <!-- Modal content-->
+           <div class="modal-content">
+           
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+                   <h4 class="modal-title">Edit Batch</h4>
+               </div>
+               {!! Form::open(array('id' => 'add_batch_form')) !!}
+               <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <label for="name" >Batch name*</label>
+                            <input type="text" class="form-control" name="name" id="name" />
+                        </div>
+                        <div class="col-xs-6">
+                            <label for="price" >Price*</label>
+                            <input type="text" class="form-control" name="price" id="price" placeholder="Price">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="batch_types_id" >Batch Type*</label>
+                                <select class="form-control" name="batch_types_id">
+                                        <option value="default">Choose...</option>
+                                        @foreach ($batchType as $batch)
+                                            <option value="{{ $batch->id }}">{{ $batch->name }}</option>
+                                        @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="grades_id" >Grade*</label>
+                                <select class="form-control" name="grades_id">
+                                    <option value="default">Choose...</option>
+                                    @foreach ($getGrades as $grade)
+                                        <option value="{{ $grade->id }}">{{ $grade->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- <div class="col-xs-2">
+                            <div class="form-group">
+                                <label for="batch_id" >Schedule*</label>
+                                <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
+                            </div>
+                        </div> -->
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label for="batch_id" >Schedule*</label>
+                                <input type="text" class="form-control" name="schedule" id="schedule" placeholder="Schedule">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="start_date" >Start Date</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control" id="start_date_edit" name="start_date" placeholder="Select Start Date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label for="end_date" >End Date</label>
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" class="form-control" id="end_date_edit" name="end_date" placeholder="Select end date">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+               </div>
+               <div class="modal-footer">
+                    <input type="hidden" id="bach_id" value="">
+                   <button type="submit" class="btn btn-warning" id="edit_batch">Edit</button>
+                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+               </div>
+            {!! Form::close() !!}
+           </div>
+           <!-- /. Modal content ends here -->
+       </div>
+   </div>
+   <!--  Edit Customer Modal --> 
+
+
+
+
+
+
+
+
+    <!-- Delete Customer Modal -->
+   <div class="modal fade" id="confirm_delete" role="dialog">
+       <div class="modal-dialog">
+           <!-- Modal content-->
+           <div class="modal-content">
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+                   <h4 class="modal-title">Remove Parmanently</h4>
+               </div>
+               <div class="modal-body">
+                   <p>Are you sure about this ?</p>
+               </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-danger" id="delete_customer">Delete</button>
+                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+               </div>
+           </div>
+           <!-- /. Modal content ends here -->
+       </div>
+   </div>
+   <!--  Delete Customer Modal ends here -->  
+
+
 </section>
 <!-- /.content -->
 

@@ -21,44 +21,77 @@ $(document).ready(function () {
     });
 
     // initialize validate plugin on the form
-    $('#add_user_form').validate({
-        errorPlacement: function (error, element) {
+    // $('#add_user_form').validate({
+    //     errorPlacement: function (error, element) {
 
-            var lastError = $(element).data('lastError'),
-                    newError = $(error).text();
+    //         var lastError = $(element).data('lastError'),
+    //                 newError = $(error).text();
 
-            $(element).data('lastError', newError);
+    //         $(element).data('lastError', newError);
 
-            if (newError !== '' && newError !== lastError) {
-                $(element).tooltipster('content', newError);
-                $(element).tooltipster('show');
-            }
-        },
-        success: function (label, element) {
-            $(element).tooltipster('hide');
-        },
-        rules: {
-            name: {required: true, minlength: 4},
-            fathers_name: {required: true, minlength: 4},
-            mothers_name: {required: true, minlength: 4},
-            phone_home: {required: true},
-            phone_away: {required: true},
-            schools_id: {valueNotEquals: "default"},
-            batch_id: {valueNotEquals: "default"},
-            subjects_id: {required: true},
+    //         if (newError !== '' && newError !== lastError) {
+    //             $(element).tooltipster('content', newError);
+    //             $(element).tooltipster('show');
+    //         }
+    //     },
+    //     success: function (label, element) {
+    //         $(element).tooltipster('hide');
+    //     },
+    //     rules: {
+    //         name: {required: true, minlength: 4},
+    //         fathers_name: {required: true, minlength: 4},
+    //         mothers_name: {required: true, minlength: 4},
+    //         phone_home: {required: true},
+    //         phone_away: {required: true},
+    //         schools_id: {valueNotEquals: "default"},
+    //         batch_id: {valueNotEquals: "default"},
+    //         subjects_id: {required: true},
 
-        },
-        messages: {
-            name: {required: "Enter Student Name"},
-            fathers_name: {required: "Enter Student's Father Name"},
-            mothers_name: {required: "Enter Student's Mother's Name"},
-            phone_home: {required: "Enter Home Phone Number"},
-            phone_away: {required: "Enter Additional Phone Number"},
-            schools_id: {valueNotEquals: "Select a School"},
-            batch_id: {valueNotEquals: "Select a Batch"},
-            subjects_id: {required: "Choose Subjects"},
-        }
-    });
+    //     },
+    //     messages: {
+    //         name: {required: "Enter Student Name"},
+    //         fathers_name: {required: "Enter Student's Father Name"},
+    //         mothers_name: {required: "Enter Student's Mother's Name"},
+    //         phone_home: {required: "Enter Home Phone Number"},
+    //         phone_away: {required: "Enter Additional Phone Number"},
+    //         schools_id: {valueNotEquals: "Select a School"},
+    //         batch_id: {valueNotEquals: "Select a Batch"},
+    //         subjects_id: {required: "Choose Subjects"},
+    //     }
+    // });
+
+    // $('#batch_id').select2({
+    //     allowClear: true,
+    //     placeholder: 'Select batch',
+    //     ajax: {
+    //         url: "/getallbatch",
+    //         dataType: 'json',
+    //         delay: 250,
+    //         data: function (params) {
+    //           return {
+    //             q: params.term, // search term
+    //             page: params.page
+    //           };
+    //         },
+    //         processResults: function (data, params) {
+    //           // parse the results into the format expected by Select2
+    //           // since we are using custom formatting functions we do not need to
+    //           // alter the remote JSON data, except to indicate that infinite
+    //           // scrolling can be used
+    //           params.page = params.page || 1;
+    //           console.log(data);
+    //           return {
+    //             results: data,
+    //             pagination: {
+    //               more: (params.page * 30) < data.total_count
+    //             }
+
+    //           };
+    //         },
+    //         cache: true
+    //     }
+    // });
+
 
     $('#batch_id').select2({
         allowClear: true,
@@ -67,6 +100,7 @@ $(document).ready(function () {
             url: "/getallbatch",
             dataType: 'json',
             delay: 250,
+            tags: true,
             data: function (params) {
               return {
                 q: params.term, // search term
@@ -79,13 +113,12 @@ $(document).ready(function () {
               // alter the remote JSON data, except to indicate that infinite
               // scrolling can be used
               params.page = params.page || 1;
-              console.log(data);
+              // console.log(data);
               return {
                 results: data,
                 pagination: {
                   more: (params.page * 30) < data.total_count
                 }
-
               };
             },
             cache: true
@@ -169,18 +202,20 @@ $(document).ready(function () {
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="schools_id" >School*</label>
-                    
                         <select class="form-control" name="schools_id">
                                 <option value="default">Choose...</option>
                                 @foreach ($Schools as $school)
                                     <option value="{{ $school->id }}">{{ $school->name }}</option>
                                 @endforeach
                         </select>
-                        
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="batch_id" >Batch*</label>
                     <select class="form-control select2" name="batch_id" id="batch_id"></select>
+                </div> -->
+                <div class="form-group">
+                    <label for="batch_id" >Batch*</label>
+                    <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
                 </div>
                 <!-- checkbox -->
                 <div class="form-group">

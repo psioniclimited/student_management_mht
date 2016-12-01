@@ -16,6 +16,7 @@ use App\Modules\Student\Models\BatchTime;
 use App\Modules\Student\Models\BatchDaysHasBatchTime;
 use App\Modules\Student\Models\BatchHasDaysAndTime;
 
+
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
@@ -37,7 +38,7 @@ class StudentsWebController extends Controller {
 
 	public function getStudents() {
 	$students = Student::with('school', 'batch')->get();
-	return Datatables::of($students)
+    return Datatables::of($students)
     				->addColumn('Link', function ($students) {
     					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                         return '<a href="' . url('/student') . '/' . $students->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
@@ -74,10 +75,19 @@ class StudentsWebController extends Controller {
 
 
 	public function addStudentProcess(Request $request) {
-		$student = Student::create($request->all());
+        $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
+        $student->batch()->attach($request->input('batch_day_time'));
+        //  for ($count=0; $count < count($request->batch_day_time); $count++) {
+        //     $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);
+        //     $batch_day_time = new BatchHasDaysAndTime();
+        //     $batch_day_time->batch_id = $batch->id;
+        //     $batch_day_time->batch_days_has_batch_times_id = $day_and_time->id;
+        //     $batch_day_time->batch_days_has_batch_times_batch_days_id = $day_and_time->batch_days_id;
+        //     $batch_day_time->batch_days_has_batch_times_batch_times_id = $day_and_time->batch_times_id;
+        //     $batch_day_time->save();
+        // }
 		return redirect("all_students");
-
     }
 
 
@@ -103,7 +113,7 @@ class StudentsWebController extends Controller {
 
     public function studentUpdate(Request $request, $id) {
     	$student = Student::find($id);
-    	if( !$student->update( $request->all()) ){
+    	if( !$student->update( $request->all()) ) {
     		return "error";
     	}
     	
@@ -111,14 +121,55 @@ class StudentsWebController extends Controller {
     	return redirect('all_students');
     }
 
-    
-    /******************
+
+    /*******************
     * Delete a Student *
-    *******************/
+    ********************/
 	public function deleteStudent(Request $request, $id) {
 		Student::where('id', $id)->delete();
 		return redirect('all_students');
 	}
+
+    /***********************
+    * Payment of a Student *
+    ************************/
+    public function paymentStudent() {
+        $getStudent = Student::all();
+        $refDate = \Carbon\Carbon::now();
+        // $refDate = \Carbon\Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
+        return view('Student::payment_of_a_student',compact('getStudent','refDate'));
+    }
+
+    public function getAllStudentForPayment() {
+        $getStudent = Student::get(['id', 'name as text']);
+        return response()->json($getStudent);
+        // return view('Student::payment_of_a_student',compact('getStudent'));
+    }
+
+    public function getStudentInfoForPayment(Request $request) {
+        $getStudent = Student::find($request->student_id);
+        return response()->json($getStudent);
+        // return view('Student::payment_of_a_student',compact('getStudent'));
+    }
+
+    public function getBatchInfoForPayment($id) {
+        $students = Student::with('school', 'batch','subject')->find($id);
+        return $students;
+        // return Datatables::of($students)
+        //             ->addColumn('Link', function ($students) {
+        //                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+        //                 return '<a href="' . url('/student') . '/' . $students->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+        //                         '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+        //                         '<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
+        //                         <i class="glyphicon glyphicon-trash"></i> Delete
+        //                         </a>';
+        //                 }
+        //                 else {
+        //                     return 'N/A';
+        //                 }
+        //             })
+        //             ->make(true);
+    }
 
 
 
@@ -150,10 +201,16 @@ class StudentsWebController extends Controller {
         return Datatables::of($batches)
             ->addColumn('Link', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                return '<a href="' . url('/batch') . '/' . $batches->id . '/edit/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                // return '<a href="' . url('/batch') . '/' . $batches->id . '/edit/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                //         '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
+                //         <i class="glyphicon glyphicon-trash"></i> Delete
+                //         </a>';
+                return '<a class="btn btn-xs btn-warning" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_edit">
+                        <i class="glyphicon glyphicon-trash"></i> Edit </a>' .'&nbsp &nbsp &nbsp'.
                         '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
                         <i class="glyphicon glyphicon-trash"></i> Delete
                         </a>';
+
                 }
                 else {
                     return 'N/A';
@@ -179,15 +236,16 @@ class StudentsWebController extends Controller {
 
     public function addNewBatchProcess(Request $request) {
         $batch = Batch::create($request->all());
-        for ($count=0; $count < count($request->batch_day_time); $count++) {
-            $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);
-            $batch_day_time = new BatchHasDaysAndTime();
-            $batch_day_time->batch_id = $batch->id;
-            $batch_day_time->batch_days_has_batch_times_id = $day_and_time->id;
-            $batch_day_time->batch_days_has_batch_times_batch_days_id = $day_and_time->batch_days_id;
-            $batch_day_time->batch_days_has_batch_times_batch_times_id = $day_and_time->batch_times_id;
-            $batch_day_time->save();
-        }
+
+        // for ($count=0; $count < count($request->batch_day_time); $count++) {
+        //     $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);
+        //     $batch_day_time = new BatchHasDaysAndTime();
+        //     $batch_day_time->batch_id = $batch->id;
+        //     $batch_day_time->batch_days_has_batch_times_id = $day_and_time->id;
+        //     $batch_day_time->batch_days_has_batch_times_batch_days_id = $day_and_time->batch_days_id;
+        //     $batch_day_time->batch_days_has_batch_times_batch_times_id = $day_and_time->batch_times_id;
+        //     $batch_day_time->save();
+        // }
         // return $request->all();
     }
 
@@ -195,17 +253,16 @@ class StudentsWebController extends Controller {
     * Select2 helper Function *
     ***************************/
     public function getAllBatch(Request $request) {
-
-        $query_batch = "
-        SELECT  batch_days_has_batch_times.id, 
-        concat(batch_days.name, ' ', batch_times.time) AS text
-        FROM batch_days_has_batch_times
-        JOIN batch_days ON batch_days_id = batch_days.id
-        JOIN batch_times ON batch_times_id = batch_times.id
-        ";
+        // $query_batch = "
+        // SELECT  batch_days_has_batch_times.id, 
+        // concat(batch_days.name, ' ', batch_times.time) AS text
+        // FROM batch_days_has_batch_times
+        // JOIN batch_days ON batch_days_id = batch_days.id
+        // JOIN batch_times ON batch_times_id = batch_times.id
+        // ";
         
-        $batch_information = DB::select($query_batch);
-        // $batch = Batch::get(['id', 'name as text']);
+        // $batch_information = DB::select($query_batch);
+        $batch_information = Batch::get(['id', 'name as text']);
         // $batch = BatchDay::with('batchTime')->get();
         // $batch = Batch::with('batchType', 'grade')->get();
         // dd($batch->toArray());
@@ -221,16 +278,43 @@ class StudentsWebController extends Controller {
         $getGrades = Grade::all();
 
         // return response()->json($getBatch);
-        return view('Student::edit_batch')
-        ->with('getBatch', $getBatch)
-        ->with('batchType', $batchType)
-        ->with('getGrades', $getGrades);
+        // return view('Student::edit_batch')
+        // ->with('getBatch', $getBatch)
+        // ->with('batchType', $batchType)
+        // ->with('getGrades', $getGrades);
+
+        return response()->json($getBatch);
     }
 
     public function batchUpdate(Request $request, Batch $batch) {
         $batch->update( $request->all()); 
         return redirect('all_batches');
     }
+
+
+    /******************************
+    * NEW Edit and Update a Batch *
+    *******************************/
+    public function editNewBatch($id) {
+        $getBatch = Batch::with('batchType', 'grade')->find($id);
+        $batchType = BatchType::all();
+        $getGrades = Grade::all();
+
+        // return response()->json($getBatch);
+        return view('Student::edit_batch')
+        ->with('getBatch', $getBatch)
+        ->with('batchType', $batchType)
+        ->with('getGrades', $getGrades);
+    }
+
+    public function batchNewUpdate(Request $request, Batch $batch) {
+        
+        return redirect('all_batches');
+    }
+
+
+
+
 
     /*****************
     * Delete a Batch *

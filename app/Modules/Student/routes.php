@@ -43,6 +43,13 @@ Route::group(['middleware' => ['web']], function () {
     *******************/     
     Route::post('student/{student}/delete', 'App\Modules\Student\Controllers\StudentsWebController@deleteStudent');
 
+    /***********************
+    * Payment of a Student *
+    ************************/
+    Route::get('payment_student', 'App\Modules\Student\Controllers\StudentsWebController@paymentStudent');
+    Route::get('get_all_student_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getAllStudentForPayment');
+    Route::post('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getStudentInfoForPayment');
+    Route::get('get_batch_info_for_payment/{student}', 'App\Modules\Student\Controllers\StudentsWebController@getBatchInfoForPayment');     
 
     /**********************
     * Create a new School *
@@ -70,12 +77,15 @@ Route::group(['middleware' => ['web']], function () {
     ***************************/       
     Route::get('getallbatch', 'App\Modules\Student\Controllers\StudentsWebController@getAllBatch');
 
-    
+
     /**************************
     * Edit and Update a Batch *
     ***************************/
     Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editBatch');
     Route::patch('batch_update_process/{batch}/', 'App\Modules\Student\Controllers\StudentsWebController@batchUpdate');
+
+    // Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editNewBatch');
+    Route::patch('batch_new_update_process/{batch}/', 'App\Modules\Student\Controllers\StudentsWebController@batchNewUpdate');
 
 
     /****************
