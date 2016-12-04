@@ -37,7 +37,7 @@ class Student extends Model
 
     public function batch()
     {
-        return $this->belongsToMany('App\Modules\Student\Models\Batch', 'batch_has_students', 'students_id', 'batch_id');
+        return $this->belongsToMany('App\Modules\Student\Models\Batch', 'batch_has_students', 'students_id', 'batch_id')->withPivot('last_paid_date');
     }
 
     public function subject()

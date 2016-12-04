@@ -24,8 +24,7 @@
     }, "Value must not equal arg.");
 
     $(document).ready(function () {
-        
-    var table = "";
+    // var table = "";
 
 	//Date picker for Start Date
     $('#ref_date').datepicker({
@@ -66,6 +65,43 @@
         }
     });
 
+    function getBatches(id) {
+        $.get( "/get_batch_info_for_payment", { id: id } )
+          .done(function( batches ) {
+            var output='';
+            $('#batch_table').html(''); 
+            var c = 0;
+            for (var i = 0; i < batches.length; i++) {
+                // output += "<tr role='row' class='even'>"+
+                //                 "<td>"+"<input name=batch_name_"+i+" value='"+batches[i].name+"' readonly></td>"+
+                //                 "<td>"+"<input name=last_paid_date_"+i+" value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
+                //                 "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price_"+i+" value='"+batches[i].price+"' readonly></td>"+
+                //                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month' value='1'"+"/></td>"+
+                //                 "<td>"+"<input id='total_price_"+i+"' name=total_price_"+i+" value='"+batches[i].price+"' readonly></td>"+
+                //             "</tr>";
+                
+                output += "<tr role='row' class='even'>"+
+                                "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
+                                "<td>"+"<input name=batch_name[] value='"+batches[i].name+"' readonly></td>"+
+                                "<td>"+"<input name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
+                                "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"' readonly></td>"+
+                                "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='1'"+"/></td>"+
+                                "<td>"+"<input id='total_price_"+i+"' name=total_price[] value='"+batches[i].price+"' readonly></td>"+
+                            "</tr>";
+            }
+            $('#batch_table').append(output);
+
+            $('[id^=month_]').keyup(function(event){
+                var no_of_month = this.value;
+                var month_id = this.id;
+                var unit_price_id = "#unit_price_"+month_id.substring(month_id.length-1);
+                var total_price_id = "#total_price_"+month_id.substring(month_id.length-1);
+                var unit_price_amount = $(unit_price_id).val();
+                var total_price_amount = $(total_price_id).val(unit_price_amount * no_of_month);
+            });
+        });
+    }
+
 
     $("#student_info_for_payment").ajaxForm({
         url: '/get_student_info_for_payment', 
@@ -78,30 +114,11 @@
            $('p#mothers_name').text(data.mothers_name);
            $('p#phone_home').text(data.phone_home);
            $('p#phone_away').text(data.phone_away);
-
-           	table = $('#all_user_list').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": false,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": "{{URL::to('/get_batch_info_for_payment/'. data.id)}}",
-            "columns": [
-                    {"data": "name"},
-                    {"data": "price"},
-                    {"data": "price"},
-                    {"data": "batch_type.name"},                    
-                    {"data": "grade.name"},
-                    {"data": "start_date"},
-                    {"data": "end_date"},
-                    {"data": "Link", name: 'link', orderable: false, searchable: false}
-                ]
-        	});
+           getBatches(data.id);
         } 
     });
+
+    
 
 
 
@@ -321,23 +338,25 @@
             </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table id="all_user_list" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Schedule</th>
-                                <th>Batch Name</th>
-                                <th>Price Tk/=</th>
-                                <th>Batch Type</th>
-                                <th>Grade</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
-                                <th>Action</th>                            
-                            </tr>
-                        </thead>
-                        <tbody>                            
-                            <!-- user list -->
-                        </tbody>                        
-                    </table>
+                    {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
+                        <table id="all_user_list" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Batch Name</th>
+                                    <th>Last Paid</th>
+                                    <th>Unit Price /=</th>
+                                    <th>no of month</th>
+                                    <th>Total Price Per Course /=</th>
+                                </tr>
+                            </thead>
+                            <tbody id="batch_table">                            
+                            </tbody >
+                        </table>
+                    <div class="footer">
+                        <label for="" ></label>
+                        <button type="submit" class="btn btn-block btn-success">Payment</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
                 <!-- /.box-body -->
     </div>

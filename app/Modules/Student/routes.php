@@ -49,8 +49,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('payment_student', 'App\Modules\Student\Controllers\StudentsWebController@paymentStudent');
     Route::get('get_all_student_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getAllStudentForPayment');
     Route::post('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getStudentInfoForPayment');
-    Route::get('get_batch_info_for_payment/{student}', 'App\Modules\Student\Controllers\StudentsWebController@getBatchInfoForPayment');     
-
+    Route::get('get_batch_info_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getBatchInfoForPayment');     
+    Route::post('student_payment', 'App\Modules\Student\Controllers\StudentsWebController@studentPaymentProcess');
+    
     /**********************
     * Create a new School *
     ***********************/

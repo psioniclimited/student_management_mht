@@ -143,32 +143,21 @@ class StudentsWebController extends Controller {
     public function getAllStudentForPayment() {
         $getStudent = Student::get(['id', 'name as text']);
         return response()->json($getStudent);
-        // return view('Student::payment_of_a_student',compact('getStudent'));
     }
 
     public function getStudentInfoForPayment(Request $request) {
         $getStudent = Student::find($request->student_id);
         return response()->json($getStudent);
-        // return view('Student::payment_of_a_student',compact('getStudent'));
     }
 
-    public function getBatchInfoForPayment($id) {
-        $students = Student::with('school', 'batch','subject')->find($id);
-        return $students;
-        // return Datatables::of($students)
-        //             ->addColumn('Link', function ($students) {
-        //                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-        //                 return '<a href="' . url('/student') . '/' . $students->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-        //                         '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-        //                         '<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
-        //                         <i class="glyphicon glyphicon-trash"></i> Delete
-        //                         </a>';
-        //                 }
-        //                 else {
-        //                     return 'N/A';
-        //                 }
-        //             })
-        //             ->make(true);
+    public function getBatchInfoForPayment(Request $request) {
+        $students = Student::with('school', 'batch','subject')->where('id', $request->input('id'))->first();
+        return response()->json($students->batch);
+    }
+
+    public function studentPaymentProcess(Request $request) {
+        return $request->all();
+        
     }
 
 
