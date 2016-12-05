@@ -46,11 +46,11 @@ Route::group(['middleware' => ['web']], function () {
     /***********************
     * Payment of a Student *
     ************************/
-    Route::get('payment_student', 'App\Modules\Student\Controllers\StudentsWebController@paymentStudent');
-    Route::get('get_all_student_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getAllStudentForPayment');
-    Route::post('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getStudentInfoForPayment');
-    Route::get('get_batch_info_for_payment', 'App\Modules\Student\Controllers\StudentsWebController@getBatchInfoForPayment');     
-    Route::post('student_payment', 'App\Modules\Student\Controllers\StudentsWebController@studentPaymentProcess');
+    Route::get('payment_student', 'App\Modules\Student\Controllers\StudentPaymentController@paymentStudent');
+    Route::get('get_all_student_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getAllStudentForPayment');
+    Route::post('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getStudentInfoForPayment');
+    Route::get('get_batch_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getBatchInfoForPayment');     
+    Route::post('student_payment', 'App\Modules\Student\Controllers\StudentPaymentController@studentPaymentProcess');
     
     /**********************
     * Create a new School *
@@ -62,67 +62,67 @@ Route::group(['middleware' => ['web']], function () {
     /******************************************************
     * Show the information of all Batches in a data table *
     *******************************************************/
-    Route::get('all_batches', 'App\Modules\Student\Controllers\StudentsWebController@allBatches');
-    Route::get('get_batches/{teacherDetailID}/', 'App\Modules\Student\Controllers\StudentsWebController@getBatches');
+    Route::get('all_batches', 'App\Modules\Student\Controllers\BatchWebController@allBatches');
+    Route::get('get_batches/{teacherDetailID}/', 'App\Modules\Student\Controllers\BatchWebController@getBatches');
 
 
     /*********************
     * Create a new Batch *
     **********************/
-    Route::get('create_batch', 'App\Modules\Student\Controllers\StudentsWebController@addBatch');
-    Route::post('create_batch_process', 'App\Modules\Student\Controllers\StudentsWebController@addBatchProcess');
-    Route::post('create_new_batch_process', 'App\Modules\Student\Controllers\StudentsWebController@addNewBatchProcess');
+    Route::get('create_batch', 'App\Modules\Student\Controllers\BatchWebController@addBatch');
+    Route::post('create_batch_process', 'App\Modules\Student\Controllers\BatchWebController@addBatchProcess');
+    Route::post('create_new_batch_process', 'App\Modules\Student\Controllers\BatchWebController@addNewBatchProcess');
 
     /**************************
     * Select2 helper Function *
     ***************************/       
-    Route::get('getallbatch', 'App\Modules\Student\Controllers\StudentsWebController@getAllBatch');
+    Route::get('getallbatch', 'App\Modules\Student\Controllers\BatchWebController@getAllBatch');
 
 
     /**************************
     * Edit and Update a Batch *
     ***************************/
-    Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editBatch');
-    Route::patch('batch_update_process/{batch}/', 'App\Modules\Student\Controllers\StudentsWebController@batchUpdate');
+    Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\BatchWebController@editBatch');
+    Route::patch('batch_update_process/{batch}/', 'App\Modules\Student\Controllers\BatchWebController@batchUpdate');
 
     // Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editNewBatch');
-    Route::patch('batch_new_update_process/{batch}/', 'App\Modules\Student\Controllers\StudentsWebController@batchNewUpdate');
+    Route::patch('batch_new_update_process/{batch}/', 'App\Modules\Student\Controllers\BatchWebController@batchNewUpdate');
 
 
     /****************
     * Delete a Batch*
     *****************/     
-    Route::post('batch/{batch}/delete', 'App\Modules\Student\Controllers\StudentsWebController@deleteBatch');
+    Route::post('batch/{batch}/delete', 'App\Modules\Student\Controllers\BatchWebController@deleteBatch');
 
     /*****************************************************
     * Show the information of all Grades in a data table *
     ******************************************************/
-    Route::get('all_grades', 'App\Modules\Student\Controllers\StudentsWebController@allGrades');
-    Route::get('get_grades', 'App\Modules\Student\Controllers\StudentsWebController@getGrades');
+    Route::get('all_grades', 'App\Modules\Student\Controllers\GradWebController@allGrades');
+    Route::get('get_grades', 'App\Modules\Student\Controllers\GradWebController@getGrades');
 
     /**************************
     * Edit and Update a Grade *
     ***************************/
-    Route::get('grade/{grade}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editGrade');
-    Route::patch('grade_update_process/{grade}/', 'App\Modules\Student\Controllers\StudentsWebController@gradeUpdate');
+    Route::get('grade/{grade}/edit/', 'App\Modules\Student\Controllers\GradWebController@editGrade');
+    Route::patch('grade_update_process/{grade}/', 'App\Modules\Student\Controllers\GradWebController@gradeUpdate');
 
     /*****************
     * Delete a Grade *
     ******************/     
-    Route::post('grade/{grade}/delete', 'App\Modules\Student\Controllers\StudentsWebController@deleteGrade');
+    Route::post('grade/{grade}/delete', 'App\Modules\Student\Controllers\GradWebController@deleteGrade');
 
     /******************************
     * Create a new Grade or Class *
     *******************************/
-    Route::get('create_grade', 'App\Modules\Student\Controllers\StudentsWebController@addGrade');
-    Route::post('create_grade_process', 'App\Modules\Student\Controllers\StudentsWebController@addGradeProcess');
+    Route::get('create_grade', 'App\Modules\Student\Controllers\GradWebController@addGrade');
+    Route::post('create_grade_process', 'App\Modules\Student\Controllers\GradWebController@addGradeProcess');
 
     
     /******************************************
     * BatchType related Functions. Incomplete *
     *******************************************/
-    Route::get('create_batch_type', 'App\Modules\Student\Controllers\StudentsWebController@addBatchType');
-    Route::post('create_batch_type_process', 'App\Modules\Student\Controllers\StudentsWebController@addBatchTypeProcess');
+    Route::get('create_batch_type', 'App\Modules\Student\Controllers\BatchWebController@addBatchType');
+    Route::post('create_batch_type_process', 'App\Modules\Student\Controllers\BatchWebController@addBatchTypeProcess');
 
 
 });

@@ -246,7 +246,7 @@
 <section class="content">
     
     <!-- Horizontal Form -->
-    <div class="box box-success">
+    <div class="box box-danger">
         
         <div class="box-body">
         
