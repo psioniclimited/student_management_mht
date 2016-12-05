@@ -29,4 +29,9 @@ class Subject extends Model
     {
         return $this->hasmany('App\Modules\Teacher\Models\TeacherDetail');
     }
+
+    public function invoiceDetail()
+    {
+        return $this->hasmany('App\Modules\Student\Models\InvoiceDetail');
+    }
 }

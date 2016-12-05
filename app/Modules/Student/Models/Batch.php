@@ -49,6 +49,11 @@ class Batch extends Model
         return $this->belongsTo('App\Modules\Teacher\Models\TeacherDetail','teacher_details_id');
     }
 
+    public function invoiceDetail()
+    {
+        return $this->hasmany('App\Modules\Student\Models\InvoiceDetail');
+    }
+
     public function dayAndtime()
     {
         return $this->belongsToMany('App\Modules\Student\Models\BatchDaysHasBatchTime', 'batch_has_days_and_times', 'batch_id', 'batch_days_has_batch_times_id');
@@ -56,11 +61,11 @@ class Batch extends Model
 
     
     public function setStartDateAttribute($value) {
-        $this->attributes['start_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
+        $this->attributes['start_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 
     public function setEndDateAttribute($value) {
-        $this->attributes['end_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
+        $this->attributes['end_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateString();
     }
 
     public function getStartDateAttribute($value) {

@@ -15,7 +15,9 @@ use App\Modules\Student\Models\BatchDay;
 use App\Modules\Student\Models\BatchTime;
 use App\Modules\Student\Models\BatchDaysHasBatchTime;
 use App\Modules\Student\Models\BatchHasDaysAndTime;
-
+use App\Modules\Student\Models\BatchHasStudent;
+use App\Modules\Student\Models\InvoiceMaster;
+use App\Modules\Student\Models\InvoiceDetail;
 
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -25,6 +27,7 @@ use File;
 use Entrust;
 use DB;
 use Log;
+use Carbon\Carbon;
 
 class StudentPaymentController extends Controller {
 
@@ -33,9 +36,13 @@ class StudentPaymentController extends Controller {
     * Payment of a Student *
     ************************/
     public function paymentStudent() {
+
         $getStudent = Student::all();
-        $refDate = \Carbon\Carbon::now();
-        // $refDate = \Carbon\Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
+
+        $refDate = Carbon::now();
+        $refDate = $refDate->toDateString();
+		$refDate = Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
+
         return view('Student::payment_of_a_student',compact('getStudent','refDate'));
     }
 
@@ -55,7 +62,33 @@ class StudentPaymentController extends Controller {
     }
 
     public function studentPaymentProcess(Request $request) {
-        return $request->all();
+
+    	$invoice_master = InvoiceMaster::create($request->all());
+
+    	for ($i=0; $i < count($request->batch_id); $i++) { 
+        	$invoice_detail = new InvoiceDetail();
+        	$invoice_detail->invoice_masters_id = $invoice_master->id;
+        	$invoice_detail->batch_id = $request->batch_id[$i];
+        	$invoice_detail->subjects_id = $request->subjects_id[$i];
+        	$invoice_detail->price = $request->total_price[$i];
+        	
+        	$last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+        	$last_paid_date_from = $last_paid_date_from->addMonth();	
+        	$invoice_detail->payment_from = $last_paid_date_from->toDateString();
+
+        	$no_of_month = $request->month[$i];
+        	$last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+        	$last_paid_date_to = $last_paid_date_to->addMonths($no_of_month);
+        	$invoice_detail->payment_to = $last_paid_date_to->toDateString();
+        	
+        	$invoice_detail->save();
+
+        	$batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id[$i])
+        										->where('students_id', $request->students_id)
+        										->update(['last_paid_date' => $invoice_detail->payment_to]);
+        }
+
+		return back();
         
     }
 }

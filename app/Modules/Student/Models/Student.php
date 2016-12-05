@@ -44,4 +44,9 @@ class Student extends Model
     {
         return $this->belongsToMany('App\Modules\Student\Models\Subject', 'students_has_subjects', 'students_id', 'subjects_id');
     }
+
+    public function invoiceMaster()
+    {
+        return $this->hasmany('App\Modules\Student\Models\InvoiceMaster');
+    }
 }

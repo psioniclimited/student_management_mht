@@ -27,7 +27,7 @@
     // var table = "";
 
 	//Date picker for Start Date
-    $('#ref_date').datepicker({
+    $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
       autoclose: true
     });
@@ -68,9 +68,11 @@
     function getBatches(id) {
         $.get( "/get_batch_info_for_payment", { id: id } )
           .done(function( batches ) {
+            console.log(batches);
             var output='';
             $('#batch_table').html(''); 
             var c = 0;
+    
             for (var i = 0; i < batches.length; i++) {
                 // output += "<tr role='row' class='even'>"+
                 //                 "<td>"+"<input name=batch_name_"+i+" value='"+batches[i].name+"' readonly></td>"+
@@ -82,14 +84,32 @@
                 
                 output += "<tr role='row' class='even'>"+
                                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
+                                "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
                                 "<td>"+"<input name=batch_name[] value='"+batches[i].name+"' readonly></td>"+
                                 "<td>"+"<input name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
                                 "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"' readonly></td>"+
                                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='1'"+"/></td>"+
-                                "<td>"+"<input id='total_price_"+i+"' name=total_price[] value='"+batches[i].price+"' readonly></td>"+
+                                "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+batches[i].price+"' readonly></td>"+
                             "</tr>";
             }
+
+            output += "<tr role='row' class='even'>"+
+                                "<td></td>"+
+                                "<td></td>"+
+                                "<td></td>"+
+                                "<td>Total Price</td>"+
+                                "<td>"+"<input id='totalpriceAmount' name=total value='' readonly></td>"+
+                            "</tr>";
+
+
             $('#batch_table').append(output);
+
+            var sum = 0;
+            $('.totalprice').each(function(){
+                sum += parseFloat(this.value);
+            });
+            $('input#totalpriceAmount').val(sum);
+            console.log(sum);
 
             $('[id^=month_]').keyup(function(event){
                 var no_of_month = this.value;
@@ -98,6 +118,14 @@
                 var total_price_id = "#total_price_"+month_id.substring(month_id.length-1);
                 var unit_price_amount = $(unit_price_id).val();
                 var total_price_amount = $(total_price_id).val(unit_price_amount * no_of_month);
+                
+                var sum = 0;
+                $('.totalprice').each(function(){
+                    sum += parseFloat(this.value);
+                    $('input#totalpriceAmount').val(sum);
+                });
+                $('input#totalpriceAmount').val(sum);
+                console.log(sum);
             });
         });
     }
@@ -114,6 +142,7 @@
            $('p#mothers_name').text(data.mothers_name);
            $('p#phone_home').text(data.phone_home);
            $('p#phone_away').text(data.phone_away);
+           $('input#students_id').val(data.id);
            getBatches(data.id);
         } 
     });
@@ -262,7 +291,7 @@
 	                            <div class="input-group-addon">
 	                                <i class="fa fa-calendar"></i>
 	                            </div>
-	                            <input type="text" class="form-control" id="ref_date" name="ref_date" value="{{ $refDate }}">
+	                            <input type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}">
 	                        </div>
 	                    </div>
 	                </div>
@@ -339,6 +368,8 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
+                    <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
+                    <input type='hidden' id="students_id" name="students_id">
                         <table id="all_user_list" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
