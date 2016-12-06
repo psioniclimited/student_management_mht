@@ -80,7 +80,6 @@ class TeachersWebController extends Controller {
 
         $user->attachRole(2); 
                
-        return "Saved";
         return redirect("all_teachers");
     }
 

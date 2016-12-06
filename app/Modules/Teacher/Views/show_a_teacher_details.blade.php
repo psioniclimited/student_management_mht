@@ -115,6 +115,7 @@
             clearForm: true,
             success:  function(e) { 
                 console.log(e); 
+                 table.ajax.reload();
             } 
         });
 

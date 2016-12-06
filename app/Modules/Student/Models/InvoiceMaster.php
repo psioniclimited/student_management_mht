@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class InvoiceMaster extends Model
 {
     
-	public $timestamps = false;
+	// public $timestamps = false;
 
 
      /**
@@ -18,7 +18,9 @@ class InvoiceMaster extends Model
     protected $fillable = [
         'payment_date',
         'students_id',
-        'total'
+        'total',
+        'created_at',
+        'updated_at'
    ];
 
    	public function student() {
@@ -27,7 +29,7 @@ class InvoiceMaster extends Model
 
     public function invoiceDetail()
     {
-        return $this->hasmany('App\Modules\Student\Models\InvoiceDetail');
+        return $this->hasmany('App\Modules\Student\Models\InvoiceDetail', 'invoice_masters_id');
     }
     
     public function setPaymentDateAttribute($value) {

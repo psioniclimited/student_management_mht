@@ -25,7 +25,7 @@ class InvoiceDetail extends Model
    ];
 
    	public function invoiceMaster() {
-        return $this->belongsTo('App\Modules\Student\Models\InvoiceMaster', 'invoice_masters_id');
+        return $this->belongsTo('App\Modules\Student\Models\InvoiceMaster');
     }
 
     public function subject() {

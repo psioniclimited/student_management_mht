@@ -11,5 +11,6 @@ return  [
        'Directory',
        'Student',
        'Teacher',
+       'Reporting'
     ]
 ];

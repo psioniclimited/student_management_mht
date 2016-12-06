@@ -69,6 +69,19 @@
             <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> Mathematics</a></li>
         </ul>
     </li>
+    <li {!! Request::is('*reporting*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+        <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Reporting</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li {!! Request::is('*daily_reporting*') ? ' class="active"' : null !!}><a href="{{url('daily_reporting')}}"><i class="fa fa-circle-o"></i> Daily Reporting</a></li>
+            <li {!! Request::is('*due_reporting*') ? ' class="active"' : null !!}><a href="{{url('due_reporting')}}"><i class="fa fa-circle-o"></i> Due Reporting</a></li>
+        </ul>
+    </li>
     <li {!! Request::is('*roles*') || Request::is('*permissions*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
         <a href="#">
             <i class="fa fa-gears"></i>

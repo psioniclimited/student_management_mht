@@ -90,7 +90,6 @@ class BatchWebController extends Controller {
 
     public function addNewBatchProcess(Request $request) {
         $batch = Batch::create($request->all());
-
         // for ($count=0; $count < count($request->batch_day_time); $count++) {
         //     $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);
         //     $batch_day_time = new BatchHasDaysAndTime();
