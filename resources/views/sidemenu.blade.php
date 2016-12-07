@@ -78,6 +78,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li {!! Request::is('*all_reporting*') ? ' class="active"' : null !!}><a href="{{url('all_reporting')}}"><i class="fa fa-circle-o"></i> All Payment Reporting</a></li>
             <li {!! Request::is('*daily_reporting*') ? ' class="active"' : null !!}><a href="{{url('daily_reporting')}}"><i class="fa fa-circle-o"></i> Daily Reporting</a></li>
             <li {!! Request::is('*due_reporting*') ? ' class="active"' : null !!}><a href="{{url('due_reporting')}}"><i class="fa fa-circle-o"></i> Due Reporting</a></li>
         </ul>

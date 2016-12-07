@@ -365,10 +365,6 @@
                 <div class="row">
                 {!! Form::open(array('id' => 'add_batch_form')) !!}
                 <div class="col-xs-1">
-                    <label for="name" >Batch name*</label>
-                    <input type="text" class="form-control" name="name" id="name" placeholder="Batch name">
-                </div>
-                <div class="col-xs-1">
                     <label for="price" >Price*</label>
                     <input type="text" class="form-control" name="price" id="price" placeholder="Price">
                 </div>
@@ -400,7 +396,7 @@
                         <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
                     </div>
                 </div> -->
-                <div class="col-xs-2">
+                <div class="col-xs-3">
                     <div class="form-group">
                         <label for="batch_id" >Schedule*</label>
                         <input type="text" class="form-control" name="schedule" id="schedule" placeholder="Schedule">

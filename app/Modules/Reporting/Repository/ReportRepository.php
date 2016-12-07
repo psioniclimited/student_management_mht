@@ -19,7 +19,12 @@ use App\Modules\Student\Models\InvoiceDetail;
 
 class ReportRepository {
 
-	public function getPaymentReportingByDate($date){
+	public function getAllPaymentReporting()	{
+		$payments = InvoiceMaster::with('student')->get(); 
+		return $payments;
+	}
+
+	public function getDailyPaymentReportingByDate($date)	{
 		$payments = InvoiceMaster::with('student')->where('payment_date', $date)->get(); 
 		return $payments;
 	}

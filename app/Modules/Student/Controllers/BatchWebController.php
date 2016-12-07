@@ -84,12 +84,34 @@ class BatchWebController extends Controller {
     }
 
     public function addBatchProcess(Request $request) {
-        Batch::create($request->all());
+        return $request->all();
+        $batch = Batch::create($request->all());
+        Batch::where('id', $batch->id)
+          ->update(['name' => $batch_name]);
         return redirect("/all_batches");
     }
 
     public function addNewBatchProcess(Request $request) {
+        
+
         $batch = Batch::create($request->all());
+
+        $subject_name = Subject::find($request->subjects_id);
+        $subject_name = substr($subject_name->name,0,3);
+
+        $batch_type = BatchType::find($request->batch_types_id);
+        $batch_type = substr($batch_type->name,0,3);
+        
+        $grade = Grade::find($request->grades_id);
+        $grade = $grade->name;
+
+        $year = $request->end_date;
+        $year = substr( $year,(strlen($year) - 2),strlen($year));
+        
+        $batch_name = $subject_name . "-" . $batch_type . "-" . $grade . "-" . $year ."-". $batch->id;
+
+        Batch::where('id', $batch->id)->update(['name' => $batch_name]);
+        
         // for ($count=0; $count < count($request->batch_day_time); $count++) {
         //     $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);
         //     $batch_day_time = new BatchHasDaysAndTime();
@@ -140,7 +162,7 @@ class BatchWebController extends Controller {
     }
 
     public function batchUpdate(Request $request, Batch $batch) {
-        $batch->update( $request->all()); 
+        $batch->update( $request->all());
         return redirect('all_batches');
     }
 

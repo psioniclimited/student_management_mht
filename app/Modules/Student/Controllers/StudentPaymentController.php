@@ -46,8 +46,12 @@ class StudentPaymentController extends Controller {
         return view('Student::payment_of_a_student',compact('getStudent','refDate'));
     }
 
-    public function getAllStudentForPayment() {
-        $getStudent = Student::get(['id', 'name as text']);
+    public function getAllStudentForPayment(Request $request) {
+        error_log("Student Payment");
+        $search_term = $request->input('term');
+        error_log($search_term);
+        $getStudent = Student::where('name', "LIKE", "%{$search_term}%")
+                    ->get(['id', 'name as text']);
         return response()->json($getStudent);
     }
 
@@ -57,35 +61,41 @@ class StudentPaymentController extends Controller {
     }
 
     public function getBatchInfoForPayment(Request $request) {
+
+        error_log("Student ID");
+        error_log($request->input('id'));
         $students = Student::with('school', 'batch','subject')->where('id', $request->input('id'))->first();
+        // return response()->json($students);
         return response()->json($students->batch);
     }
 
     public function studentPaymentProcess(Request $request) {
-
+        // return $request->all();
     	$invoice_master = InvoiceMaster::create($request->all());
 
-    	for ($i=0; $i < count($request->batch_id); $i++) { 
-        	$invoice_detail = new InvoiceDetail();
-        	$invoice_detail->invoice_masters_id = $invoice_master->id;
-        	$invoice_detail->batch_id = $request->batch_id[$i];
-        	$invoice_detail->subjects_id = $request->subjects_id[$i];
-        	$invoice_detail->price = $request->total_price[$i];
-        	
-        	$last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
-        	$last_paid_date_from = $last_paid_date_from->addMonth();	
-        	$invoice_detail->payment_from = $last_paid_date_from->toDateString();
+    	for ( $i=0; $i < count($request->batch_id); $i++) {
+            if($request->month[$i] != 0) {
+            	$invoice_detail = new InvoiceDetail();
+            	$invoice_detail->invoice_masters_id = $invoice_master->id;
+            	$invoice_detail->batch_id = $request->batch_id[$i];
+            	$invoice_detail->subjects_id = $request->subjects_id[$i];
+            	$invoice_detail->price = $request->total_price[$i];
+            	
+            	$last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+            	$last_paid_date_from = $last_paid_date_from->addMonth();	
+            	$invoice_detail->payment_from = $last_paid_date_from->toDateString();
 
-        	$no_of_month = $request->month[$i];
-        	$last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
-        	$last_paid_date_to = $last_paid_date_to->addMonths($no_of_month);
-        	$invoice_detail->payment_to = $last_paid_date_to->toDateString();
-        	
-        	$invoice_detail->save();
+            	$no_of_month = $request->month[$i];
+            	$last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+            	$last_paid_date_to = $last_paid_date_to->addMonths($no_of_month);
+            	$invoice_detail->payment_to = $last_paid_date_to->toDateString();
+            	
+            	$invoice_detail->save();
 
-        	$batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id[$i])
-        										->where('students_id', $request->students_id)
-        										->update(['last_paid_date' => $invoice_detail->payment_to]);
+            	$batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id[$i])
+            										->where('students_id', $request->students_id)
+            										->update(['last_paid_date' => $invoice_detail->payment_to]);
+            }
         }
 
 		return back();

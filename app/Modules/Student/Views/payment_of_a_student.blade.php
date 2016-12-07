@@ -17,6 +17,7 @@
 <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
 <script>
     // add the rule here
     $.validator.addMethod("valueNotEquals", function (value, element, arg) {
@@ -43,7 +44,7 @@
             tags: true,
             data: function (params) {
               return {
-                q: params.term, // search term
+                term: params.term, // search term
                 page: params.page
               };
             },
@@ -68,11 +69,13 @@
     function getBatches(id) {
         $.get( "/get_batch_info_for_payment", { id: id } )
           .done(function( batches ) {
+            console.log("/get_batch_info_for_payment");
             console.log(batches);
             var output='';
             $('#batch_table').html(''); 
             var c = 0;
-    
+
+
             for (var i = 0; i < batches.length; i++) {
                 // output += "<tr role='row' class='even'>"+
                 //                 "<td>"+"<input name=batch_name_"+i+" value='"+batches[i].name+"' readonly></td>"+
@@ -82,14 +85,25 @@
                 //                 "<td>"+"<input id='total_price_"+i+"' name=total_price_"+i+" value='"+batches[i].price+"' readonly></td>"+
                 //             "</tr>";
                 
+                var current = moment();
+                var last_paid = moment(batches[i].pivot.last_paid_date);
+                var month_diffrence = current.diff(last_paid, 'months');
+                
+                if (month_diffrence < 0) {
+                    month_diffrence = 0;
+                }
+
+                var payment_for_each_batch = month_diffrence * batches[i].price;
+                // console.log(current.diff(last_paid, 'months'));                
+                
                 output += "<tr role='row' class='even'>"+
                                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
                                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
                                 "<td>"+"<input name=batch_name[] value='"+batches[i].name+"' readonly></td>"+
                                 "<td>"+"<input name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
                                 "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"' readonly></td>"+
-                                "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='1'"+"/></td>"+
-                                "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+batches[i].price+"' readonly></td>"+
+                                "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
+                                "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
                             "</tr>";
             }
 
@@ -108,8 +122,9 @@
             $('.totalprice').each(function(){
                 sum += parseFloat(this.value);
             });
+
             $('input#totalpriceAmount').val(sum);
-            console.log(sum);
+            // console.log(sum);
 
             $('[id^=month_]').keyup(function(event){
                 var no_of_month = this.value;
@@ -125,17 +140,42 @@
                     $('input#totalpriceAmount').val(sum);
                 });
                 $('input#totalpriceAmount').val(sum);
-                console.log(sum);
+                // console.log(sum);
             });
         });
     }
 
 
-    $("#student_info_for_payment").ajaxForm({
-        url: '/get_student_info_for_payment', 
-        type: 'post',
-        clearForm: true,
-        success: function(data) {
+    // $("#student_info_for_payment").ajaxForm({
+    //     url: '/get_student_info_for_payment', 
+    //     type: 'get',
+    //     clearForm: true,
+    //     success: function(data) {
+    //        console.log("/get_student_info_for_payment");
+    //        console.log(data);
+           
+    //         console.log(data.length);
+    //         console.log("testing");
+    //        $('p#student_name').text(data.name);
+    //        $('p#student_email').text(data.email);
+    //        $('p#fathers_name').text(data.fathers_name);
+    //        $('p#mothers_name').text(data.mothers_name);
+    //        $('p#phone_home').text(data.phone_home);
+    //        $('p#phone_away').text(data.phone_away);
+    //        $('input#students_id').val(data.id);
+    //        getBatches(data.id);
+       
+    //     } 
+    // });
+
+
+
+    $("#student_info_for_payment").click(function() {
+        console.log($('select[id=student_id]').val());
+        $.get("/get_student_info_for_payment", { 
+                student_id: $('select[id=student_id]').val() 
+        })
+        .done(function( data ) {
            $('p#student_name').text(data.name);
            $('p#student_email').text(data.email);
            $('p#fathers_name').text(data.fathers_name);
@@ -144,7 +184,8 @@
            $('p#phone_away').text(data.phone_away);
            $('input#students_id').val(data.id);
            getBatches(data.id);
-        } 
+        });
+
     });
 
     
@@ -295,16 +336,18 @@
 	                        </div>
 	                    </div>
 	                </div>
-	                {!! Form::open(array('id' => 'student_info_for_payment')) !!}
-	                <div class="col-xs-4">
-	                    <label for="batch_id" >Student*</label>
-	                    <select class="form-control select2" name="student_id" id="student_id"></select>
-                	</div>
-	                <div class="col-xs-4">
-	                    <label for="" ></label>
-	                    <button type="submit" class="btn btn-block btn-success">Show</button>
-	                {!! Form::close() !!}
-	                </div>
+	                
+                    
+    	                <div class="col-xs-4">
+    	                    <label for="batch_id" >Student*</label>
+    	                    <select class="form-control select2" name="student_id" id="student_id"></select>
+                    	</div>
+    	                <div class="col-xs-4">
+    	                    <label for="" ></label>
+    	                    <button type="submit" id="student_info_for_payment" class="btn btn-block btn-success">Show</button>
+    	                </div>
+                    
+                    
                 </div>
             </div>
         </div>
@@ -374,10 +417,10 @@
                             <thead>
                                 <tr>
                                     <th>Batch Name</th>
-                                    <th>Last Paid</th>
+                                    <th>Last Paid Date</th>
                                     <th>Unit Price /=</th>
                                     <th>no of month</th>
-                                    <th>Total Price Per Course /=</th>
+                                    <th>Total Price Per Course /= </th>
                                 </tr>
                             </thead>
                             <tbody id="batch_table">                            
