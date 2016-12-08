@@ -26,7 +26,7 @@
                     {"data": "id"},
                     {"data": "name"},
                     {"data": "school.name"},                    
-                    {"data": "batch.name"},
+                    {"data": "phone_home"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -254,7 +254,7 @@
                                 <th>Student Id</th>
                                 <th>Student Name</th>
                                 <th>School</th>
-                                <th>Batch</th>
+                                <th>Phone Home</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

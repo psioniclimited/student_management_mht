@@ -35,7 +35,7 @@ Route::group(['middleware' => ['web']], function () {
     * Edit and Update a Student *
     ****************************/    
     Route::get('student/{student}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editStudent');
-    Route::patch('/student_update_process/{student}/', 'App\Modules\Student\Controllers\StudentsWebController@studentUpdate');
+    Route::patch('/student_update_process/{student}/', 'App\Modules\Student\Controllers\StudentsWebController@studentUpdateProcess');
 
 
     /******************
@@ -83,10 +83,10 @@ Route::group(['middleware' => ['web']], function () {
     * Edit and Update a Batch *
     ***************************/
     Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\BatchWebController@editBatch');
-    Route::patch('batch_update_process/{batch}/', 'App\Modules\Student\Controllers\BatchWebController@batchUpdate');
+    Route::post('batch_update_process', 'App\Modules\Student\Controllers\BatchWebController@batchUpdateProcess');
 
     // Route::get('batch/{batch}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editNewBatch');
-    Route::patch('batch_new_update_process/{batch}/', 'App\Modules\Student\Controllers\BatchWebController@batchNewUpdate');
+    // Route::post('batch_new_update_process/', 'App\Modules\Student\Controllers\BatchWebController@batchNewUpdate');
 
 
     /****************

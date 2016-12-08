@@ -24,6 +24,7 @@ class VerifyCsrfToken extends BaseVerifier
         'create_batch_process',
         'create_new_batch_process',
         'get_student_info_for_payment',
-        'student_payment'
+        'student_payment',
+        'batch_update_process'
     ];
 }

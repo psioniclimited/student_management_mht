@@ -161,7 +161,8 @@ class BatchWebController extends Controller {
         return response()->json($getBatch);
     }
 
-    public function batchUpdate(Request $request, Batch $batch) {
+    public function batchUpdateProcess(Request $request) {
+        return $request->all();
         $batch->update( $request->all());
         return redirect('all_batches');
     }
@@ -170,22 +171,22 @@ class BatchWebController extends Controller {
     /******************************
     * NEW Edit and Update a Batch *
     *******************************/
-    public function editNewBatch($id) { // This Route of this function is Commented Out
-        $getBatch = Batch::with('batchType', 'grade')->find($id);
-        $batchType = BatchType::all();
-        $getGrades = Grade::all();
+    // public function editNewBatch($id) { // This Route of this function is Commented Out
+    //     $getBatch = Batch::with('batchType', 'grade')->find($id);
+    //     $batchType = BatchType::all();
+    //     $getGrades = Grade::all();
 
-        // return response()->json($getBatch);
-        return view('Student::edit_batch')
-        ->with('getBatch', $getBatch)
-        ->with('batchType', $batchType)
-        ->with('getGrades', $getGrades);
-    }
+    //     // return response()->json($getBatch);
+    //     return view('Student::edit_batch')
+    //     ->with('getBatch', $getBatch)
+    //     ->with('batchType', $batchType)
+    //     ->with('getGrades', $getGrades);
+    // }
 
-    public function batchNewUpdate(Request $request, Batch $batch) {
+    // public function batchNewUpdate(Request $request, Batch $batch) {
         
-        return redirect('all_batches');
-    }
+    //     return redirect('all_batches');
+    // }
 
 
 	/*****************

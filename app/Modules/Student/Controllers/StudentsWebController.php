@@ -38,13 +38,14 @@ class StudentsWebController extends Controller {
 		return view('Student::all_students');
     }
 
-	public function getStudents() {
-	$students = Student::with('school', 'batch')->get();
+	public function getStudents(StudentRepository $studentRepository) {
+    $students = $studentRepository->getAllStudent();
+
+	// $students = Student::with('school', 'batch')->get();
     return Datatables::of($students)
     				->addColumn('Link', function ($students) {
     					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/student') . '/' . $students->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                        return '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
                         		'<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
@@ -62,6 +63,7 @@ class StudentsWebController extends Controller {
     ************************************************/
     public function get_one_Student($id) {
         $getStudent = Student::with('school', 'batch','subject')->find($id);
+        return $getStudent;
     	return view('Student::show_a_student_details',compact('getStudent'));
     }
 
@@ -118,7 +120,7 @@ class StudentsWebController extends Controller {
 		->with('Subjects', $subjects);
 	}
 
-    public function studentUpdate(Request $request, $id) {
+    public function studentUpdateProcess(Request $request, $id) {
     	$student = Student::find($id);
     	if( !$student->update( $request->all()) ) {
     		return "error";
@@ -134,7 +136,7 @@ class StudentsWebController extends Controller {
     ********************/
 	public function deleteStudent(Request $request, $id) {
 		Student::where('id', $id)->delete();
-		return redirect('all_students');
+		// return redirect('all_students');
 	}
 
 

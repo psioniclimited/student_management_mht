@@ -121,16 +121,13 @@
 
 
 
-        // Edit Customer
+        // Edit Batch
         $('#confirm_edit').on('shown.bs.modal', function(e) {
-            // if(!(e.relatedTarget.id)) {
-                // e.preventDefault();
-            // }
+            
            var $modal = $(this),
             user_id = e.relatedTarget.id;
             console.log(user_id);
            
-
             $.ajax({
                cache: false,
                type: 'GET',
@@ -144,27 +141,59 @@
                    $('input#start_date_edit').val(data.start_date);
                    $('input#end_date_edit').val(data.end_date);
                    $('input#batch_id').val(data.id);
+                   $('option#edit_batch_types_id').text(data.batch_type.name);
+                   $("option#edit_batch_types_id").attr("value",data.batch_types_id);
+                   $('option#edit_grades_id').text(data.grade.name);
+                   $("option#edit_grades_id").attr("value",data.grades_id);
                    //table.ajax.reload(null, false);
                    // $('#confirm_edit').modal('toggle');
                }
-            });   
-           
-            $('#edit_batch').click(function(e) {    
+            });
+
+            /* Batch Edit Form Submission */
+            $('#edit_batch').click(function(e) {
+                e.preventDefault();
+            // $( "#edit_batch_form" ).on( "submit", function( event ) {    
                // event.preventDefault();
-               $.ajax({
-                   cache: false,
-                   type: 'POST',
-                   url: '/batch/' + user_id + '/edit',
-                   data: user_id,
-                   success: function(data) {
-                       console.log("Edited Successfully");
-                       console.log(data);
-                       table.ajax.reload(null, false);
-                       $('#confirm_edit').modal('toggle');
-                   }
-               });
-           });
-        });
+               // $.ajax({
+               //     cache: false,
+               //     type: 'POST',
+               //     url: '/batch/' + user_id + '/edit',
+               //     data: user_id,
+               //     success: function(data) {
+               //         console.log("Edited Successfully");
+               //         console.log(data);
+               //         table.ajax.reload(null, false);
+               //         $('#confirm_edit').modal('toggle');
+               //     }
+               // });
+
+
+                var edit_batch_form = $("#edit_batch_form").serialize();
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/batch_update_process",
+                    data: edit_batch_form,
+                    success: function(data) {
+                        console.log("Successfully Edited");
+                        console.log(data);
+                        // table.ajax.reload(null, false);
+                    },
+                    error: function() {
+                        alert('error handing here');
+                    }
+                });               
+            });
+
+
+
+    });
+
+
+            
+
+
 
 
         // Delete Customer
@@ -476,7 +505,7 @@
 
 
 
-   <!-- Edit Customer Modal -->
+   <!-- Edit Batch Modal -->
    <div class="modal fade" id="confirm_edit" role="dialog">
        <div class="modal-dialog">
            <!-- Modal content-->
@@ -486,7 +515,7 @@
                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                    <h4 class="modal-title">Edit Batch</h4>
                </div>
-               {!! Form::open(array('id' => 'add_batch_form')) !!}
+               {!! Form::open(array('id' => 'edit_batch_form')) !!}
                <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-6">
@@ -503,7 +532,7 @@
                             <div class="form-group">
                                 <label for="batch_types_id" >Batch Type*</label>
                                 <select class="form-control" name="batch_types_id">
-                                        <option value="default">Choose...</option>
+                                        <option id="edit_batch_types_id" value=""></option>
                                         @foreach ($batchType as $batch)
                                             <option value="{{ $batch->id }}">{{ $batch->name }}</option>
                                         @endforeach
@@ -514,7 +543,7 @@
                             <div class="form-group">
                                 <label for="grades_id" >Grade*</label>
                                 <select class="form-control" name="grades_id">
-                                    <option value="default">Choose...</option>
+                                    <option id="edit_grades_id" value=""></option>
                                     @foreach ($getGrades as $grade)
                                         <option value="{{ $grade->id }}">{{ $grade->name }}</option>
                                     @endforeach
@@ -571,7 +600,7 @@
            <!-- /. Modal content ends here -->
        </div>
    </div>
-   <!--  Edit Customer Modal --> 
+   <!--  Edit Batch Modal --> 
 
 
 

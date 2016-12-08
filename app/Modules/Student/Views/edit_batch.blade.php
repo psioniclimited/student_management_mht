@@ -122,7 +122,7 @@ $(document).ready(function () {
                                 @foreach ($batchType as $batch)
                                     <option value="{{ $batch->id }}">{{ $batch->name }}</option>
                                 @endforeach
-                            </select>
+                        </select>
                     
                 </div>
                 <div class="form-group">

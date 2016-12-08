@@ -25,6 +25,7 @@
     }, "Value must not equal arg.");
 
     $(document).ready(function () {
+
     // var table = "";
 
 	//Date picker for Start Date
@@ -69,8 +70,8 @@
     function getBatches(id) {
         $.get( "/get_batch_info_for_payment", { id: id } )
           .done(function( batches ) {
-            console.log("/get_batch_info_for_payment");
-            console.log(batches);
+            // console.log("/get_batch_info_for_payment");
+            // console.log(batches);
             var output='';
             $('#batch_table').html(''); 
             var c = 0;
@@ -85,6 +86,7 @@
                 //                 "<td>"+"<input id='total_price_"+i+"' name=total_price_"+i+" value='"+batches[i].price+"' readonly></td>"+
                 //             "</tr>";
                 
+
                 var current = moment();
                 var last_paid = moment(batches[i].pivot.last_paid_date);
                 var month_diffrence = current.diff(last_paid, 'months');
@@ -93,16 +95,69 @@
                     month_diffrence = 0;
                 }
 
+                var human_readable_last_paid_date = new Date(batches[i].pivot.last_paid_date);
+                human_readable_last_paid_date = human_readable_last_paid_date.toString();
+                human_readable_last_paid_date = human_readable_last_paid_date.substring(0, 16);
                 var payment_for_each_batch = month_diffrence * batches[i].price;
-                // console.log(current.diff(last_paid, 'months'));                
+                             
                 
+                // output += "<tr role='row' class='even'>"+
+                //                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
+                //                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
+                //                 "<td>"+"<input name=batch_name[] value='"+batches[i].name+"' readonly></td>"+
+                //                 "<td>"+"<input name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
+                //                 "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"' readonly></td>"+
+                //                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
+                //                 "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
+                //             "</tr>";
+
+
+
+                // output += "<tr role='row' class='even'>"+
+                //                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
+                //                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
+                //                 "<input type='hidden' name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly>"+
+                //                 "<input type='hidden' id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"'>"+
+                //                 "<input type='hidden' name=batch_name[] value='"+batches[i].name+"' readonly>"+
+                //                 "<td>"+batches[i].name+"</td>"+
+                //                 "<td>"+human_readable_last_paid_date+"</td>"+
+                //                 "<td>"+batches[i].price+"</td>"+
+                //                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
+                //                 "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
+                //             "</tr>";
+
+
+
                 output += "<tr role='row' class='even'>"+
                                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
                                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
-                                "<td>"+"<input name=batch_name[] value='"+batches[i].name+"' readonly></td>"+
-                                "<td>"+"<input name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
-                                "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"' readonly></td>"+
-                                "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
+                                "<input type='hidden' name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly>"+
+                                "<input type='hidden' id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"'>"+
+                                "<input type='hidden' name=batch_name[] value='"+batches[i].name+"' readonly>"+
+                                
+                                
+                                "<td>"+batches[i].name+"</td>"+
+                                "<td>"+human_readable_last_paid_date+"</td>"+
+                                "<td>"+batches[i].price+"</td>"+
+                                
+                                
+                                // "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
+                                
+
+                                "<td>"+
+                                    "<select class='form-control' id='month_" + i + "' name='month[]' >"+
+                                            "<option value='"+month_diffrence+"'>"+month_diffrence+"</option>"+
+                                            "<option value=0>0</option>"+
+                                            "<option value=1>1</option>"+
+                                            "<option value=2>2</option>"+
+                                            "<option value=3>3</option>"+
+                                            "<option value=4>4</option>"+
+                                            "<option value=5>5</option>"+
+                                    "</select>"+
+                                "</td>"+                       
+
+
+
                                 "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
                             "</tr>";
             }
@@ -126,14 +181,15 @@
             $('input#totalpriceAmount').val(sum);
             // console.log(sum);
 
-            $('[id^=month_]').keyup(function(event){
+            $('[id^=month_]').change(function(event){
                 var no_of_month = this.value;
                 var month_id = this.id;
-                var unit_price_id = "#unit_price_"+month_id.substring(month_id.length-1);
+                var unit_price_id = "#unit_price_" + month_id.substring(month_id.length-1);
+                console.log(unit_price_id);
                 var total_price_id = "#total_price_"+month_id.substring(month_id.length-1);
                 var unit_price_amount = $(unit_price_id).val();
                 var total_price_amount = $(total_price_id).val(unit_price_amount * no_of_month);
-                
+                console.log(total_price_amount);
                 var sum = 0;
                 $('.totalprice').each(function(){
                     sum += parseFloat(this.value);
@@ -171,7 +227,7 @@
 
 
     $("#student_info_for_payment").click(function() {
-        console.log($('select[id=student_id]').val());
+        // console.log($('select[id=student_id]').val());
         $.get("/get_student_info_for_payment", { 
                 student_id: $('select[id=student_id]').val() 
         })
