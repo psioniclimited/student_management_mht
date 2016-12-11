@@ -181,7 +181,7 @@
             $('input#totalpriceAmount').val(sum);
             // console.log(sum);
 
-            $('[id^=month_]').change(function(event){
+            $('[id^=month_]').change(function(event)  {
                 var no_of_month = this.value;
                 var month_id = this.id;
                 var unit_price_id = "#unit_price_" + month_id.substring(month_id.length-1);

@@ -26,22 +26,8 @@
 
     $(document).ready(function () {
 
-    $('#data_table').html("<table id='all_user_list' class='table table-bordered table-striped'>"+
-        "<thead>"+
-            "<tr>"+
-                "<th>Student Id</th>"+
-                "<th>Student Name</th>"+
-                "<th>Student Phone Number</th>"+
-                "<th>Payment Date</th>"+
-                "<th>Total Paid Amount/-</th>"+
-            "</tr>"+
-        "</thead>"+
-        "<tbody>  "+                          
-        "</tbody></table>");
-
     
-
-	//Date picker for Start Date
+    //Date picker for Start Date
     $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
       autoclose: true
@@ -49,24 +35,13 @@
 
 
     $("#daily_payment_reporting").click(function() {
-        $('#data_table').html('');
-        $('#data_table').html("<table id='all_user_list' class='table table-bordered table-striped'>"+
-        "<thead>"+
-            "<tr>"+
-                "<th>Student Id</th>"+
-                "<th>Student Name</th>"+
-                "<th>Student Phone Number</th>"+
-                "<th>Payment Date</th>"+
-                "<th>Total Paid Amount/-</th>"+
-            "</tr>"+
-        "</thead>"+
-        "<tbody>  "+                          
-        "</tbody></table>");
+        
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
+            "destroy": true,
             "info": false,
             "autoWidth": false,
             "processing": true,
@@ -83,24 +58,12 @@
 
     });
     $("#monthly_payment_reporting").click(function() {
-        $('#data_table').html('');
-        $('#data_table').html("<table id='all_user_list' class='table table-bordered table-striped'>"+
-        "<thead>"+
-            "<tr>"+
-                "<th>Student Id</th>"+
-                "<th>Student Name</th>"+
-                "<th>Student Phone Number</th>"+
-                "<th>Payment Date</th>"+
-                "<th>Total Paid Amount/-</th>"+
-            "</tr>"+
-        "</thead>"+
-        "<tbody>  "+                          
-        "</tbody></table>");
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
+            "destroy": true,
             "info": false,
             "autoWidth": false,
             "processing": true,
@@ -117,29 +80,48 @@
 
     });
     $("#all_payment_reporting").click(function() {
-        $('#data_table').html('');
-        $('#data_table').html("<table id='all_user_list' class='table table-bordered table-striped'>"+
-        "<thead>"+
-            "<tr>"+
-                "<th>Student Id</th>"+
-                "<th>Student Name</th>"+
-                "<th>Student Phone Number</th>"+
-                "<th>Payment Date</th>"+
-                "<th>Total Paid Amount/-</th>"+
-            "</tr>"+
-        "</thead>"+
-        "<tbody>  "+                          
-        "</tbody></table>");
+        
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
+            "destroy": true,
             "info": false,
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
             "ajax": "{{URL::to('/get_all_reporting')}}",
+            "columns": [
+                    {"data": "id"},
+                    {"data": "student.name"},
+                    {"data": "student.phone_home"},                    
+                    {"data": "payment_date"},
+                    {"data": "total"},
+                ]
+            });
+    });
+
+            
+    
+    $("#range_payment_reporting").click(function() {
+        var table = $('#all_user_list').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true, 
+            "ajax": {
+                'url': "{{URL::to('/payment_date_range')}}",
+                'data': {
+                   start_date: $('input[id=start_date]').val(),
+                   end_date: $('input[id=end_date]').val() 
+                },
+            },
             "columns": [
                     {"data": "id"},
                     {"data": "student.name"},
@@ -295,7 +277,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control ref_date" name="start_date" >
+                                <input id="start_date" type="text" class="form-control ref_date" name="start_date" >
                             </div>
                         </div>
                     </div>
@@ -312,7 +294,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control ref_date" name="end_date" >
+                                <input id="end_date" type="text" class="form-control ref_date" name="end_date" >
                             </div>
                         </div>
                     </div>
@@ -324,7 +306,7 @@
                 <div class="row">
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="student_info_for_payment" class="btn btn-block btn-primary">Show</button>
+                        <button type="submit" id="range_payment_reporting" class="btn btn-block btn-primary">Show</button>
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
@@ -339,24 +321,31 @@
             <!-- /.box-body -->
     </div>
     <!-- /.box-body -->
-
-
-
-
-
-
-
-        <div class="box box-warning">
+        
+    <div class="box box-warning">
             <div class="box-header">
-                <h3 class="box-title">Daily Payment Reporting</h3>
+                <h3 class="box-title">Payment Reporting</h3>
             </div>
             <!-- /.box-header -->
-            <div id="data_table" class="box-body">
-                
+            <div class="box-body">
+                <table id='all_user_list' class='table table-bordered table-striped'>
+                <thead>
+                    <tr>
+                        <th>Student Id</th>
+                        <th>Student Name</th>
+                        <th>Student Phone Number</th>
+                        <th>Payment Date</th>
+                        <th>Total Paid Amount/-</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- user list -->
+                </tbody>
+                </table>   
             </div>
             <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
+    </div>
+    <!-- /.box -->
 
 
 </section>

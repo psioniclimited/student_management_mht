@@ -38,6 +38,14 @@ class ReportingWebController extends Controller {
         return view('Reporting::payment_reporting');
     }
 
+    public function paymentDateRange(Request $request,ReportRepository $report)
+    {   
+        $startDate = Carbon::createFromFormat('d/m/Y', $request->start_date)->toDateString();
+        $endDate = Carbon::createFromFormat('d/m/Y', $request->end_date)->toDateString();
+        $dateRangeReporting = $report->getRangePaymentReportingByDate($startDate, $endDate);
+        return Datatables::of($dateRangeReporting)->make(true);
+    }
+
     public function allReporting()
     {
         return view('Reporting::all_reporting');
@@ -56,15 +64,6 @@ class ReportingWebController extends Controller {
     }
 
     public function getDailyReporting(ReportRepository $report)
-    {
-        $today = Carbon::today();
-        $today = $today->toDateString();
-        $dailyReporting = $report->getDailyPaymentReportingByDate($today);
-        
-        return Datatables::of($dailyReporting)->make(true);    
-    }
-
-    public function paymentDateRange(ReportRepository $report)
     {
         $today = Carbon::today();
         $today = $today->toDateString();

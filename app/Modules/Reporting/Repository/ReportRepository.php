@@ -32,6 +32,13 @@ class ReportRepository {
 		return $payments;
 	}
 
+	public function getRangePaymentReportingByDate($startDate, $endDate)	{
+		$payments = InvoiceMaster::with(['student'=> function($query){
+			$query->withTrashed();
+		}])->whereBetween('payment_date', [$startDate, $endDate])->get();
+		return $payments;
+	}
+
 	public function getDueByDate($date){
 		$payments = Student::with(['batch' => function ($query) use( $date )  {
     		
