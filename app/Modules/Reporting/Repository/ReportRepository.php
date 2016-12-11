@@ -20,7 +20,10 @@ use App\Modules\Student\Models\InvoiceDetail;
 class ReportRepository {
 
 	public function getAllPaymentReporting()	{
-		$payments = InvoiceMaster::with('student')->get(); 
+		$payments = InvoiceMaster::with(['student'=> function($query){
+			$query->withTrashed();
+		}])->get(); 
+
 		return $payments;
 	}
 

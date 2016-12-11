@@ -33,6 +33,11 @@ use Carbon\Carbon;
 
 class ReportingWebController extends Controller {
 
+    public function paymentReporting()
+    {
+        return view('Reporting::payment_reporting');
+    }
+
     public function allReporting()
     {
         return view('Reporting::all_reporting');
@@ -51,6 +56,15 @@ class ReportingWebController extends Controller {
     }
 
     public function getDailyReporting(ReportRepository $report)
+    {
+        $today = Carbon::today();
+        $today = $today->toDateString();
+        $dailyReporting = $report->getDailyPaymentReportingByDate($today);
+        
+        return Datatables::of($dailyReporting)->make(true);    
+    }
+
+    public function paymentDateRange(ReportRepository $report)
     {
         $today = Carbon::today();
         $today = $today->toDateString();

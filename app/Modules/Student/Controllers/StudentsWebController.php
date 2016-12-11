@@ -16,7 +16,6 @@ use App\Modules\Student\Models\BatchTime;
 use App\Modules\Student\Models\BatchDaysHasBatchTime;
 use App\Modules\Student\Models\BatchHasDaysAndTime;
 
-
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
@@ -38,11 +37,17 @@ class StudentsWebController extends Controller {
 		return view('Student::all_students');
     }
 
-	public function getStudents(StudentRepository $studentRepository) {
-    $students = $studentRepository->getAllStudent();
-
+	public function getStudents() {
+    // $students = $studentRepository->getAllStudent();
+        $students = Student::with('batch');
 	// $students = Student::with('school', 'batch')->get();
+     
     return Datatables::of($students)
+                    ->addColumn('batch', function (Student $students) {
+                       return $students->batch->map(function($bat) {
+                           return $bat->name;
+                       })->implode(', ');
+                    })
     				->addColumn('Link', function ($students) {
     					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                         return '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.

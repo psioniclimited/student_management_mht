@@ -20,5 +20,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('due_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@dueReporting');
     Route::get('get_due_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getDueReporting');
 
+    Route::get('payment_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@paymentReporting');
+    Route::get('payment_date_range', 'App\Modules\Reporting\Controllers\ReportingWebController@paymentDateRange');
+    // Route::get('get_due_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getDueReporting');
 
 });

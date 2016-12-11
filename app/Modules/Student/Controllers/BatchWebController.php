@@ -162,9 +162,8 @@ class BatchWebController extends Controller {
     }
 
     public function batchUpdateProcess(Request $request) {
-        return $request->all();
+        $batch = Batch::find($request->batch_id);
         $batch->update( $request->all());
-        return redirect('all_batches');
     }
 
 

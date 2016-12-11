@@ -1,4 +1,5 @@
 <?php
+namespace App\Modules\Student\Repository;
 
 class StudentRepository{
 	public function getAllStudent(){

@@ -31,7 +31,6 @@
         <ul class="treeview-menu">
         
             <li {!! Request::is('*all_students*') ? ' class="active"' : null !!}><a href="{{url('all_students')}}"><i class="fa fa-circle-o"></i> All Students</a></li>
-        
             <li {!! Request::is('*create_student*') ? ' class="active"' : null !!}><a href="{{url('create_student')}}"><i class="fa fa-circle-o"></i> New Student</a></li>
             <li {!! Request::is('*payment_student*') ? ' class="active"' : null !!}><a href="{{url('payment_student')}}"><i class="fa fa-circle-o"></i> Payment</a></li>
             <li {!! Request::is('*create_school*') ? ' class="active"' : null !!}><a href="{{url('create_school')}}"><i class="fa fa-circle-o"></i> New School</a></li>
@@ -78,6 +77,7 @@
             </span>
         </a>
         <ul class="treeview-menu">
+            <li {!! Request::is('*payment_reporting*') ? ' class="active"' : null !!}><a href="{{url('payment_reporting')}}"><i class="fa fa-circle-o"></i> Payment Reporting </a></li>
             <li {!! Request::is('*all_reporting*') ? ' class="active"' : null !!}><a href="{{url('all_reporting')}}"><i class="fa fa-circle-o"></i> All Payment Reporting</a></li>
             <li {!! Request::is('*daily_reporting*') ? ' class="active"' : null !!}><a href="{{url('daily_reporting')}}"><i class="fa fa-circle-o"></i> Daily Reporting</a></li>
             <li {!! Request::is('*due_reporting*') ? ' class="active"' : null !!}><a href="{{url('due_reporting')}}"><i class="fa fa-circle-o"></i> Due Reporting</a></li>

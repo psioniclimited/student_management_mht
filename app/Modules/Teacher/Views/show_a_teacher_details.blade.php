@@ -48,38 +48,38 @@
 
 
 
-       $('#batch_id').select2({
-            allowClear: true,
-            placeholder: 'Set Day and Time',
-            ajax: {
-                url: "/getallbatch",
-                dataType: 'json',
-                delay: 250,
-                tags: true,
-                data: function (params) {
-                  return {
-                    q: params.term, // search term
-                    page: params.page
-                  };
-                },
-                processResults: function (data, params) {
-                  // parse the results into the format expected by Select2
-                  // since we are using custom formatting functions we do not need to
-                  // alter the remote JSON data, except to indicate that infinite
-                  // scrolling can be used
-                  params.page = params.page || 1;
-                  // console.log(data);
-                  return {
-                    results: data,
-                    pagination: {
-                      more: (params.page * 30) < data.total_count
-                    }
+       // $('#batch_id').select2({
+       //      allowClear: true,
+       //      placeholder: 'Set Day and Time',
+       //      ajax: {
+       //          url: "/getallbatch",
+       //          dataType: 'json',
+       //          delay: 250,
+       //          tags: true,
+       //          data: function (params) {
+       //            return {
+       //              q: params.term, // search term
+       //              page: params.page
+       //            };
+       //          },
+       //          processResults: function (data, params) {
+       //            // parse the results into the format expected by Select2
+       //            // since we are using custom formatting functions we do not need to
+       //            // alter the remote JSON data, except to indicate that infinite
+       //            // scrolling can be used
+       //            params.page = params.page || 1;
+       //            // console.log(data);
+       //            return {
+       //              results: data,
+       //              pagination: {
+       //                more: (params.page * 30) < data.total_count
+       //              }
 
-                  };
-                },
-                cache: true
-            }
-        });
+       //            };
+       //          },
+       //          cache: true
+       //      }
+       //  });
 
 
         //Date picker for Start Date
@@ -135,12 +135,12 @@
                data: user_id,
                success: function(data) {
                    console.log(data);
+                   $('input#batch_id').val(data.id);
                    $('input#name').val(data.name);
                    $('input#price').val(data.price);
                    $('input#schedule').val(data.schedule);
                    $('input#start_date_edit').val(data.start_date);
                    $('input#end_date_edit').val(data.end_date);
-                   $('input#batch_id').val(data.id);
                    $('option#edit_batch_types_id').text(data.batch_type.name);
                    $("option#edit_batch_types_id").attr("value",data.batch_types_id);
                    $('option#edit_grades_id').text(data.grade.name);
@@ -152,38 +152,26 @@
 
             /* Batch Edit Form Submission */
             $('#edit_batch').click(function(e) {
-                e.preventDefault();
-            // $( "#edit_batch_form" ).on( "submit", function( event ) {    
-               // event.preventDefault();
-               // $.ajax({
-               //     cache: false,
-               //     type: 'POST',
-               //     url: '/batch/' + user_id + '/edit',
-               //     data: user_id,
-               //     success: function(data) {
-               //         console.log("Edited Successfully");
-               //         console.log(data);
-               //         table.ajax.reload(null, false);
-               //         $('#confirm_edit').modal('toggle');
-               //     }
-               // });
+               
+              var edit_batch_form = $("#edit_batch_form").serialize();
+              
+              $.ajax({
+                  type: "POST",
+                  url: "/batch_update_process",
+                  data: edit_batch_form,
+                  success: function(data) {
+                      console.log("Successfully Edited");
+                  },
+                  error: function() {
+                      delete_msg
+                      alert('Other infomation is related to this batch. So You can not delete it');
+                  }
+              });
 
-
-                var edit_batch_form = $("#edit_batch_form").serialize();
-                
-                $.ajax({
-                    type: "POST",
-                    url: "/batch_update_process",
-                    data: edit_batch_form,
-                    success: function(data) {
-                        console.log("Successfully Edited");
-                        console.log(data);
-                        // table.ajax.reload(null, false);
-                    },
-                    error: function() {
-                        alert('error handing here');
-                    }
-                });               
+              $('#confirm_edit').modal('toggle');
+              table.ajax.reload(null, false);
+              e.preventDefault();               
+            
             });
 
 
@@ -203,7 +191,6 @@
                console.log(user_id);
 
            $('#delete_customer').click(function(e){    
-               // event.preventDefault();
                $.ajax({
                    cache: false,
                    type: 'POST',
@@ -213,7 +200,11 @@
                        console.log("Deleted Successfully");
                        table.ajax.reload(null, false);
                        $('#confirm_delete').modal('toggle');
-                   }
+                   },
+                   error: function() {
+                    $('div#delete_msg').html("<div class='alert alert-danger'><strong>Danger!</strong> This Batch is related to Other Information !!!</div>");
+                      
+                  }
                });
            });
         });
@@ -591,7 +582,10 @@
                     </div>
                </div>
                <div class="modal-footer">
-                    <input type="hidden" id="bach_id" value="">
+                    <input type="hidden" id="batch_id" name="batch_id">
+                    <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
+                    <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
+                    <input type="hidden" name="subjects_id" value="{{ $getTeacher->subject->id }}">
                    <button type="submit" class="btn btn-warning" id="edit_batch">Edit</button>
                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                </div>
@@ -619,7 +613,9 @@
                    <h4 class="modal-title">Remove Parmanently</h4>
                </div>
                <div class="modal-body">
-                   <p>Are you sure about this ?</p>
+                   <p >Are you sure about this ?</p>
+                   <div id="delete_msg"></div>
+                   
                </div>
                <div class="modal-footer">
                    <button type="button" class="btn btn-danger" id="delete_customer">Delete</button>

@@ -15,7 +15,7 @@
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "info": false,
             "autoWidth": false,
@@ -25,7 +25,7 @@
             "columns": [
                     {"data": "id"},
                     {"data": "name"},
-                    {"data": "school.name"},                    
+                    {"data": "batch", "name": "batch.name"},                    
                     {"data": "phone_home"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
@@ -253,7 +253,7 @@
                             <tr>
                                 <th>Student Id</th>
                                 <th>Student Name</th>
-                                <th>School</th>
+                                <th>Batch</th>
                                 <th>Phone Home</th>
                                 <th>Action</th>                            
                             </tr>
