@@ -27,6 +27,7 @@
     $(document).ready(function () {
 
     
+    
     //Date picker for Start Date
     $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
@@ -35,7 +36,10 @@
 
 
     $("#daily_payment_reporting").click(function() {
-        
+        $("#box_color").attr("class","box box-warning");
+        $("#payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
+        $("#alternate_data").text("Payment Date");
+        $("#total_amount").text("Total Paid Amount/-");
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
@@ -57,30 +61,12 @@
             });
 
     });
-    $("#monthly_payment_reporting").click(function() {
-        var table = $('#all_user_list').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "destroy": true,
-            "info": false,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": "{{URL::to('/get_daily_reporting')}}",
-            "columns": [
-                    {"data": "id"},
-                    {"data": "student.name"},
-                    {"data": "student.phone_home"},                    
-                    {"data": "payment_date"},
-                    {"data": "total"},
-                ]
-            });
-
-    });
+    
     $("#all_payment_reporting").click(function() {
-        
+        $("#box_color").attr("class","box box-success");
+        $("#payment_title").html("<b>All</b> Payment Reporting");
+        $("#alternate_data").text("Payment Date");
+        $("#total_amount").text("Total Paid Amount/-");
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
@@ -102,9 +88,11 @@
             });
     });
 
-            
-    
-    $("#range_payment_reporting").click(function() {
+    $("#due_payment_reporting").click(function() {
+        $("#box_color").attr("class","box box-danger");
+        $("#payment_title").html("<p><b>Due</b> Payment Reporting</p>");
+        $("#alternate_data").text("Additional Phone Number");
+        $("#total_amount").text("Total Due Amount/-");
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
@@ -114,22 +102,51 @@
             "info": false,
             "autoWidth": false,
             "processing": true,
-            "serverSide": true, 
-            "ajax": {
-                'url': "{{URL::to('/payment_date_range')}}",
-                'data': {
-                   start_date: $('input[id=start_date]').val(),
-                   end_date: $('input[id=end_date]').val() 
-                },
-            },
+            "serverSide": true,
+            "ajax": "{{URL::to('/get_due_reporting')}}",
             "columns": [
                     {"data": "id"},
-                    {"data": "student.name"},
-                    {"data": "student.phone_home"},                    
-                    {"data": "payment_date"},
-                    {"data": "total"},
+                    {"data": "name"},
+                    {"data": "phone_home"},                    
+                    {"data": "phone_away"},
+                    {"data": "TotalDuePrice"},
                 ]
             });
+
+    });
+    
+    $("#range_payment_reporting").click(function() {
+        if ($('input[id=start_date]').val() && $('input[id=end_date]').val()) {
+            $("#box_color").attr("class","box box-primary");
+            $("#payment_title").html("<p>Payment Reporting from <b>"+$('input[id=start_date]').val()+"</b> to <b>"+$('input[id=end_date]').val()+"</b></p>");
+            $("#alternate_data").text("Payment Date");
+            $("#total_amount").text("Total Paid Amount/-");
+            var table = $('#all_user_list').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "destroy": true,
+                "info": false,
+                "autoWidth": false,
+                "processing": true,
+                "serverSide": true, 
+                "ajax": {
+                    'url': "{{URL::to('/payment_date_range')}}",
+                    'data': {
+                       start_date: $('input[id=start_date]').val(),
+                       end_date: $('input[id=end_date]').val() 
+                    },
+                },
+                "columns": [
+                        {"data": "id"},
+                        {"data": "student.name"},
+                        {"data": "student.phone_home"},                    
+                        {"data": "payment_date"},
+                        {"data": "total"},
+                    ]
+            });
+        }
 
     });
 
@@ -283,7 +300,7 @@
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-success">Daily Reporting</button>
+                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
                     </div>
                 </div>
                 <div class="row">
@@ -298,19 +315,20 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success">Monthly Reporting</button>
+                        <button type="submit" id="all_payment_reporting" class="btn btn-block btn-success"><strong>All Payment</strong> Reporting</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="range_payment_reporting" class="btn btn-block btn-primary">Show</button>
+                        <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show</strong></button>
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="all_payment_reporting" class="btn btn-block btn-success">All Reporting</button>
+                        <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
                     </div>
                 </div>
 
@@ -322,9 +340,9 @@
     </div>
     <!-- /.box-body -->
         
-    <div class="box box-warning">
+    <div id="box_color" class="box box-primary">
             <div class="box-header">
-                <h3 class="box-title">Payment Reporting</h3>
+                <h3 class="box-title" id="payment_title">Payment Reporting</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
@@ -333,9 +351,9 @@
                     <tr>
                         <th>Student Id</th>
                         <th>Student Name</th>
-                        <th>Student Phone Number</th>
-                        <th>Payment Date</th>
-                        <th>Total Paid Amount/-</th>
+                        <th>Phone Number</th>
+                        <th id="alternate_data">Payment Date</th>
+                        <th id="total_amount">Total Amount/-</th>
                     </tr>
                 </thead>
                 <tbody>

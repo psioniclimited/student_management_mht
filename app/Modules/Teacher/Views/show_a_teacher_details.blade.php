@@ -384,11 +384,11 @@
             <div class="box-body">
                 <div class="row">
                 {!! Form::open(array('id' => 'add_batch_form')) !!}
-                <div class="col-xs-1">
+                <div class="col-md-1">
                     <label for="price" >Price*</label>
                     <input type="text" class="form-control" name="price" id="price" placeholder="Price">
                 </div>
-                <div class="col-xs-1">
+                <div class="col-md-1">
                     <div class="form-group">
                         <label for="batch_types_id" >Batch Type*</label>
                         <select class="form-control" name="batch_types_id">
@@ -399,7 +399,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xs-1">
+                <div class="col-md-1">
                     <div class="form-group">
                         <label for="grades_id" >Grade*</label>
                         <select class="form-control" name="grades_id">
@@ -410,19 +410,19 @@
                         </select>
                     </div>
                 </div>
-                <!-- <div class="col-xs-2">
+                <!-- <div class="col-md-2">
                     <div class="form-group">
                         <label for="batch_id" >Schedule*</label>
                         <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
                     </div>
                 </div> -->
-                <div class="col-xs-3">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="batch_id" >Schedule*</label>
                         <input type="text" class="form-control" name="schedule" id="schedule" placeholder="Schedule">
                     </div>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label for="start_date" >Start Date</label>
                         <div class="input-group date">
@@ -433,7 +433,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <div class="form-group">
                         <label for="end_date" >End Date</label>
                         <div class="input-group date">
@@ -447,7 +447,7 @@
                 <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
                 <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
                 <input type="hidden" name="subjects_id" value="{{ $getTeacher->subject->id }}">
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <label for="" ></label>
                     <button type="submit" class="btn btn-block btn-success">Add Batch</button>
                 </div>

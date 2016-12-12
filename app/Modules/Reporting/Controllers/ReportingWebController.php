@@ -46,10 +46,10 @@ class ReportingWebController extends Controller {
         return Datatables::of($dateRangeReporting)->make(true);
     }
 
-    public function allReporting()
-    {
-        return view('Reporting::all_reporting');
-    }
+    // public function allReporting()
+    // {
+    //     return view('Reporting::all_reporting');
+    // }
 
     public function getAllReporting(ReportRepository $report)
     {
@@ -58,10 +58,10 @@ class ReportingWebController extends Controller {
         return Datatables::of($allReporting)->make(true);    
     }
 
-    public function dailyReporting()
-    {
-        return view('Reporting::daily_reporting');
-    }
+    // public function dailyReporting()
+    // {
+    //     return view('Reporting::daily_reporting');
+    // }
 
     public function getDailyReporting(ReportRepository $report)
     {
@@ -72,23 +72,35 @@ class ReportingWebController extends Controller {
         return Datatables::of($dailyReporting)->make(true);    
     }
 
-    public function dueReporting()
-    {
-        return view('Reporting::due_reporting');
-    }
+    // public function dueReporting()
+    // {
+    //     return view('Reporting::due_reporting');
+    // }
 
     public function getDueReporting(ReportRepository $report)
     {
         $first_day_of_current_month = new Carbon('first day of this month');
         $first_day_of_current_month = $first_day_of_current_month->toDateString();
 
-        $dailyReporting = $report->getDueByDate($first_day_of_current_month);
+        $dueReporting = $report->getDueByDate($first_day_of_current_month);
         
-        return Datatables::of($dailyReporting)
-        ->addColumn('TotalDuePrice', function ($dailyReporting) {
+        return Datatables::of($dueReporting)
+        
+        ->addColumn('TotalDuePrice', function ($dueReporting) {
+            $batches = $dueReporting->batch;
+            $total_due = 0;
+            foreach ($batches as $batch) {
 
-        $batch = $dailyReporting->batch;
-
+               $last_paid_date = Carbon::parse($batch->pivot->last_paid_date); 
+               $now = Carbon::now();
+               
+               $diff_in_months = $now->diffInMonths($last_paid_date);
+               $amount = $diff_in_months * $batch->price;
+               $total_due = $total_due + $amount;
+            }
+            
+            return $total_due;
+        
         })->make(true); 
     }
 

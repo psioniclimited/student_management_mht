@@ -47,9 +47,9 @@ class StudentPaymentController extends Controller {
     }
 
     public function getAllStudentForPayment(Request $request) {
-        error_log("Student Payment");
+        
         $search_term = $request->input('term');
-        error_log($search_term);
+        
         $getStudent = Student::where('name', "LIKE", "%{$search_term}%")
                     ->get(['id', 'name as text']);
         return response()->json($getStudent);

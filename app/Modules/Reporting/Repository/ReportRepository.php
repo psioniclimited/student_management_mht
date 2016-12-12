@@ -40,12 +40,23 @@ class ReportRepository {
 	}
 
 	public function getDueByDate($date){
+		
 		$payments = Student::with(['batch' => function ($query) use( $date )  {
     		
     		$query->where('last_paid_date', '<', $date);
 		
 		}])->get();
 
+		$payments = $payments->map(function($student){
+            
+            if (count($student->batch) > 0 ) {
+                return $student;
+            }
+        })
+        ->reject(function ($student) {
+            return empty($student);
+        });
+		
 		return $payments;
 		
 	}
