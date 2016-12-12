@@ -92,38 +92,95 @@ $(document).ready(function () {
     //     }
     // });
 
+    // Working ............................................
+    // $('#batch_id').select2({
+    //     allowClear: true,
+    //     placeholder: 'Select batch',
+    //     ajax: {
+    //         url: "/getallbatch",
+    //         dataType: 'json',
+    //         delay: 250,
+    //         tags: true,
+    //         data: function (params) {
+    //           return {
+    //             q: params.term, // search term
+    //             page: params.page
+    //           };
+    //         },
+    //         processResults: function (data, params) {
+    //           // parse the results into the format expected by Select2
+    //           // since we are using custom formatting functions we do not need to
+    //           // alter the remote JSON data, except to indicate that infinite
+    //           // scrolling can be used
+    //           params.page = params.page || 1;
+    //           // console.log(data);
+    //           return {
+    //             results: data,
+    //             pagination: {
+    //               more: (params.page * 30) < data.total_count
+    //             }
+    //           };
+    //         },
+    //         cache: true
+    //     }
+    // });
 
-    $('#batch_id').select2({
-        allowClear: true,
-        placeholder: 'Select batch',
-        ajax: {
-            url: "/getallbatch",
-            dataType: 'json',
-            delay: 250,
-            tags: true,
-            data: function (params) {
-              return {
-                q: params.term, // search term
-                page: params.page
-              };
-            },
-            processResults: function (data, params) {
-              // parse the results into the format expected by Select2
-              // since we are using custom formatting functions we do not need to
-              // alter the remote JSON data, except to indicate that infinite
-              // scrolling can be used
-              params.page = params.page || 1;
-              // console.log(data);
-              return {
-                results: data,
-                pagination: {
-                  more: (params.page * 30) < data.total_count
+    
+    $(".sub_checkbox").change(function() {
+
+        if(this.checked) {
+           console.log(this.value);
+           // console.log($( this ).siblings());
+           $( this ).parent().siblings(".form-group").show();
+            
+            var batchType = $('#batch_types_id').find(":selected").val();
+            
+            var subject_id = "#subject" + this.value;
+            // var full_url = "/getallbatch/" + subject_id + "/" + batchType;
+            $( subject_id ).select2({
+                allowClear: true,
+                placeholder: 'Select batch',
+                ajax: {
+                    url: "/getallbatch",
+                    dataType: 'json',
+                    delay: 250,
+                    tags: true,
+                    data: function (params) {
+                      return {
+                        q: params.term, // search term
+                        page: params.page,
+                        value_term: subject_id
+                       
+
+                      };
+                    },
+                    processResults: function (data, params) {
+                      // parse the results into the format expected by Select2
+                      // since we are using custom formatting functions we do not need to
+                      // alter the remote JSON data, except to indicate that infinite
+                      // scrolling can be used
+                      params.page = params.page || 1;
+                      // console.log(data);
+                      return {
+                        results: data,
+                        pagination: {
+                          more: (params.page * 30) < data.total_count
+                        }
+                      };
+                    },
+                    cache: true
                 }
-              };
-            },
-            cache: true
+            });           
+
+        }
+        else{
+            // $("#box_color").attr("class","box box-success");
+            $( this ).parent().siblings(".form-group").hide();
         }
     });
+
+
+
 
 
 });
@@ -202,32 +259,47 @@ $(document).ready(function () {
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="schools_id" >School*</label>
-                        <select class="form-control" name="schools_id">
-                                <option value="default">Choose...</option>
-                                @foreach ($Schools as $school)
-                                    <option value="{{ $school->id }}">{{ $school->name }}</option>
-                                @endforeach
-                        </select>
+                    <select class="form-control" name="schools_id">
+                            <option value="default">Choose...</option>
+                            @foreach ($Schools as $school)
+                                <option value="{{ $school->id }}">{{ $school->name }}</option>
+                            @endforeach
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="batch_types_id" >Batch type*</label>
+                    <select class="form-control" id="batch_types_id" name="batch_types_id">
+                            <option value="default">Choose...</option>
+                            @foreach ($batchTypes as $batchType)
+                                <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
+                            @endforeach
+                    </select>
                 </div>
                 <!-- <div class="form-group">
                     <label for="batch_id" >Batch*</label>
                     <select class="form-control select2" name="batch_id" id="batch_id"></select>
                 </div> -->
-                <div class="form-group">
+                
+                <!-- <div class="form-group">
                     <label for="batch_id" >Batch*</label>
-                    <select class="form-control select2" name="batch_day_time[]" id="batch_id" multiple></select>
-                </div>
+                    <select class="form-control select2" name="batch_name[]" id="batch_id" ></select>
+                </div> -->
+                
                 <!-- checkbox -->
                 <div class="form-group">
-                <label for="subjects_id" >Choose Subject*</label>
-                @foreach ($Subjects as $subject)
-                <div class="checkbox">
-                    <label>
-                      <input type="checkbox" name="subject[]" value="{{ $subject->id }}" class="flat-red">
-                      {{ $subject->name }}
-                    </label>
-                </div>
-                @endforeach
+                    <label for="subjects_id">Choose Subject*</label>
+                    @foreach ($Subjects as $subject)
+                    <div class="checkbox">
+                        <label>
+                          <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" class="flat-red">
+                          {{ $subject->name }}
+                        </label>
+                        <div class="form-group" style="display:none;">
+                            <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
                 <!-- <div class="form-group"> -->
                         <!-- <label for="pic" >Upload Photo*</label> -->

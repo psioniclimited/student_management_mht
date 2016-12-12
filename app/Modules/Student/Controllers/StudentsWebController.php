@@ -77,9 +77,10 @@ class StudentsWebController extends Controller {
     ************************/
     public function addStudent() {
 		$Schools = School::all();
-		$Batches = Batch::with('batchType','grade')->get();
+        $Batches = Batch::with('batchType','grade')->get();
+        $batchTypes = batchType::all();
 		$Subjects = Subject::all();
-		return view('Student::create_student',compact("Schools","Batches","Subjects"));
+		return view('Student::create_student',compact("Schools","Batches", "batchTypes","Subjects"));
 	}
 
 
@@ -90,7 +91,7 @@ class StudentsWebController extends Controller {
 
         $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
-        $student->batch()->attach($request->input('batch_day_time'), ['last_paid_date' => $last_paid_date]);
+        $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => $last_paid_date]);
         
         //  for ($count=0; $count < count($request->batch_day_time); $count++) {
         //     $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);

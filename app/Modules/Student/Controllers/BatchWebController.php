@@ -137,6 +137,8 @@ class BatchWebController extends Controller {
         // ";
         
         // $batch_information = DB::select($query_batch);
+        error_log($request->input('value_term'));
+        error_log('Here');
         $batch_information = Batch::get(['id', 'name as text']);
         // $batch = BatchDay::with('batchTime')->get();
         // $batch = Batch::with('batchType', 'grade')->get();
