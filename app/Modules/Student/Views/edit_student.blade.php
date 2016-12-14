@@ -139,15 +139,13 @@ $(document).ready(function () {
                         
                 </div>
                 <div class="form-group">
-                    <label for="batch_idf" >Batch*</label>
-                    
-                        <select class="form-control" name="batch_id">
-                            <option value="{{$getStudent->batch->id}}">{{$getStudent->batch->name}}</option>
-                            @foreach ($Batches as $batch)
-                                <option value="{{ $batch->id }}">{{ $batch->name }}</option>
+                    <label for="batch_types_id" >Batch type*</label>
+                    <select class="form-control" id="batch_types_id" name="batch_types_id">
+                            <option value="1">Choose...</option>
+                            @foreach ($batchTypes as $batchType)
+                                <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach
-                        </select>
-                    
+                    </select>
                 </div>
                 <!-- checkbox -->
                 <div class="form-group">

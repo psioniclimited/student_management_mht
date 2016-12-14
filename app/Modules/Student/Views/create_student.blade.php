@@ -125,17 +125,24 @@ $(document).ready(function () {
     //     }
     // });
 
-    
+    $('#batch_types_id').change(function(event){
+        $('.sub_checkbox').attr('checked',false);
+        $('.batchSelection').hide();
+        $('.select2').val('');
+    });
+
     $(".sub_checkbox").change(function() {
 
         if(this.checked) {
-           console.log(this.value);
+           // console.log(this.value);
            // console.log($( this ).siblings());
            $( this ).parent().siblings(".form-group").show();
             
             var batchType = $('#batch_types_id').find(":selected").val();
-            
+            console.log("batchType");
+            console.log(batchType);
             var subject_id = "#subject" + this.value;
+            var subject_id_for_select2 = this.value;
             // var full_url = "/getallbatch/" + subject_id + "/" + batchType;
             $( subject_id ).select2({
                 allowClear: true,
@@ -149,10 +156,9 @@ $(document).ready(function () {
                       return {
                         q: params.term, // search term
                         page: params.page,
-                        value_term: subject_id
-                       
-
-                      };
+                        subject_id: subject_id_for_select2,
+                        batchType_id:batchType
+                        };
                     },
                     processResults: function (data, params) {
                       // parse the results into the format expected by Select2
@@ -270,7 +276,7 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="batch_types_id" >Batch type*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
-                            <option value="default">Choose...</option>
+                            <option value="1">Choose...</option>
                             @foreach ($batchTypes as $batchType)
                                 <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach
@@ -295,7 +301,7 @@ $(document).ready(function () {
                           <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" class="flat-red">
                           {{ $subject->name }}
                         </label>
-                        <div class="form-group" style="display:none;">
+                        <div class="form-group batchSelection" style="display:none;">
                             <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
                         </div>
                     </div>

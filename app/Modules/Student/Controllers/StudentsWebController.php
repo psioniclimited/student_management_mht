@@ -112,10 +112,12 @@ class StudentsWebController extends Controller {
     public function editStudent($id) {
 
     	$getStudent = Student::with('school', 'batch','subject')->find($id);
+        // return $getStudent;
     	// return response()->json($getStudent);
     	// dd($getStudent->subject()->get());
     	$schools = School::all();
 		$batches = Batch::all();
+        $batchTypes = BatchType::all();
 		$subjects = Subject::all();
 
 		// return response()->json($getStudent);
@@ -123,7 +125,8 @@ class StudentsWebController extends Controller {
 		->with('getStudent', $getStudent)
 		->with('Schools', $schools)
 		->with('Batches', $batches)
-		->with('Subjects', $subjects);
+		->with('Subjects', $subjects)
+        ->with('batchTypes', $batchTypes);
 	}
 
     public function studentUpdateProcess(Request $request, $id) {

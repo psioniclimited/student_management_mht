@@ -135,11 +135,18 @@ class BatchWebController extends Controller {
         // JOIN batch_days ON batch_days_id = batch_days.id
         // JOIN batch_times ON batch_times_id = batch_times.id
         // ";
-        
         // $batch_information = DB::select($query_batch);
-        error_log($request->input('value_term'));
-        error_log('Here');
-        $batch_information = Batch::get(['id', 'name as text']);
+        
+        error_log('BatchType ID');
+        error_log($request->input('batchType_id'));
+        error_log('Subject ID');
+        error_log($request->input('subject_id'));
+
+        $batch_information = Batch::where('batch_types_id',$request->input('batchType_id'))
+                                    ->where('subjects_id', $request->input('subject_id'))
+                                    ->get(['id', 'name as text']);
+
+        // $batch_information = Batch::get(['id', 'name as text']);
         // $batch = BatchDay::with('batchTime')->get();
         // $batch = Batch::with('batchType', 'grade')->get();
         // dd($batch->toArray());

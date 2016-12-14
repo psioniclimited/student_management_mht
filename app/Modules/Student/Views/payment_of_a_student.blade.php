@@ -26,6 +26,10 @@
 
     $(document).ready(function () {
 
+    var month = ["January","February","March", "April",
+                "May", "June","July", "August",
+                "September","October","November","December"];
+
     // var table = "";
 
 	//Date picker for Start Date
@@ -95,9 +99,11 @@
                     month_diffrence = 0;
                 }
 
-                var human_readable_last_paid_date = new Date(batches[i].pivot.last_paid_date);
-                human_readable_last_paid_date = human_readable_last_paid_date.toString();
-                human_readable_last_paid_date = human_readable_last_paid_date.substring(0, 16);
+                // var human_readable_last_paid_date = new Date(batches[i].pivot.last_paid_date);
+                // human_readable_last_paid_date = human_readable_last_paid_date.toString();
+                // human_readable_last_paid_date = human_readable_last_paid_date.substring(0, 16);
+                var human_readable_last_paid_date = moment(batches[i].pivot.last_paid_date);
+                human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
                 var payment_for_each_batch = month_diffrence * batches[i].price;
                              
                 
@@ -473,7 +479,7 @@
                             <thead>
                                 <tr>
                                     <th>Batch Name</th>
-                                    <th>Last Paid Date</th>
+                                    <th>Last Paid</th>
                                     <th>Unit Price /=</th>
                                     <th>no of month</th>
                                     <th>Total Price Per Course /= </th>
