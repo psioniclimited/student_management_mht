@@ -2,11 +2,13 @@
 
 @section('css')
 <link rel="stylesheet" href="{{asset('plugins/tooltipster/tooltipster.css')}}">
+<link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
 @endsection
 
 @section('scripts')
 <script src="{{asset('plugins/validation/dist/jquery.validate.js')}}"></script>
 <script src="{{asset('plugins/tooltipster/tooltipster.js')}}"></script>
+<script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script>
 
 $(document).ready(function () {
@@ -46,6 +48,100 @@ $(document).ready(function () {
             upassword: {required: "Six digit password"},
             upassword_re: {required: "Re-enter same password"},
             uroles: {required: "Please select a role"}
+        }
+    });
+
+    $( '.select2' ).select2({
+        allowClear: true,
+        placeholder: 'Select batch',
+        ajax: {
+            url: "/getallbatch",
+            dataType: 'json',
+            delay: 250,
+            tags: true,
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                page: params.page,
+                subject_id: subject_id_for_select2,
+                batchType_id:batchType
+                };
+            },
+            processResults: function (data, params) {
+              // parse the results into the format expected by Select2
+              // since we are using custom formatting functions we do not need to
+              // alter the remote JSON data, except to indicate that infinite
+              // scrolling can be used
+              params.page = params.page || 1;
+              // console.log(data);
+              return {
+                results: data,
+                pagination: {
+                  more: (params.page * 30) < data.total_count
+                }
+              };
+            },
+            cache: true
+        }
+    });
+
+    $('#batch_types_id').change(function(event){
+        $('.sub_checkbox').attr('checked',false);
+        $('.batchSelection').hide();
+        $('.select2').val('');
+    });
+
+    $(".sub_checkbox").change(function() {
+
+        if(this.checked) {
+           // console.log(this.value);
+           // console.log($( this ).siblings());
+           $( this ).parent().siblings(".form-group").show();
+            
+            var batchType = $('#batch_types_id').find(":selected").val();
+            console.log("batchType");
+            console.log(batchType);
+            var subject_id = "#subject" + this.value;
+            var subject_id_for_select2 = this.value;
+            // var full_url = "/getallbatch/" + subject_id + "/" + batchType;
+            $( subject_id ).select2({
+                allowClear: true,
+                placeholder: 'Select batch',
+                ajax: {
+                    url: "/getallbatch",
+                    dataType: 'json',
+                    delay: 250,
+                    tags: true,
+                    data: function (params) {
+                      return {
+                        q: params.term, // search term
+                        page: params.page,
+                        subject_id: subject_id_for_select2,
+                        batchType_id:batchType
+                        };
+                    },
+                    processResults: function (data, params) {
+                      // parse the results into the format expected by Select2
+                      // since we are using custom formatting functions we do not need to
+                      // alter the remote JSON data, except to indicate that infinite
+                      // scrolling can be used
+                      params.page = params.page || 1;
+                      // console.log(data);
+                      return {
+                        results: data,
+                        pagination: {
+                          more: (params.page * 30) < data.total_count
+                        }
+                      };
+                    },
+                    cache: true
+                }
+            });           
+
+        }
+        else{
+            // $("#box_color").attr("class","box box-success");
+            $( this ).parent().siblings(".form-group").hide();
         }
     });
 
@@ -148,24 +244,59 @@ $(document).ready(function () {
                     </select>
                 </div>
                 <!-- checkbox -->
-                <div class="form-group">
-                    <label for="batch_idf" >Choose Subject*</label>
+                <!-- <div class="form-group">
+                    <label for="batch_id" >Choose Subject*</label>
                     @foreach ($Subjects as $subject)
-                    <div class="checkbox">
+                    <div class="">
                         <label>
                         @foreach($getStudent->subject as $selected_subject)
                             @if($selected_subject->id === $subject->id)
-    	                	  <input class="flat-red" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked/>
+    	                	  <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked>
                               @break
-                            @else 
-                              <input class="flat-red" type="checkbox" name="subject[]" value="{{ $subject->id }}"/>
+                            @else
+                              <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
                             @endif
                         @endforeach
     					{{ $subject->name }}
                         </label>
+                        <div class="form-group batchSelection" style="display:none;">
+                            <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                        </div>
                     </div>
                     @endforeach
+                </div> -->
+
+                <div class="form-group">
+                    <label for="subjects_id">Choose Subject*</label>
+                    @foreach($Subjects as $subject)
+                    <div class="checkbox">
+                        @foreach($getStudent->subject as $selected_subject)
+                            @if($selected_subject->id === $subject->id)
+                              <label>
+                                    <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked>
+                                  {{ $subject->name }}
+                              </label>
+                              <div class="form-group batchSelection">
+                                    <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                              </div>
+                              @break
+                            <!-- @elseif($selected_subject === end($getStudent->subject)) -->
+                            @elseif($getStudent->subject->last()->id == $selected_subject->id)
+                                <label>
+                                    <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
+                                    {{ $subject->name }}
+                                </label>
+                                <div class="form-group batchSelection" style="display:none;">
+                                    <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                    @endforeach
+
                 </div>
+
+
             </div>
             <!-- /.col -->
             <div class="col-md-1"></div>

@@ -298,7 +298,7 @@ $(document).ready(function () {
                     @foreach ($Subjects as $subject)
                     <div class="checkbox">
                         <label>
-                          <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" class="flat-red">
+                          <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
                           {{ $subject->name }}
                         </label>
                         <div class="form-group batchSelection" style="display:none;">

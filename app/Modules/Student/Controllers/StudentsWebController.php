@@ -119,7 +119,8 @@ class StudentsWebController extends Controller {
 		$batches = Batch::all();
         $batchTypes = BatchType::all();
 		$subjects = Subject::all();
-
+        $variable = $getStudent->subject;
+        
 		// return response()->json($getStudent);
 		return view('Student::edit_student')
 		->with('getStudent', $getStudent)
