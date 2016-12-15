@@ -27,6 +27,7 @@
                     {"data": "name"},
                     {"data": "batch", "name": "batch.name"},                    
                     {"data": "phone_home"},
+                    {"data": "batch_type.name"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -255,6 +256,7 @@
                                 <th>Student Name</th>
                                 <th>Batch</th>
                                 <th>Phone Home</th>
+                                <th>Batch Type</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

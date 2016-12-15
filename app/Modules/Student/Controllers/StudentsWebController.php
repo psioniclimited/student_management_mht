@@ -15,6 +15,7 @@ use App\Modules\Student\Models\BatchDay;
 use App\Modules\Student\Models\BatchTime;
 use App\Modules\Student\Models\BatchDaysHasBatchTime;
 use App\Modules\Student\Models\BatchHasDaysAndTime;
+use App\Modules\Student\Models\BatchHasStudent;
 
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -39,7 +40,7 @@ class StudentsWebController extends Controller {
 
 	public function getStudents() {
     // $students = $studentRepository->getAllStudent();
-        $students = Student::with('batch');
+        $students = Student::with('batch','batchType');
 	// $students = Student::with('school', 'batch')->get();
      
     return Datatables::of($students)
@@ -111,15 +112,14 @@ class StudentsWebController extends Controller {
     ****************************/
     public function editStudent($id) {
 
-    	$getStudent = Student::with('school', 'batch','subject')->find($id);
-        // return $getStudent;
-    	// return response()->json($getStudent);
-    	// dd($getStudent->subject()->get());
-    	$schools = School::all();
+    	$getStudent = Student::with('school', 'batch','subject','batchType')->find($id);
+        $schools = School::all();
 		$batches = Batch::all();
         $batchTypes = BatchType::all();
 		$subjects = Subject::all();
-        $variable = $getStudent->subject;
+        // $StudentBatchType = $getStudent->batchType;
+        //return $StudentBatchType;
+        // $variable = $getStudent->subject;
         
 		// return response()->json($getStudent);
 		return view('Student::edit_student')
@@ -130,13 +130,31 @@ class StudentsWebController extends Controller {
         ->with('batchTypes', $batchTypes);
 	}
 
+    public function StudentBatchForEdit(Request $request)
+    {
+        $getStudent = Student::with('school', 'batch','subject','batchType')->find($request->student_id);
+        $studentBatch = $getStudent->batch;
+        return response()->json($studentBatch);
+    }
+
     public function studentUpdateProcess(Request $request, $id) {
-    	$student = Student::find($id);
-    	if( !$student->update( $request->all()) ) {
+    	// return $request->all();
+        $student = Student::find($id);
+    	
+        if( !$student->update( $request->all()) ) {
     		return "error";
     	}
     	
     	$student->subject()->sync($request->input('subject'));
+        $student->batch()->sync($request->input('batch_name'));
+        
+        $last_paid_date = new Carbon('first day of last month');
+        $last_paid_date = $last_paid_date->toDateString();
+        
+        BatchHasStudent::where('students_id', $id)
+                        ->where('last_paid_date', null)
+                        ->update(['last_paid_date' => $last_paid_date]);
+
     	return redirect('all_students');
     }
 

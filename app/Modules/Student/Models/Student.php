@@ -25,7 +25,8 @@ class Student extends Model
         'phone_home',
         'phone_away',
         'schools_id',
-        'batch_id'
+        'batch_id',
+        'batch_types_id'
     ];
     
     public function school()
@@ -33,10 +34,12 @@ class Student extends Model
         return $this->belongsTo('App\Modules\Student\Models\School', 'schools_id');
     }
 
-    // public function batch()
-    // {
-    //     return $this->belongsTo('App\Modules\Student\Models\Batch', 'batch_id');
-    // }
+    public function batchType()
+    {
+        return $this->belongsTo('App\Modules\Student\Models\BatchType', 'batch_types_id');
+    }
+
+
 
     public function batch()
     {

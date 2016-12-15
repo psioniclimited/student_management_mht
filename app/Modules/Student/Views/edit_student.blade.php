@@ -51,39 +51,70 @@ $(document).ready(function () {
         }
     });
 
-    $( '.select2' ).select2({
-        allowClear: true,
-        placeholder: 'Select batch',
-        ajax: {
-            url: "/getallbatch",
-            dataType: 'json',
-            delay: 250,
-            tags: true,
-            data: function (params) {
-              return {
-                q: params.term, // search term
-                page: params.page,
-                subject_id: subject_id_for_select2,
-                batchType_id:batchType
-                };
-            },
-            processResults: function (data, params) {
-              // parse the results into the format expected by Select2
-              // since we are using custom formatting functions we do not need to
-              // alter the remote JSON data, except to indicate that infinite
-              // scrolling can be used
-              params.page = params.page || 1;
-              // console.log(data);
-              return {
-                results: data,
-                pagination: {
-                  more: (params.page * 30) < data.total_count
+
+
+    
+    
+    $.get("/get_student_batch_for_edit", { 
+            student_id: "{{ $getStudent->id }}" 
+    })
+    .done(function( data ) {
+
+        var batchType = $('#batch_types_id').find(":selected").val();
+
+        for (var i = 0; i < data.length; i++) {
+            
+            var subject_id = "#subject" + data[i].subjects_id;
+            var subject_id_for_select2 = data[i].subjects_id;
+            
+            
+            $( subject_id ).select2({
+            allowClear: true,
+            data: [
+               { id: data[i].id, text:  data[i].name }
+           ],
+            ajax: {
+                url: "/getallbatch",
+                dataType: 'json',
+                delay: 250,
+                tags: true,
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    page: params.page,
+                    subject_id: subject_id_for_select2,
+                    batchType_id:batchType
+                    };
+                },
+                processResults: function (data, params) {
+                  // parse the results into the format expected by Select2
+                  // since we are using custom formatting functions we do not need to
+                  // alter the remote JSON data, except to indicate that infinite
+                  // scrolling can be used
+                  params.page = params.page || 1;
+                  // console.log(data);
+                  return {
+                    results: data,
+                    pagination: {
+                      more: (params.page * 30) < data.total_count
+                    }
+                  };
+                },
+                cache: true
                 }
-              };
-            },
-            cache: true
+            });
+
         }
-    });
+        console.log(data);
+        
+        
+
+     });
+
+    
+
+
+
 
     $('#batch_types_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
@@ -99,8 +130,8 @@ $(document).ready(function () {
            $( this ).parent().siblings(".form-group").show();
             
             var batchType = $('#batch_types_id').find(":selected").val();
-            console.log("batchType");
-            console.log(batchType);
+            // console.log("batchType");
+            // console.log(batchType);
             var subject_id = "#subject" + this.value;
             var subject_id_for_select2 = this.value;
             // var full_url = "/getallbatch/" + subject_id + "/" + batchType;
@@ -142,6 +173,8 @@ $(document).ready(function () {
         else{
             // $("#box_color").attr("class","box box-success");
             $( this ).parent().siblings(".form-group").hide();
+            var subject_id = "#subject" + this.value;
+            $(subject_id).val('');
         }
     });
 
@@ -217,7 +250,7 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="phone_away">Edditional Phone Number*</label>
                     
-                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{$getStudent->phone_away}}">
+                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{ $getStudent->phone_away }}">
                     
                 </div>
             </div>
@@ -237,7 +270,7 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="batch_types_id" >Batch type*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
-                            <option value="1">Choose...</option>
+                            <option value="{{ $getStudent->batchType->id }}">{{ $getStudent->batchType->name}}</option>
                             @foreach ($batchTypes as $batchType)
                                 <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach

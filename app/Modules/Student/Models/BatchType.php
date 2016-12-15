@@ -18,12 +18,16 @@ class BatchType extends Model
      */
     protected $fillable = [
         'name',
-        'description',
     ];
     
     public function batch()
     {
         return $this->hasmany('App\Modules\Student\Models\Batch');
+    }
+
+    public function student()
+    {
+        return $this->hasmany('App\Modules\Student\Models\Student');
     }
 
 }
