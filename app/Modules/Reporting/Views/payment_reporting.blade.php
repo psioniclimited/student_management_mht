@@ -294,7 +294,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input id="start_date" type="text" class="form-control ref_date" name="start_date" >
+                                <input id="start_date" type="text" class="form-control ref_date" name="start_date" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -311,7 +311,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input id="end_date" type="text" class="form-control ref_date" name="end_date" >
+                                <input id="end_date" type="text" class="form-control ref_date" name="end_date" autocomplete="off">
                             </div>
                         </div>
                     </div>

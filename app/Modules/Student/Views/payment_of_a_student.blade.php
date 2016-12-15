@@ -18,6 +18,8 @@
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
+<!-- <script src="http://www.position-absolute.com/creation/print/jquery.printPage.js" ></script> -->
+<script src="{{asset('plugins/jqueryPrintArea/jquery.PrintArea.js')}}" ></script>
 <script>
     // add the rule here
     $.validator.addMethod("valueNotEquals", function (value, element, arg) {
@@ -231,6 +233,12 @@
     // });
 
 
+    $('#payment_print').click(function() {
+        var mode = 'iframe';
+        var close = mode == 'popup';
+        var options = { mode : mode, popClass : close };
+        $('#printPaymentArea').printArea(options);
+    });
 
     $("#student_info_for_payment").click(function() {
         // console.log($('select[id=student_id]').val());
@@ -475,6 +483,7 @@
                     {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
                     <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                     <input type='hidden' id="students_id" name="students_id">
+                    <div id="printPaymentArea">
                         <table id="all_user_list" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -488,10 +497,19 @@
                             <tbody id="batch_table">                            
                             </tbody >
                         </table>
-                    <div class="footer">
-                        <label for="" ></label>
-                        <button type="submit" class="btn btn-block btn-success">Payment</button>
+                        <div class="footer">
+                            <label for="" ></label>
+                            <div class="row">
+                            <div class="col-md-6">
+                                <button id="payment_print" type="button" class="btn btn-block btn-primary">Print</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-block btn-success">Payment</button>
+                            </div>
+                            </div>
+                        </div>
                     </div>
+
                     {!! Form::close() !!}
                 </div>
                 <!-- /.box-body -->
