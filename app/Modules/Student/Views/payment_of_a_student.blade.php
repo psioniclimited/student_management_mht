@@ -20,6 +20,7 @@
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
 <!-- <script src="http://www.position-absolute.com/creation/print/jquery.printPage.js" ></script> -->
 <script src="{{asset('plugins/jqueryPrintArea/jquery.PrintArea.js')}}" ></script>
+<script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
 <script>
     // add the rule here
     $.validator.addMethod("valueNotEquals", function (value, element, arg) {
@@ -210,34 +211,16 @@
     }
 
 
-    // $("#student_info_for_payment").ajaxForm({
-    //     url: '/get_student_info_for_payment', 
-    //     type: 'get',
-    //     clearForm: true,
-    //     success: function(data) {
-    //        console.log("/get_student_info_for_payment");
-    //        console.log(data);
-           
-    //         console.log(data.length);
-    //         console.log("testing");
-    //        $('p#student_name').text(data.name);
-    //        $('p#student_email').text(data.email);
-    //        $('p#fathers_name').text(data.fathers_name);
-    //        $('p#mothers_name').text(data.mothers_name);
-    //        $('p#phone_home').text(data.phone_home);
-    //        $('p#phone_away').text(data.phone_away);
-    //        $('input#students_id').val(data.id);
-    //        getBatches(data.id);
-       
-    //     } 
-    // });
+    
 
 
     $('#payment_print').click(function() {
-        var mode = 'iframe';
-        var close = mode == 'popup';
-        var options = { mode : mode, popClass : close };
-        $('#printPaymentArea').printArea(options);
+        // var mode = 'iframe';
+        // var close = mode == 'popup';
+        // var options = { mode : mode, popClass : close };
+        // $('#printPaymentArea').printArea(options);
+        // $.print("#printPaymentArea" /*, options*/);
+        console.log($('#student_payment').serializeArray());
     });
 
     $("#student_info_for_payment").click(function() {
@@ -257,6 +240,30 @@
         });
 
     });
+
+    // $('#confirm_delete').on('show.bs.modal', function(e) {
+    //    var $modal = $(this),
+    //    user_id = e.relatedTarget.id;
+    //        console.log(user_id);
+
+    //    $('#delete_customer').click(function(e){    
+    //        $.ajax({
+    //            cache: false,
+    //            type: 'POST',
+    //            url: '/batch/' + user_id + '/delete',
+    //            data: user_id,
+    //            success: function(data) {
+    //                console.log("Deleted Successfully");
+    //                table.ajax.reload(null, false);
+    //                $('#confirm_delete').modal('toggle');
+    //            },
+    //            error: function() {
+    //             $('div#delete_msg').html("<div class='alert alert-danger'><strong>Danger!</strong> This Batch is related to Other Information !!!</div>");
+                  
+    //           }
+    //        });
+    //    });
+    // });
 
     
 
@@ -497,6 +504,7 @@
                             <tbody id="batch_table">                            
                             </tbody >
                         </table>
+                    </div>
                         <div class="footer">
                             <label for="" ></label>
                             <div class="row">
@@ -508,13 +516,57 @@
                             </div>
                             </div>
                         </div>
-                    </div>
-
                     {!! Form::close() !!}
                 </div>
                 <!-- /.box-body -->
     </div>
     <!-- /.box -->
+
+
+
+    <!-- Print Payment Modal -->
+   <div class="modal fade" id="confirm_delete" role="dialog">
+       <div class="modal-dialog">
+           <!-- Modal content-->
+            <div class="modal-content">
+               <div class="modal-header">
+                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+                   <h4 class="modal-title">MHT</h4>
+               </div>
+               <div class="modal-body">
+                   <table id="all_user_list" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Batch Name</th>
+                                <th>Last Paid</th>
+                                <th>Unit Price /=</th>
+                                <th>no of month</th>
+                                <th>Total Price Per Course /= </th>
+                            </tr>
+                        </thead>
+                        <tbody id="batch_table">                            
+                        </tbody >
+                    </table>
+                   
+               </div>
+               <div class="modal-footer">
+                   <button type="button" class="btn btn-info" id="print_payment">Print</button>
+                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+               </div>
+            </div>
+           <!-- /. Modal content ends here -->
+       </div>
+   </div>
+   <!--  Delete Customer Modal ends here -->  
+
+
+
+
+
+
+
+
+
 
 
 </section>

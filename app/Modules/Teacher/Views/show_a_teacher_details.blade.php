@@ -603,7 +603,7 @@
 
 
 
-    <!-- Delete Customer Modal -->
+    <!-- Delete Batch Modal -->
    <div class="modal fade" id="confirm_delete" role="dialog">
        <div class="modal-dialog">
            <!-- Modal content-->
@@ -625,7 +625,7 @@
            <!-- /. Modal content ends here -->
        </div>
    </div>
-   <!--  Delete Customer Modal ends here -->  
+   <!--  Delete Batch Modal ends here -->  
 
 
 </section>
