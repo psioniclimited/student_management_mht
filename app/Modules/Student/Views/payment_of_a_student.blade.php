@@ -33,7 +33,7 @@
                 "May", "June","July", "August",
                 "September","October","November","December"];
 
-    // var table = "";
+    var batch_length = 0;
 
 	//Date picker for Start Date
     $('.ref_date').datepicker({
@@ -82,7 +82,7 @@
             var output='';
             $('#batch_table').html(''); 
             var c = 0;
-
+            batch_length = batches.length;
 
             for (var i = 0; i < batches.length; i++) {
                 // output += "<tr role='row' class='even'>"+
@@ -194,11 +194,11 @@
                 var no_of_month = this.value;
                 var month_id = this.id;
                 var unit_price_id = "#unit_price_" + month_id.substring(month_id.length-1);
-                console.log(unit_price_id);
+                // console.log(unit_price_id);
                 var total_price_id = "#total_price_"+month_id.substring(month_id.length-1);
                 var unit_price_amount = $(unit_price_id).val();
                 var total_price_amount = $(total_price_id).val(unit_price_amount * no_of_month);
-                console.log(total_price_amount);
+                // console.log(total_price_amount);
                 var sum = 0;
                 $('.totalprice').each(function(){
                     sum += parseFloat(this.value);
@@ -220,8 +220,67 @@
         // var options = { mode : mode, popClass : close };
         // $('#printPaymentArea').printArea(options);
         // $.print("#printPaymentArea" /*, options*/);
-        console.log($('#student_payment').serializeArray());
+        var header = "<table class='table table-bordered table-striped'>"+
+                        "<thead>"+
+                            "<tr>"+
+                                "<th>Batch Name</th>"+
+                                "<th>Last Paid</th>"+
+                                "<th>Unit Price /=</th>"+
+                                "<th>no of month</th>"+
+                                "<th>Total Price Per Course /= </th>"+
+                            "</tr>"+
+                        "</thead>"+
+                        "<tbody>";                         
+                        
+
+        console.log("Batch Length : "+batch_length);
+        
+        var date_of_payment = $('.ref_date').attr('value');
+
+        var payment_data = $('#student_payment').serializeArray();
+        var payment_data_count = 0;
+        var payment_output = "";
+
+        for (var count = 0; count < batch_length; count++) {
+            var human_readable_last_paid_date = moment(payment_data[5+payment_data_count].value);
+                human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
+            payment_output += "<tr role='row' class='even'>"+
+                                "<td>"+payment_data[7+payment_data_count].value+"</td>"+
+                                "<td>"+human_readable_last_paid_date+"</td>"+
+                                "<td>"+payment_data[6+payment_data_count].value+"</td>"+
+                                "<td>"+payment_data[8+payment_data_count].value+"</td>"+
+                                "<td>"+payment_data[9+payment_data_count].value+"</td>"+
+                            "</tr>";
+
+
+
+
+            // var batch_name = payment_data[7+payment_data_count].value;
+            // var last_paid_date = payment_data[5+payment_data_count].value;
+            // var unit_price_per_course = payment_data[6+payment_data_count].value;
+            // var no_of_month_per_course = payment_data[8+payment_data_count].value;
+            // var total_price_per_course = payment_data[9+payment_data_count].value;
+            // console.log(batch_name+", "+last_paid_date+", "+unit_price_per_course+", "+no_of_month_per_course+", "+total_price_per_course +", "+date_of_payment);
+
+            payment_data_count += 7;
+        }
+
+            payment_output += "<tr role='row' class='even'>"+
+                                "<td></td>"+
+                                "<td></td>"+
+                                "<td></td>"+
+                                "<td>Total Price</td>"+
+                                "<td>"+payment_data[ payment_data.length - 1 ].value+"</td>"+
+                            "</tr></tbody ></table>";                
+        var final_output = header + payment_output;
+        // $('#printFormat').html(final_output);
+
+        $.print(final_output /*, options*/);
+        console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
+        console.log(payment_data);
     });
+
+
 
     $("#student_info_for_payment").click(function() {
         // console.log($('select[id=student_id]').val());
@@ -490,51 +549,7 @@
                     {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
                     <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                     <input type='hidden' id="students_id" name="students_id">
-                    <div id="printPaymentArea">
-                        <table id="all_user_list" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Batch Name</th>
-                                    <th>Last Paid</th>
-                                    <th>Unit Price /=</th>
-                                    <th>no of month</th>
-                                    <th>Total Price Per Course /= </th>
-                                </tr>
-                            </thead>
-                            <tbody id="batch_table">                            
-                            </tbody >
-                        </table>
-                    </div>
-                        <div class="footer">
-                            <label for="" ></label>
-                            <div class="row">
-                            <div class="col-md-6">
-                                <button id="payment_print" type="button" class="btn btn-block btn-primary">Print</button>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-block btn-success">Payment</button>
-                            </div>
-                            </div>
-                        </div>
-                    {!! Form::close() !!}
-                </div>
-                <!-- /.box-body -->
-    </div>
-    <!-- /.box -->
-
-
-
-    <!-- Print Payment Modal -->
-   <div class="modal fade" id="confirm_delete" role="dialog">
-       <div class="modal-dialog">
-           <!-- Modal content-->
-            <div class="modal-content">
-               <div class="modal-header">
-                   <button type="button" class="close" data-dismiss="modal">&times;</button>
-                   <h4 class="modal-title">MHT</h4>
-               </div>
-               <div class="modal-body">
-                   <table id="all_user_list" class="table table-bordered table-striped">
+                    <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Batch Name</th>
@@ -547,26 +562,22 @@
                         <tbody id="batch_table">                            
                         </tbody >
                     </table>
-                   
-               </div>
-               <div class="modal-footer">
-                   <button type="button" class="btn btn-info" id="print_payment">Print</button>
-                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-               </div>
-            </div>
-           <!-- /. Modal content ends here -->
-       </div>
-   </div>
-   <!--  Delete Customer Modal ends here -->  
-
-
-
-
-
-
-
-
-
+                    <div class="footer">
+                        <label for="" ></label>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <button id="payment_print" type="button" class="btn btn-block btn-primary">Print</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-block btn-success">Payment</button>
+                        </div>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
+                </div>
+                <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
 
 
 </section>
