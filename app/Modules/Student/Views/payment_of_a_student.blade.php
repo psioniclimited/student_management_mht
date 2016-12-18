@@ -19,7 +19,7 @@
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
 <!-- <script src="http://www.position-absolute.com/creation/print/jquery.printPage.js" ></script> -->
-<script src="{{asset('plugins/jqueryPrintArea/jquery.PrintArea.js')}}" ></script>
+<!-- <script src="{{asset('plugins/jqueryPrintArea/jquery.PrintArea.js')}}" ></script> -->
 <script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
 <script>
     // add the rule here
@@ -213,23 +213,23 @@
 
     
 
-
+    // $( "#student_payment" ).submit(function( event ) {
     $('#payment_print').click(function() {
         // var mode = 'iframe';
         // var close = mode == 'popup';
         // var options = { mode : mode, popClass : close };
         // $('#printPaymentArea').printArea(options);
         // $.print("#printPaymentArea" /*, options*/);
-        var header = "<table class='table table-bordered table-striped'>"+
-                        "<thead>"+
-                            "<tr>"+
-                                "<th>Batch Name</th>"+
-                                "<th>Last Paid</th>"+
-                                "<th>Unit Price /=</th>"+
-                                "<th>no of month</th>"+
-                                "<th>Total Price Per Course /= </th>"+
-                            "</tr>"+
-                        "</thead>"+
+        var header =    "<table class='table table-bordered table-striped'>"+
+                            "<thead>"+
+                                "<tr>"+
+                                    "<th>Batch Name</th>"+
+                                    "<th>Last Paid</th>"+
+                                    "<th>Unit Price /=</th>"+
+                                    "<th>no of month</th>"+
+                                    "<th>Total Price Per Course /= </th>"+
+                                "</tr>"+
+                            "</thead>"+
                         "<tbody>";                         
                         
 
@@ -275,11 +275,28 @@
         var final_output = header + payment_output;
         // $('#printFormat').html(final_output);
 
-        $.print(final_output /*, options*/);
+        // $.print("#student_payment" /*, options*/);
+        $(final_output).print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 750,
+            title: null,
+            doctype: '<!doctype html>'
+    });
+
+
+
         console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
         console.log(payment_data);
     });
-
+    
 
 
     $("#student_info_for_payment").click(function() {

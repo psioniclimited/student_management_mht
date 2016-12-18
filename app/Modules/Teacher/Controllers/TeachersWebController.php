@@ -19,7 +19,7 @@ use Datatables;
 use Storage;
 use File;
 use Entrust;
-
+use Carbon\Carbon;
 
 class TeachersWebController extends Controller {
 
@@ -113,5 +113,30 @@ class TeachersWebController extends Controller {
 		Student::where('id', $id)->delete();
 		return redirect('all_teachers');
 	}
+
+    public function teacherPaymentAllBatch()
+    {
+        $refDate = Carbon::now();
+        $refDate = $refDate->toDateString();
+        $refDate = Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
+        return view('Teacher::teacher_payment_for_all_batch',compact('refDate'));
+    }
+
+    public function getAllTeacherForPayment(Request $request) {
+        
+        $search_term = $request->input('term');
+        return response()->json(User::whereHas('roles', function($query){
+            $query->where('name', 'teacher');
+        })->where('name', "LIKE", "%{$search_term}%")->
+        get(['id', 'name as text']));
+
+
+        dd(User::has('roles', 'admin'));
+        $getTeacher = User::where('name', "LIKE", "%{$search_term}%")
+                    ->get(['id', 'name as text']);
+
+        // $getTeacher = TeacherDetail::with('user')->get();
+        return response()->json($getTeacher);
+    }
 
 }

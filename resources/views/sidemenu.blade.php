@@ -50,6 +50,7 @@
         <ul class="treeview-menu">
             <li {!! Request::is('*all_teachers*') ? ' class="active"' : null !!}><a href="{{url('all_teachers')}}"><i class="fa fa-circle-o"></i> All Teachers</a></li>
             <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> New Teacher</a></li>
+            <li {!! Request::is('*teacher_payment_all_batch*') ? ' class="active"' : null !!}><a href="{{url('teacher_payment_all_batch')}}"><i class="fa fa-circle-o"></i> Teacher Payment For All Batches</a></li>
         </ul>
     </li>
     <li {!! Request::is('*reporting*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">

@@ -44,4 +44,9 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('teacher/{teacher}/delete', 'App\Modules\Teacher\Controllers\TeachersWebController@deleteTeacher');
 
 
+    /***********************
+    * Teacher Payment Info *
+    ************************/
+    Route::get('teacher_payment_all_batch', 'App\Modules\Teacher\Controllers\TeachersWebController@teacherPaymentAllBatch');
+    Route::get('get_all_teacher_for_payment', 'App\Modules\Teacher\Controllers\TeachersWebController@getAllTeacherForPayment');
 });
