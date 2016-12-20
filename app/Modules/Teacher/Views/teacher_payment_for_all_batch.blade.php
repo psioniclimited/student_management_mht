@@ -29,11 +29,7 @@
 
     $(document).ready(function () {
 
-    var month = ["January","February","March", "April",
-                "May", "June","July", "August",
-                "September","October","November","December"];
 
-    var batch_length = 0;
 
 	//Date picker for Start Date
     $('.ref_date').datepicker({
@@ -42,7 +38,7 @@
     });
 
 
-	$('#student_id').select2({
+	$('#teacher_user_id').select2({
         allowClear: true,
         placeholder: 'Select Teacher',
         ajax: {
@@ -72,6 +68,34 @@
             },
             cache: true
         }
+    });
+
+    $("#all_batch_for_teacher_payment").click(function() {
+        
+        var table = $('#all_user_list').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                    'url': "{{URL::to('/get_all_batch_for_teacher_payment')}}",
+                    'data': {
+                       teacher_user_id: $('select[id=teacher_user_id]').val(),
+                       ref_date: $('input[id=ref_date]').val()
+                    },
+                },
+            "columns": [
+                    {"data": "name"},
+                    {"data": "teacher_payment_per_batch"},
+                    {"data": "Link", name: 'link', orderable: false, searchable: false}
+                ]
+        	});
+
     });
 
 
@@ -215,7 +239,7 @@
 	                            <div class="input-group-addon">
 	                                <i class="fa fa-calendar"></i>
 	                            </div>
-	                            <input type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}">
+	                            <input id="ref_date" type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}" autocomplete="off">
 	                        </div>
 	                    </div>
 	                </div>
@@ -223,11 +247,11 @@
                     
 	                <div class="col-xs-4">
 	                    <label for="batch_id" >Student*</label>
-	                    <select class="form-control select2" name="student_id" id="student_id"></select>
+	                    <select class="form-control select2" name="teacher_user_id" id="teacher_user_id"></select>
                 	</div>
 	                <div class="col-xs-4">
 	                    <label for="" ></label>
-	                    <button type="submit" id="student_info_for_payment" class="btn btn-block btn-success">Show</button>
+	                    <button type="submit" id="all_batch_for_teacher_payment" class="btn btn-block btn-success">Show</button>
 	                </div>
                     
                     
@@ -237,6 +261,35 @@
             <!-- /.box-body -->
     </div>
     <!-- /.box-body -->
+
+
+
+
+        <!-- Horizontal Form -->
+    <div class="box box-warning">
+            <div class="box-header">
+                <h4>
+                    All Batches under 
+                </h4>            
+            </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="all_user_list" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Batch Name</th>
+                                <th>Price Tk/=</th>
+                                <th>Action</th>                            
+                            </tr>
+                        </thead>
+                        <tbody>                            
+                            <!-- user list -->
+                        </tbody>                        
+                    </table>
+                </div>
+                <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
 
 
 

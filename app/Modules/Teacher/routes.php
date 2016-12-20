@@ -49,4 +49,6 @@ Route::group(['middleware' => ['web']], function () {
     ************************/
     Route::get('teacher_payment_all_batch', 'App\Modules\Teacher\Controllers\TeachersWebController@teacherPaymentAllBatch');
     Route::get('get_all_teacher_for_payment', 'App\Modules\Teacher\Controllers\TeachersWebController@getAllTeacherForPayment');
+
+    Route::get('get_all_batch_for_teacher_payment', 'App\Modules\Teacher\Controllers\TeachersWebController@getAllBatchForTeacherPayment');
 });

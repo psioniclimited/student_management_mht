@@ -12,7 +12,8 @@ use App\Modules\Student\Models\BatchType;
 use App\Modules\Student\Models\Grade;
 use App\Modules\Student\Models\Subject;
 use App\Modules\Teacher\Models\TeacherDetail;
-
+use App\Modules\Student\Models\InvoiceDetail;
+use App\Modules\Student\Models\InvoiceMaster;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
@@ -107,7 +108,7 @@ class TeachersWebController extends Controller {
 
     
     /******************
-    * Delete a Teacher *
+    * Delete a Teacher*
     *******************/
 	public function deleteTeacher(Request $request, $id) {
 		Student::where('id', $id)->delete();
@@ -137,6 +138,43 @@ class TeachersWebController extends Controller {
 
         // $getTeacher = TeacherDetail::with('user')->get();
         return response()->json($getTeacher);
+    }
+
+    
+    public function getAllBatchForTeacherPayment(Request $request) {
+
+        $getmonth = \Carbon\Carbon::createFromFormat('d/m/Y', $request->ref_date);
+        $getmonth->day = 01;
+        $getmonth = $getmonth->toDateString();
+        
+        $batches = Batch::with('batchType', 'grade')->where('teacher_details_users_id', $request->teacher_user_id)->get();
+        
+        return Datatables::of($batches)
+            ->addColumn('teacher_payment_per_batch', function ($batches) use($getmonth,$request){
+                
+                $price_per_batch = InvoiceDetail::where('batch_id', $batches->id)->where('payment_to', $getmonth)->sum('price');
+                $teacherPercentage = TeacherDetail::select('teacher_percentage')->where('users_id',$request->teacher_user_id)->get();
+                dd($teacherPercentage);
+                $price_per_batch = $price_per_batch * ( ($teacherPercentage->teacher_percentage)  / 100);
+                if($price_per_batch==null) {
+                    return 0;
+                }
+                return $price_per_batch;
+
+            })
+            ->addColumn('Link', function ($batches) {
+                
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                
+                return '<a class="btn btn-xs btn-info" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_edit">
+                        <i class="glyphicon glyphicon-trash"></i> Detail </a>';
+
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->make(true);
     }
 
 }

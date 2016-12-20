@@ -485,7 +485,7 @@
 	                            <div class="input-group-addon">
 	                                <i class="fa fa-calendar"></i>
 	                            </div>
-	                            <input type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}">
+	                            <input type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}" autocomplete="off">
 	                        </div>
 	                    </div>
 	                </div>
