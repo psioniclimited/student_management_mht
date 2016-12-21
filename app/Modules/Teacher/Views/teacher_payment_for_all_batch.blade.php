@@ -98,10 +98,7 @@
 
     });
 
-
-
-
-        // initialize tooltipster on text input elements
+		// initialize tooltipster on text input elements
         // $('form input,select,textarea').tooltipster({
         //     trigger: 'custom',
         //     onlyOne: false,
