@@ -11,6 +11,11 @@
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script>
 
+// add the rule here
+$.validator.addMethod("valueNotEquals", function (value, element, arg) {
+    return arg != value;
+}, "Value must not equal arg.");
+
 $(document).ready(function () {
 
     // initialize tooltipster on form input elements
@@ -21,44 +26,41 @@ $(document).ready(function () {
     });
 
     // initialize validate plugin on the form
-    // $('#add_user_form').validate({
-    //     errorPlacement: function (error, element) {
+    $('#add_user_form').validate({
+        errorPlacement: function (error, element) {
 
-    //         var lastError = $(element).data('lastError'),
-    //                 newError = $(error).text();
+            var lastError = $(element).data('lastError'),
+                    newError = $(error).text();
 
-    //         $(element).data('lastError', newError);
+            $(element).data('lastError', newError);
 
-    //         if (newError !== '' && newError !== lastError) {
-    //             $(element).tooltipster('content', newError);
-    //             $(element).tooltipster('show');
-    //         }
-    //     },
-    //     success: function (label, element) {
-    //         $(element).tooltipster('hide');
-    //     },
-    //     rules: {
-    //         name: {required: true, minlength: 4},
-    //         fathers_name: {required: true, minlength: 4},
-    //         mothers_name: {required: true, minlength: 4},
-    //         phone_home: {required: true},
-    //         phone_away: {required: true},
-    //         schools_id: {valueNotEquals: "default"},
-    //         batch_id: {valueNotEquals: "default"},
-    //         subjects_id: {required: true},
-
-    //     },
-    //     messages: {
-    //         name: {required: "Enter Student Name"},
-    //         fathers_name: {required: "Enter Student's Father Name"},
-    //         mothers_name: {required: "Enter Student's Mother's Name"},
-    //         phone_home: {required: "Enter Home Phone Number"},
-    //         phone_away: {required: "Enter Additional Phone Number"},
-    //         schools_id: {valueNotEquals: "Select a School"},
-    //         batch_id: {valueNotEquals: "Select a Batch"},
-    //         subjects_id: {required: "Choose Subjects"},
-    //     }
-    // });
+            if (newError !== '' && newError !== lastError) {
+                $(element).tooltipster('content', newError);
+                $(element).tooltipster('show');
+            }
+        },
+        success: function (label, element) {
+            $(element).tooltipster('hide');
+        },
+        rules: {
+            name: {required: true, minlength: 4},
+            fathers_name: {required: true, minlength: 4},
+            mothers_name: {required: true, minlength: 4},
+            phone_home: {required: true},
+            phone_away: {required: true},
+            schools_id: {valueNotEquals: "default"},
+            batch_types_id: {valueNotEquals: "default"},
+        },
+        messages: {
+            name: {required: "Enter Student Name"},
+            fathers_name: {required: "Enter Student's Father Name"},
+            mothers_name: {required: "Enter Student's Mother's Name"},
+            phone_home: {required: "Enter Home Phone Number"},
+            phone_away: {required: "Enter Additional Phone Number"},
+            schools_id: {valueNotEquals: "Select a School"},
+            batch_types_id: {valueNotEquals: "Select a Batch"},
+        }
+    });
 
     // $('#batch_id').select2({
     //     allowClear: true,
@@ -276,7 +278,7 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="batch_types_id" >Batch type*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
-                            <option value="1">Choose...</option>
+                            <option value="default">Choose...</option>
                             @foreach ($batchTypes as $batchType)
                                 <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach

@@ -141,20 +141,27 @@ class StudentsWebController extends Controller {
     	// return $request->all();
         $student = Student::find($id);
     	
-        if( !$student->update( $request->all()) ) {
+        if( !$student->update( $request->all()) )
     		return "error";
-    	}
     	
-    	$student->subject()->sync($request->input('subject'));
-        $student->batch()->sync($request->input('batch_name'));
+    	if ($request->has('subject')) {
+            # code...
         
-        $last_paid_date = new Carbon('first day of last month');
-        $last_paid_date = $last_paid_date->toDateString();
-        
-        BatchHasStudent::where('students_id', $id)
-                        ->where('last_paid_date', null)
-                        ->update(['last_paid_date' => $last_paid_date]);
+        	$student->subject()->sync($request->input('subject'));
+            $student->batch()->sync($request->input('batch_name'));
+            
+            $last_paid_date = new Carbon('first day of last month');
+            $last_paid_date = $last_paid_date->toDateString();
+            
+            BatchHasStudent::where('students_id', $id)
+                            ->where('last_paid_date', null)
+                            ->update(['last_paid_date' => $last_paid_date]);
 
+            // Batch::student()->updateExistingPivot($id, ['last_paid_date' => $last_paid_date]);
+        }
+        else {
+
+        }
     	return redirect('all_students');
     }
 

@@ -301,8 +301,10 @@ $(document).ready(function () {
 
                 <div class="form-group">
                     <label for="subjects_id">Choose Subject*</label>
+                    @if( ! $getStudent->subject->isEmpty() )
                     @foreach($Subjects as $subject)
                     <div class="checkbox">
+
                         @foreach($getStudent->subject as $selected_subject)
                             @if($selected_subject->id === $subject->id)
                               <label>
@@ -326,7 +328,19 @@ $(document).ready(function () {
                         @endforeach
                     </div>
                     @endforeach
-
+                    @else
+                        @foreach ($Subjects as $subject)
+                    <div class="checkbox">
+                        <label>
+                          <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
+                          {{ $subject->name }}
+                        </label>
+                        <div class="form-group batchSelection" style="display:none;">
+                            <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                        </div>
+                    </div>
+                    @endforeach
+                    @endif
                 </div>
 
 

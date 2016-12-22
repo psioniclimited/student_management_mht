@@ -35,14 +35,13 @@
 
     var batch_length = 0;
 
-	//Date picker for Start Date
+    //Date picker for Start Date
     $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
       autoclose: true
     });
 
-
-	$('#student_id').select2({
+    $('#student_id').select2({
         allowClear: true,
         placeholder: 'Select Student',
         ajax: {
@@ -85,15 +84,6 @@
             batch_length = batches.length;
 
             for (var i = 0; i < batches.length; i++) {
-                // output += "<tr role='row' class='even'>"+
-                //                 "<td>"+"<input name=batch_name_"+i+" value='"+batches[i].name+"' readonly></td>"+
-                //                 "<td>"+"<input name=last_paid_date_"+i+" value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
-                //                 "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price_"+i+" value='"+batches[i].price+"' readonly></td>"+
-                //                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month' value='1'"+"/></td>"+
-                //                 "<td>"+"<input id='total_price_"+i+"' name=total_price_"+i+" value='"+batches[i].price+"' readonly></td>"+
-                //             "</tr>";
-                
-
                 var current = moment();
                 var last_paid = moment(batches[i].pivot.last_paid_date);
                 var month_diffrence = current.diff(last_paid, 'months');
@@ -109,34 +99,6 @@
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
                 var payment_for_each_batch = month_diffrence * batches[i].price;
                              
-                
-                // output += "<tr role='row' class='even'>"+
-                //                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
-                //                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
-                //                 "<td>"+"<input name=batch_name[] value='"+batches[i].name+"' readonly></td>"+
-                //                 "<td>"+"<input name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly></td>"+
-                //                 "<td>"+"<input id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"' readonly></td>"+
-                //                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
-                //                 "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
-                //             "</tr>";
-
-
-
-                // output += "<tr role='row' class='even'>"+
-                //                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
-                //                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
-                //                 "<input type='hidden' name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly>"+
-                //                 "<input type='hidden' id='unit_price_"+i+"' name=batch_unit_price[] value='"+batches[i].price+"'>"+
-                //                 "<input type='hidden' name=batch_name[] value='"+batches[i].name+"' readonly>"+
-                //                 "<td>"+batches[i].name+"</td>"+
-                //                 "<td>"+human_readable_last_paid_date+"</td>"+
-                //                 "<td>"+batches[i].price+"</td>"+
-                //                 "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
-                //                 "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
-                //             "</tr>";
-
-
-
                 output += "<tr role='row' class='even'>"+
                                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
                                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
@@ -148,11 +110,6 @@
                                 "<td>"+batches[i].name+"</td>"+
                                 "<td>"+human_readable_last_paid_date+"</td>"+
                                 "<td>"+batches[i].price+"</td>"+
-                                
-                                
-                                // "<td>" + "<input habib='" + i + "' id='month_" + i + "' type='text' name='month[]' value='"+month_diffrence+"'/></td>"+
-                                
-
                                 "<td>"+
                                     "<select class='form-control' id='month_" + i + "' name='month[]' >"+
                                             "<option value='"+month_diffrence+"'>"+month_diffrence+"</option>"+
@@ -164,9 +121,6 @@
                                             "<option value=5>5</option>"+
                                     "</select>"+
                                 "</td>"+                       
-
-
-
                                 "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
                             "</tr>";
             }
@@ -300,145 +254,28 @@
 
 
     $("#student_info_for_payment").click(function() {
-        // console.log($('select[id=student_id]').val());
+        console.log($('select[id=student_id]').val());
         $.get("/get_student_info_for_payment", { 
                 student_id: $('select[id=student_id]').val() 
         })
         .done(function( data ) {
-           $('p#student_name').text(data.name);
-           $('p#student_email').text(data.email);
-           $('p#fathers_name').text(data.fathers_name);
-           $('p#mothers_name').text(data.mothers_name);
-           $('p#phone_home').text(data.phone_home);
-           $('p#phone_away').text(data.phone_away);
-           $('input#students_id').val(data.id);
-           getBatches(data.id);
+            if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
+               $("#student_payment_div").css({ display: "block" });
+               $('p#student_name').text(data.name);
+               $('p#student_email').text(data.email);
+               $('p#fathers_name').text(data.fathers_name);
+               $('p#mothers_name').text(data.mothers_name);
+               $('p#phone_home').text(data.phone_home);
+               $('p#phone_away').text(data.phone_away);
+               $('input#students_id').val(data.id);
+               getBatches(data.id);
+            }
+           
         });
 
     });
 
-    // $('#confirm_delete').on('show.bs.modal', function(e) {
-    //    var $modal = $(this),
-    //    user_id = e.relatedTarget.id;
-    //        console.log(user_id);
 
-    //    $('#delete_customer').click(function(e){    
-    //        $.ajax({
-    //            cache: false,
-    //            type: 'POST',
-    //            url: '/batch/' + user_id + '/delete',
-    //            data: user_id,
-    //            success: function(data) {
-    //                console.log("Deleted Successfully");
-    //                table.ajax.reload(null, false);
-    //                $('#confirm_delete').modal('toggle');
-    //            },
-    //            error: function() {
-    //             $('div#delete_msg').html("<div class='alert alert-danger'><strong>Danger!</strong> This Batch is related to Other Information !!!</div>");
-                  
-    //           }
-    //        });
-    //    });
-    // });
-
-    
-
-
-
-
-
-        // initialize tooltipster on text input elements
-        // $('form input,select,textarea').tooltipster({
-        //     trigger: 'custom',
-        //     onlyOne: false,
-        //     position: 'right'
-        // });
-
-        // initialize validate plugin on the form
-        // $('#add_member_form').validate({
-        //     errorPlacement: function (error, element) {
-
-        //         var lastError = $(element).data('lastError'),
-        //                 newError = $(error).text();
-
-        //         $(element).data('lastError', newError);
-
-        //         if (newError !== '' && newError !== lastError) {
-        //             $(element).tooltipster('content', newError);
-        //             $(element).tooltipster('show');
-        //         }
-        //     },
-        //     success: function (label, element) {
-        //         $(element).tooltipster('hide');
-        //     },
-        //     rules: {
-        //         fullname: {
-        //             required: true
-        //         },
-        //         date_of_birth: {
-        //             required: true
-        //         },
-        //         addrs: {
-        //             required: true
-        //         },
-        //         mob_num: {
-        //             required: true
-        //         },
-        //         off_num: {
-        //             required: true
-        //         },
-        //         email: {
-        //             required: true
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "default"
-        //         },
-        //         password: {
-        //             required: true
-        //         },
-        //         password_confirmation: {
-        //             required: true
-        //         },
-        //         pic: {
-        //             required: true
-        //         }
-                
-                
-                
-        //     },
-        //     messages: {
-        //         fullname: {
-        //             required: "provide fullname"
-        //         },
-        //         date_of_birth: {
-        //             required: "provide date of birth"
-        //         },
-        //         addrs: {
-        //             required: "provide address"
-        //         },
-        //         mob_num: {
-        //             required: "provide mobile number"
-        //         },
-        //         off_num: {
-        //             required: "provide office number"
-        //         },
-        //         email: {
-        //             required: "provide email"
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "provide member type"
-        //         },
-        //         password: {
-        //             valueNotEquals: "provide password"
-        //         },
-        //         password_confirmation: {
-        //             valueNotEquals: "provide password again"
-        //         },
-        //         pic: {
-        //             required: "provide a photo"
-        //         }
-        //     }
-        // });
 
     });
 </script>
@@ -476,7 +313,16 @@
             <div class="box-header with-border">
               <h3 class="box-title">Search for a Student</h3>
             </div>
-            <div class="box-body">
+            @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            <div id="search_student_div" class="box-body">
                 <div class="row">
 	                <div class="col-xs-4">
 	                    <div class="form-group">
@@ -485,7 +331,7 @@
 	                            <div class="input-group-addon">
 	                                <i class="fa fa-calendar"></i>
 	                            </div>
-	                            <input type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}" autocomplete="off">
+	                            <input id="ref_date" type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}" autocomplete="off">
 	                        </div>
 	                    </div>
 	                </div>
@@ -558,41 +404,41 @@
     <div class="box box-warning">
             <div class="box-header">
                 <h4>
-                    All Batches under <b></b>
+                    Payment 
                 </h4>            
             </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
-                    <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
-                    <input type='hidden' id="students_id" name="students_id">
-                    <table id="all_user_list" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Batch Name</th>
-                                <th>Last Paid</th>
-                                <th>Unit Price /=</th>
-                                <th>no of month</th>
-                                <th>Total Price Per Course /= </th>
-                            </tr>
-                        </thead>
-                        <tbody id="batch_table">                            
-                        </tbody >
-                    </table>
-                    <div class="footer">
-                        <label for="" ></label>
-                        <div class="row">
-                        <div class="col-md-6">
-                            <button id="payment_print" type="button" class="btn btn-block btn-primary">Print</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="submit" class="btn btn-block btn-success">Payment</button>
-                        </div>
-                        </div>
+            
+            <div id="student_payment_div" class="box-body" style="display: none;">
+                {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
+                <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
+                <input type='hidden' id="students_id" name="students_id">
+                <table id="all_user_list" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Batch Name</th>
+                            <th>Last Paid</th>
+                            <th>Unit Price /=</th>
+                            <th>no of month</th>
+                            <th>Total Price Per Course /= </th>
+                        </tr>
+                    </thead>
+                    <tbody id="batch_table">                            
+                    </tbody >
+                </table>
+                <div class="footer">
+                    <label for="" ></label>
+                    <div class="row">
+                    <div class="col-md-6">
+                        <button id="payment_print" type="button" class="btn btn-block btn-primary">Print</button>
                     </div>
-                    {!! Form::close() !!}
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-block btn-success">Payment</button>
+                    </div>
+                    </div>
                 </div>
-                <!-- /.box-body -->
+                {!! Form::close() !!}
+            </div>
+            <!-- /.box-body -->
     </div>
     <!-- /.box -->
 
