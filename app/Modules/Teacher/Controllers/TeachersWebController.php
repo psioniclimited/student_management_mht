@@ -39,7 +39,7 @@ class TeachersWebController extends Controller {
     					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                         return '<a href="' . url('/teacher') . '/' . $teachers->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
                         		'<a href="' . url('/teacher') . '/' . $teachers->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a class="btn btn-xs btn-danger" id="'. $teachers->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        		'<a class="btn btn-xs btn-danger" id="'. $teachers->users_id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
                         }
@@ -75,6 +75,7 @@ class TeachersWebController extends Controller {
 
 
 	public function addTeacherProcess(Request $request) {
+        // return $request->all();
         $user = User::create($request->all());
         $teacher = new TeacherDetail($request->all());
         $teacher->user()->associate($user);
@@ -112,7 +113,9 @@ class TeachersWebController extends Controller {
     * Delete a Teacher*
     *******************/
 	public function deleteTeacher(Request $request, $id) {
-		Student::where('id', $id)->delete();
+        $user = User::find($id);
+        $user->teacher_detail()->delete();
+		$user->delete();
 		return redirect('all_teachers');
 	}
 

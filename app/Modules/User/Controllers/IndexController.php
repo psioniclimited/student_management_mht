@@ -145,10 +145,17 @@ class IndexController extends Controller {
     * Delete a User *
     *****************/
 
-    public function deleteUser(User $user) {
+    public function deleteUser($id) {
         
-        // MembersDetail::where('user_id', $user->id)->delete();
-        $user->delete();
+        $user = User::find($id);
+        $role_user = RoleUser::where('user_id',$id)->first();
+        if ($role_user->role_id == 2) {
+            $user->teacher_detail()->delete();
+            $user->delete();
+        }
+        else {
+            $user->delete();
+        }
         
         return redirect('allusers');
     }

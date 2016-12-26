@@ -145,14 +145,14 @@ class StudentsWebController extends Controller {
     		return "error";
     	
     	if ($request->has('subject')) {
-            # code...
+            
         
         	$student->subject()->sync($request->input('subject'));
             $student->batch()->sync($request->input('batch_name'));
-            
+
             $last_paid_date = new Carbon('first day of last month');
             $last_paid_date = $last_paid_date->toDateString();
-            
+
             BatchHasStudent::where('students_id', $id)
                             ->where('last_paid_date', null)
                             ->update(['last_paid_date' => $last_paid_date]);
@@ -160,7 +160,9 @@ class StudentsWebController extends Controller {
             // Batch::student()->updateExistingPivot($id, ['last_paid_date' => $last_paid_date]);
         }
         else {
-
+            $batch_has_student = BatchHasStudent::where('students_id', $id);
+            $batch_has_student->delete();
+            $student->subject()->detach();
         }
     	return redirect('all_students');
     }

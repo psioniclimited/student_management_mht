@@ -19,6 +19,7 @@ class TeacherDetail extends Model
         'description',
         'users_id',
         'subjects_id',
+        'teacher_percentage'
     ];
 
     public function user()

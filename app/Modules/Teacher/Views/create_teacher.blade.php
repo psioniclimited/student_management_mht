@@ -36,18 +36,18 @@ $(document).ready(function () {
             $(element).tooltipster('hide');
         },
         rules: {
-            fullname: {required: true, minlength: 4},
+            name: {required: true, minlength: 3},
             email: {required: true, email: true},
+            description: {required: true},
             password: {required: true, minlength: 6},
             password_re: {required: true, equalTo: "#password"},
-            roles: {required: true}
         },
         messages: {
-            fullname: {required: "Please give fullname"},
+            name: {required: "Please give fullname"},
             email: {required: "Insert email address"},
+            description: {required: 'Insert Description'},
             password: {required: "Six digit password"},
             password_re: {required: "Re-enter same password"},
-            roles: {required: "Please select a role"}
         }
     });
 
@@ -123,6 +123,10 @@ $(document).ready(function () {
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label for="teacher_percentage">Percentage*</label>
+                        <input type="number" class="form-control" id="teacher_percentage" name="teacher_percentage" placeholder="Enter Teacher's Percentage">
+                </div>
                 <div class="form-group">
                     <label for="password">Password*</label>
                     
