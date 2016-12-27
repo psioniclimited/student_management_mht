@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class MemberUpdateRequest extends Request
+class TeacherCreateRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,15 +24,12 @@ class MemberUpdateRequest extends Request
     public function rules()
     {
         return [
-            'fullname' => 'required',
-            'date_of_birth' => 'required|date_format:d/m/Y',
-            'addrs' => 'required',
-            'mob_num' => 'required|numeric|min:11',
-            'off_num' => 'required|numeric|min:6',
+            'name' => 'required|min:3',
             'email' => 'required|email',
-            'member_type' => 'required',
-            'password' => 'min:6',
-            'password_confirmation' => 'min:6|same:password',
+            'description' => 'required',
+            'subjects_id' => 'required|not_in:default',
+           	'password' => 'required|min:6',
+            'password_re' => 'required|min:6|same:password',
         ];
     }
 }

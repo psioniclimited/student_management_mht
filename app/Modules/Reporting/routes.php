@@ -9,7 +9,7 @@
   |
   |
  */
-Route::group(['middleware' => ['web']], function () {
+Route::group(['middleware' => ['web','auth']], function () {
 
     // Route::get('all_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@allReporting');
     Route::get('get_all_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getAllReporting');

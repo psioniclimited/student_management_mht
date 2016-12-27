@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class StudentPaymentRequest extends Request
+class StudentCreateRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,14 @@ class StudentPaymentRequest extends Request
     public function rules()
     {
         return [
-            'ref_date' => 'required',
-            'student_id' => 'required',
+            'name' => 'required|min:3',
+            'fathers_name' => 'required|min:3',
+            'mothers_name' => 'required|min:3',
+            'phone_home' => 'required',
+            'phone_away' => 'required',
+            'schools_id' => 'required|not_in:default',
+            'batch_types_id' => 'required|not_in:default',
         ];
     }
 }
+            

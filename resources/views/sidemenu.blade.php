@@ -20,7 +20,7 @@
             <li {!! Request::is('*create_users*') ? ' class="active"' : null !!}><a href="{{url('create_users')}}"><i class="fa fa-circle-o"></i> New User</a></li>
         </ul>
     </li>
-    <li {!! Request::is('*student*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+    <li {!! Request::is('*student*') || Request::is('*grade*') || Request::is('*school*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
         <a href="#">
             <i class="fa fa-files-o"></i>
             <span>Students</span>
@@ -36,7 +36,6 @@
             <li {!! Request::is('*create_school*') ? ' class="active"' : null !!}><a href="{{url('create_school')}}"><i class="fa fa-circle-o"></i> New School</a></li>
             <li {!! Request::is('*all_grades*') ? ' class="active"' : null !!}><a href="{{url('all_grades')}}"><i class="fa fa-circle-o"></i> All Grades</a></li>
             <li {!! Request::is('*create_grade*') ? ' class="active"' : null !!}><a href="{{url('create_grade')}}"><i class="fa fa-circle-o"></i> New Grade</a></li>
-            <li {!! Request::is('*create_batch_type*') ? ' class="active"' : null !!}><a href="{{url('create_batch_type')}}"><i class="fa fa-circle-o"></i> New Batch Type</a></li>
         </ul>
     </li>
     <li {!! Request::is('*teacher*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
@@ -50,7 +49,7 @@
         <ul class="treeview-menu">
             <li {!! Request::is('*all_teachers*') ? ' class="active"' : null !!}><a href="{{url('all_teachers')}}"><i class="fa fa-circle-o"></i> All Teachers</a></li>
             <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> New Teacher</a></li>
-            <li {!! Request::is('*teacher_payment_all_batch*') ? ' class="active"' : null !!}><a href="{{url('teacher_payment_all_batch')}}"><i class="fa fa-circle-o"></i> Teacher Payment For All Batches</a></li>
+            <li {!! Request::is('*teacher_payment_all_batch*') ? ' class="active"' : null !!}><a href="{{url('teacher_payment_all_batch')}}"><i class="fa fa-circle-o"></i>Teacher Payment</a></li>
         </ul>
     </li>
     <li {!! Request::is('*reporting*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
@@ -74,12 +73,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            
-                <li {!! Request::is('*roles*') ? ' class="active"' : null !!}><a href="{{url('roles')}}"><i class="fa fa-circle-o"></i> Roles</a></li>
-            
-            
-                <li {!! Request::is('*permissions*') ? ' class="active"' : null !!}><a href="{{url('permissions')}}"><i class="fa fa-circle-o"></i> Permission</a></li>
-                             
+            <li {!! Request::is('*roles*') ? ' class="active"' : null !!}><a href="{{url('roles')}}"><i class="fa fa-circle-o"></i> Roles</a></li>
+            <li {!! Request::is('*permissions*') ? ' class="active"' : null !!}><a href="{{url('permissions')}}"><i class="fa fa-circle-o"></i> Permission</a></li>
         </ul>
     </li>
 </ul>

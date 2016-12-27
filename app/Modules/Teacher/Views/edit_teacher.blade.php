@@ -11,45 +11,47 @@
 
 $(document).ready(function () {
 
-    // initialize tooltipster on form input elements
-    $('form input, select').tooltipster({// <-  USE THE PROPER SELECTOR FOR YOUR INPUTs
-        trigger: 'custom', // default is 'hover' which is no good here
-        onlyOne: false, // allow multiple tips to be open at a time
-        position: 'right'  // display the tips to the right of the element
-    });
+    // // initialize tooltipster on form input elements
+    // $('form input, select').tooltipster({// <-  USE THE PROPER SELECTOR FOR YOUR INPUTs
+    //     trigger: 'custom', // default is 'hover' which is no good here
+    //     onlyOne: false, // allow multiple tips to be open at a time
+    //     position: 'right'  // display the tips to the right of the element
+    // });
 
-    // initialize validate plugin on the form
-    $('#add_user_form').validate({
-        errorPlacement: function (error, element) {
+    // // initialize validate plugin on the form
+    // $('#add_user_form').validate({
+    //     errorPlacement: function (error, element) {
 
-            var lastError = $(element).data('lastError'),
-                    newError = $(error).text();
+    //         var lastError = $(element).data('lastError'),
+    //                 newError = $(error).text();
 
-            $(element).data('lastError', newError);
+    //         $(element).data('lastError', newError);
 
-            if (newError !== '' && newError !== lastError) {
-                $(element).tooltipster('content', newError);
-                $(element).tooltipster('show');
-            }
-        },
-        success: function (label, element) {
-            $(element).tooltipster('hide');
-        },
-        rules: {
-            fullname: {required: true, minlength: 4},
-            email: {required: true, email: true},
-            password: {required: true, minlength: 6},
-            password_re: {required: true, equalTo: "#password"},
-            roles: {required: true}
-        },
-        messages: {
-            fullname: {required: "Please give fullname"},
-            email: {required: "Insert email address"},
-            password: {required: "Six digit password"},
-            password_re: {required: "Re-enter same password"},
-            roles: {required: "Please select a role"}
-        }
-    });
+    //         if (newError !== '' && newError !== lastError) {
+    //             $(element).tooltipster('content', newError);
+    //             $(element).tooltipster('show');
+    //         }
+    //     },
+    //     success: function (label, element) {
+    //         $(element).tooltipster('hide');
+    //     },
+    //     rules: {
+    //         name: {required: true, minlength: 3},
+    //         email: {required: true, email: true},
+    //         description: {required: true},
+    //         teacher_percentage: {required: true},
+    //         password: {required: true, minlength: 6},
+    //         password_re: {required: true, equalTo: "#password"},
+    //     },
+    //     messages: {
+    //         name: {required: "Please give fullname"},
+    //         email: {required: "Insert email address"},
+    //         description: {required: 'Insert Description'},
+    //         teacher_percentage: {required: 'Teacher Percentage'},
+    //         password: {required: "Six digit password"},
+    //         password_re: {required: "Re-enter same password"},
+    //     }
+    // });
 
 
 });
@@ -69,13 +71,13 @@ $(document).ready(function () {
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        User Module
+        Teacher Module
         <small>it all starts here</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">User</a></li>
-        <li class="active">Create Users</li>
+        <li><a href="#">Teacher</a></li>
+        <li class="active">Edit Teacher Users</li>
     </ol>
 </section>
 <!-- Main content -->
@@ -84,7 +86,18 @@ $(document).ready(function () {
     <!-- Horizontal Form -->
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title">User Create Page</h3>
+            <h3 class="box-title">Teacher Edit Page</h3>
+            <div class="form-group">
+                @if (count($errors) > 0)
+                <div class="alert alert-danger alert-login col-sm-4">
+                    <ul class="list-unstyled">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+            </div>
         </div>
         <!-- /.box-header -->
         <!-- form starts here -->
@@ -125,6 +138,10 @@ $(document).ready(function () {
             <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="form-group">
+                    <label for="teacher_percentage">Percentage*</label>
+                        <input type="number" class="form-control" id="teacher_percentage" name="teacher_percentage" value="{{ $getTeacher->teacher_percentage }}">
+                </div>
+                <div class="form-group">
                     <label for="password">Password*</label>
                     
                         <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
@@ -148,17 +165,6 @@ $(document).ready(function () {
         <!-- /.box-footer -->
         {!! Form::close() !!}
         <!-- /.form ends here -->
-
-
-        @if (count($errors) > 0)
-        <div class="alert alert-danger alert-login col-sm-4">
-            <ul class="list-unstyled">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
     </div>
     <!-- /.box -->
     <!-- </div> -->

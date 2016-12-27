@@ -41,13 +41,16 @@ $(document).ready(function () {
             name: {required: true, minlength: 4},
             fathers_name: {required: true, minlength: 4},
             mothers_name: {required: true, minlength: 4},
+            phone_home: {required: true},
+            phone_away: {required: true},
+
         },
         messages: {
-            fullname: {required: "Please give fullname"},
-            uemail: {required: "Insert email address"},
-            upassword: {required: "Six digit password"},
-            upassword_re: {required: "Re-enter same password"},
-            uroles: {required: "Please select a role"}
+            name: {required: "Enter Student Name"},
+            fathers_name: {required: "Enter Student's Father Name"},
+            mothers_name: {required: "Enter Student's Mother's Name"},
+            phone_home: {required: "Enter Home Phone Number"},
+            phone_away: {required: "Enter Additional Phone Number"},
         }
     });
 
@@ -210,8 +213,17 @@ $(document).ready(function () {
     <!-- Horizontal Form -->
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title">Student Create Page</h3>
+            <h3 class="box-title">Student Update Page</h3>
         </div>
+        @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- /.box-header -->
         <!-- form starts here -->
         
@@ -356,17 +368,6 @@ $(document).ready(function () {
         <!-- /.box-footer -->
         {!! Form::close() !!}
         <!-- /.form ends here -->
-
-
-        @if (count($errors) > 0)
-        <div class="alert alert-danger alert-login col-sm-4">
-            <ul class="list-unstyled">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
     </div>
     <!-- /.box -->
     <!-- </div> -->

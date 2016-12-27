@@ -98,100 +98,9 @@
 
     });
 
-		// initialize tooltipster on text input elements
-        // $('form input,select,textarea').tooltipster({
-        //     trigger: 'custom',
-        //     onlyOne: false,
-        //     position: 'right'
-        // });
 
-        // initialize validate plugin on the form
-        // $('#add_member_form').validate({
-        //     errorPlacement: function (error, element) {
 
-        //         var lastError = $(element).data('lastError'),
-        //                 newError = $(error).text();
-
-        //         $(element).data('lastError', newError);
-
-        //         if (newError !== '' && newError !== lastError) {
-        //             $(element).tooltipster('content', newError);
-        //             $(element).tooltipster('show');
-        //         }
-        //     },
-        //     success: function (label, element) {
-        //         $(element).tooltipster('hide');
-        //     },
-        //     rules: {
-        //         fullname: {
-        //             required: true
-        //         },
-        //         date_of_birth: {
-        //             required: true
-        //         },
-        //         addrs: {
-        //             required: true
-        //         },
-        //         mob_num: {
-        //             required: true
-        //         },
-        //         off_num: {
-        //             required: true
-        //         },
-        //         email: {
-        //             required: true
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "default"
-        //         },
-        //         password: {
-        //             required: true
-        //         },
-        //         password_confirmation: {
-        //             required: true
-        //         },
-        //         pic: {
-        //             required: true
-        //         }
-                
-                
-                
-        //     },
-        //     messages: {
-        //         fullname: {
-        //             required: "provide fullname"
-        //         },
-        //         date_of_birth: {
-        //             required: "provide date of birth"
-        //         },
-        //         addrs: {
-        //             required: "provide address"
-        //         },
-        //         mob_num: {
-        //             required: "provide mobile number"
-        //         },
-        //         off_num: {
-        //             required: "provide office number"
-        //         },
-        //         email: {
-        //             required: "provide email"
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "provide member type"
-        //         },
-        //         password: {
-        //             valueNotEquals: "provide password"
-        //         },
-        //         password_confirmation: {
-        //             valueNotEquals: "provide password again"
-        //         },
-        //         pic: {
-        //             required: "provide a photo"
-        //         }
-        //     }
-        // });
-
-    });
+});
 </script>
 
 
@@ -225,7 +134,7 @@
         <div class="box-body">
         
             <div class="box-header with-border">
-              <h3 class="box-title">Search for a Student</h3>
+              <h3 class="box-title">Teacher Payment for all Batches</h3>
             </div>
             <div class="box-body">
                 <div class="row">

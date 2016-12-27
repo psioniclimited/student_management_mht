@@ -9,7 +9,7 @@
   |
   |
  */
-Route::group(['middleware' => ['web']], function () {
+Route::group(['middleware' => ['web','auth']], function () {
 
     /******************************************************
     * Show the information of all Students in a data table *

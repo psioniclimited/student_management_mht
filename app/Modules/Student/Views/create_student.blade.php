@@ -225,6 +225,15 @@ $(document).ready(function () {
         <div class="box-header with-border">
             <h3 class="box-title">Student Create Page</h3>
         </div>
+        @if (count($errors) > 0)
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <!-- /.box-header -->
         <!-- form starts here -->
         {!! Form::open(array('url' => 'create_student_process', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
@@ -329,17 +338,6 @@ $(document).ready(function () {
         <!-- /.box-footer -->
         {!! Form::close() !!}
         <!-- /.form ends here -->
-
-
-        @if (count($errors) > 0)
-        <div class="alert alert-danger alert-login col-sm-4">
-            <ul class="list-unstyled">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
     </div>
     <!-- /.box -->
     <!-- </div> -->

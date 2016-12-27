@@ -85,7 +85,7 @@ class StudentsWebController extends Controller {
 	}
 
 
-	public function addStudentProcess(Request $request) {
+	public function addStudentProcess(\App\Http\Requests\StudentCreateRequest $request) {
 
         $last_paid_date = new Carbon('first day of last month');
         $last_paid_date = $last_paid_date->toDateString();
@@ -137,7 +137,7 @@ class StudentsWebController extends Controller {
         return response()->json($studentBatch);
     }
 
-    public function studentUpdateProcess(Request $request, $id) {
+    public function studentUpdateProcess(\App\Http\Requests\StudentCreateRequest $request, $id) {
     	// return $request->all();
         $student = Student::find($id);
     	

@@ -13,9 +13,9 @@
 
 
 
-Route::group(['middleware' => ['web']], function () { 
+Route::group(['middleware' => ['web']], function () {
   
-	    Route::get('/', function () {
+	Route::get('/', function () {
 	    if(Auth::check()){
 	    	return redirect('dashboard');
 	    }

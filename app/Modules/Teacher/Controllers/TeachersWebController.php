@@ -74,7 +74,7 @@ class TeachersWebController extends Controller {
 	}
 
 
-	public function addTeacherProcess(Request $request) {
+	public function addTeacherProcess(\App\Http\Requests\TeacherCreateRequest $request) {
         // return $request->all();
         $user = User::create($request->all());
         $teacher = new TeacherDetail($request->all());
@@ -100,7 +100,7 @@ class TeachersWebController extends Controller {
 		->with('getSubjects', $subjects);
 	}
 
-    public function teacherUpdate(Request $request, $id) {
+    public function teacherUpdate(\App\Http\Requests\TeacherCreateRequest $request, $id) {
         $teacherdetail = TeacherDetail::with('user','subject')->find($id);
         $teacherdetail->update( $request->all());
         $user = User::find($teacherdetail->user->id);
