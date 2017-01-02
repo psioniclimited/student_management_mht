@@ -92,9 +92,6 @@
                     month_diffrence = 0;
                 }
 
-                // var human_readable_last_paid_date = new Date(batches[i].pivot.last_paid_date);
-                // human_readable_last_paid_date = human_readable_last_paid_date.toString();
-                // human_readable_last_paid_date = human_readable_last_paid_date.substring(0, 16);
                 var human_readable_last_paid_date = moment(batches[i].pivot.last_paid_date);
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
                 var payment_for_each_batch = month_diffrence * batches[i].price;
@@ -174,6 +171,14 @@
         // var options = { mode : mode, popClass : close };
         // $('#printPaymentArea').printArea(options);
         // $.print("#printPaymentArea" /*, options*/);
+        var top = "<div>Money Receipt no: "+111+"<div/>"+
+                    "<div>Date: "+$('#ref_date').val()+"<div/>"+
+                    "<div>Student Name: "+$('p#student_name').text()+"<div/>"+
+                    "<div>Father's Name: "+$('p#fathers_name').text()+"<div/>"+
+                    "<div>Phone Number: "+$('p#phone_home').text()+"<div/>"+
+                    "<br>";
+        
+
         var header =    "<table class='table table-bordered table-striped'>"+
                             "<thead>"+
                                 "<tr>"+
@@ -226,7 +231,7 @@
                                 "<td>Total Price</td>"+
                                 "<td>"+payment_data[ payment_data.length - 1 ].value+"</td>"+
                             "</tr></tbody ></table>";                
-        var final_output = header + payment_output;
+        var final_output = top + header + payment_output;
         // $('#printFormat').html(final_output);
 
         // $.print("#student_payment" /*, options*/);
@@ -244,9 +249,6 @@
             title: null,
             doctype: '<!doctype html>'
     });
-
-
-
         console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
         console.log(payment_data);
     });

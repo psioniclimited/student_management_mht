@@ -94,16 +94,7 @@ class StudentsWebController extends Controller {
 		$student->subject()->attach($request->input('subject'));
         $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => $last_paid_date]);
         
-        //  for ($count=0; $count < count($request->batch_day_time); $count++) {
-        //     $day_and_time = BatchDaysHasBatchTime::find($request->batch_day_time[$count]);
-        //     $batch_day_time = new BatchHasDaysAndTime();
-        //     $batch_day_time->batch_id = $batch->id;
-        //     $batch_day_time->batch_days_has_batch_times_id = $day_and_time->id;
-        //     $batch_day_time->batch_days_has_batch_times_batch_days_id = $day_and_time->batch_days_id;
-        //     $batch_day_time->batch_days_has_batch_times_batch_times_id = $day_and_time->batch_times_id;
-        //     $batch_day_time->save();
-        // }
-		return redirect("all_students");
+        return redirect("all_students");
     }
 
 
@@ -117,12 +108,8 @@ class StudentsWebController extends Controller {
 		$batches = Batch::all();
         $batchTypes = BatchType::all();
 		$subjects = Subject::all();
-        // $StudentBatchType = $getStudent->batchType;
-        //return $StudentBatchType;
-        // $variable = $getStudent->subject;
         
-		// return response()->json($getStudent);
-		return view('Student::edit_student')
+        return view('Student::edit_student')
 		->with('getStudent', $getStudent)
 		->with('Schools', $schools)
 		->with('Batches', $batches)
@@ -138,7 +125,7 @@ class StudentsWebController extends Controller {
     }
 
     public function studentUpdateProcess(\App\Http\Requests\StudentCreateRequest $request, $id) {
-    	// return $request->all();
+    	
         $student = Student::find($id);
     	
         if( !$student->update( $request->all()) )
@@ -173,7 +160,6 @@ class StudentsWebController extends Controller {
     ********************/
 	public function deleteStudent(Request $request, $id) {
 		Student::where('id', $id)->delete();
-		// return redirect('all_students');
 	}
 
 

@@ -46,22 +46,12 @@ class ReportingWebController extends Controller {
         return Datatables::of($dateRangeReporting)->make(true);
     }
 
-    // public function allReporting()
-    // {
-    //     return view('Reporting::all_reporting');
-    // }
-
     public function getAllReporting(ReportRepository $report)
     {
         $allReporting = $report->getAllPaymentReporting();
         
         return Datatables::of($allReporting)->make(true);    
     }
-
-    // public function dailyReporting()
-    // {
-    //     return view('Reporting::daily_reporting');
-    // }
 
     public function getDailyReporting(ReportRepository $report)
     {
@@ -71,11 +61,6 @@ class ReportingWebController extends Controller {
         
         return Datatables::of($dailyReporting)->make(true);    
     }
-
-    // public function dueReporting()
-    // {
-    //     return view('Reporting::due_reporting');
-    // }
 
     public function getDueReporting(ReportRepository $report)
     {

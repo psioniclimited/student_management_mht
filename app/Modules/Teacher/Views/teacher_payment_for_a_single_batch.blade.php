@@ -50,7 +50,16 @@
                 {"data": "name"},
                 {"data": "phone_home"},
                 {"data": "price"}
-            ]
+            ],
+        "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    var total_price = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        total_price += aaData[i]['price'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[2].innerHTML = total_price;
+                }
     	});
 
 	var non_paid_table = $('#non_paid_students').DataTable({
@@ -77,100 +86,7 @@
             ]
     	});
 
-		// initialize tooltipster on text input elements
-        // $('form input,select,textarea').tooltipster({
-        //     trigger: 'custom',
-        //     onlyOne: false,
-        //     position: 'right'
-        // });
-
-        // initialize validate plugin on the form
-        // $('#add_member_form').validate({
-        //     errorPlacement: function (error, element) {
-
-        //         var lastError = $(element).data('lastError'),
-        //                 newError = $(error).text();
-
-        //         $(element).data('lastError', newError);
-
-        //         if (newError !== '' && newError !== lastError) {
-        //             $(element).tooltipster('content', newError);
-        //             $(element).tooltipster('show');
-        //         }
-        //     },
-        //     success: function (label, element) {
-        //         $(element).tooltipster('hide');
-        //     },
-        //     rules: {
-        //         fullname: {
-        //             required: true
-        //         },
-        //         date_of_birth: {
-        //             required: true
-        //         },
-        //         addrs: {
-        //             required: true
-        //         },
-        //         mob_num: {
-        //             required: true
-        //         },
-        //         off_num: {
-        //             required: true
-        //         },
-        //         email: {
-        //             required: true
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "default"
-        //         },
-        //         password: {
-        //             required: true
-        //         },
-        //         password_confirmation: {
-        //             required: true
-        //         },
-        //         pic: {
-        //             required: true
-        //         }
-                
-                
-                
-        //     },
-        //     messages: {
-        //         fullname: {
-        //             required: "provide fullname"
-        //         },
-        //         date_of_birth: {
-        //             required: "provide date of birth"
-        //         },
-        //         addrs: {
-        //             required: "provide address"
-        //         },
-        //         mob_num: {
-        //             required: "provide mobile number"
-        //         },
-        //         off_num: {
-        //             required: "provide office number"
-        //         },
-        //         email: {
-        //             required: "provide email"
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "provide member type"
-        //         },
-        //         password: {
-        //             valueNotEquals: "provide password"
-        //         },
-        //         password_confirmation: {
-        //             valueNotEquals: "provide password again"
-        //         },
-        //         pic: {
-        //             required: "provide a photo"
-        //         }
-        //     }
-        // });
-
-    });
+});
 </script>
 
 
@@ -185,75 +101,89 @@
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h3>
-        Batch : <b>{{ $batchName }}</b>
-    </h3>
-    <h3>
-        For Month : <b>{{ $refDate }}</b>
-    </h3>
+<div class="box box-info">
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Payment</a></li>
         <li class="active">Student Payment Page</li>
     </ol>
+    
+    <h3>
+       &nbsp;&nbsp;Batch : <b>{{ $batchName }}</b>
+    </h3>
+    <h3>
+        &nbsp;&nbsp;For Month : <b>{{ $refDate }}</b>
+    </h3>
+        <br>
+</div>
 </section>
 
 <!-- Main content -->
 <section class="content">
     
-
-	<!-- Horizontal Form -->
-    <div class="box box-success">
-            <div class="box-header">
-                <h4>
-                    Paid Students
-                </h4>            
+    <div class="form-group">
+        <div class="col-md-6">
+        	<!-- Horizontal Form -->
+            <div class="box box-success">
+                    <div class="box-header">
+                        <h4>
+                            Paid Students
+                        </h4>            
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <table id="paid_students" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Paid Price</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                  <tr>
+                                    <th></th> 
+                                    <th>Total:</th>
+                                    <th></th>
+                                  </tr>
+                                </tfoot>
+                            <tbody>                            
+                                <!-- user list -->
+                            </tbody>                        
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-                <table id="paid_students" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Phone Number</th>
-                            <th>Paid Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>                            
-                        <!-- user list -->
-                    </tbody>                        
-                </table>
+            <!-- /.box -->
+        </div>
+        <div class="col-md-6">
+            	<!-- Horizontal Form -->
+            <div class="box box-danger col-md-6">
+                    <div class="box-header">
+                        <h4>
+                            Not Paid Students
+                        </h4>            
+                    </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <table id="non_paid_students" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Phone Number</th>
+                                        <th>Paid Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>                            
+                                    <!-- user list -->
+                                </tbody>                        
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
             </div>
-            <!-- /.box-body -->
+            <!-- /.box -->
+        </div>
     </div>
-    <!-- /.box -->
-
-    	<!-- Horizontal Form -->
-    <div class="box box-danger">
-            <div class="box-header">
-                <h4>
-                    Not Paid Students
-                </h4>            
-            </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <table id="non_paid_students" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Phone Number</th>
-                                <th>Paid Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>                            
-                            <!-- user list -->
-                        </tbody>                        
-                    </table>
-                </div>
-                <!-- /.box-body -->
-    </div>
-    <!-- /.box -->
-
 
 
 

@@ -55,11 +55,18 @@ class IndexController extends Controller {
 
     //User Module
     public function allUsers() {
-        return view('User::all_users');
+        if (Auth::check()) {
+            return view('User::all_users');
+        }
+        else {
+            return view('User::login');
+        }
+        
     }
 
     public function getUsers() {
         //$users = User::all();
+        if (Auth::check()) {
         $users = RoleUser::join('users', 'role_user.user_id', '=', 'users.id')
                 ->join('roles', 'role_user.role_id', '=', 'roles.id')
                 ->select(['users.id as id', 'users.name', 'users.email', 'roles.display_name']);
@@ -78,67 +85,91 @@ class IndexController extends Controller {
                         ->editColumn('id', '{{$id}}')
                         ->setRowId('id')
                         ->make(true);
+        }
+        else {
+            return view('User::login');
+        }
     }
 
     public function createUsers() {
-        $getRoles = Role::all();
-        return view('User::create_users')->with('getRoles', $getRoles);
+        if (Auth::check()) {
+            $getRoles = Role::all();
+            return view('User::create_users')->with('getRoles', $getRoles);
+        }
+        else {
+            return view('User::login');
+        }
     }
 
     public function createUsersProcess(\App\Http\Requests\UserRequest $request) {
 
-        $addUsers = new User();
+        if (Auth::check()) {
+            $addUsers = new User();
 
-        $addUsers->name = $request->input('fullname');
-        $addUsers->email = $request->input('uemail');
-        $addUsers->password = bcrypt($request->input('upassword'));
+            $addUsers->name = $request->input('fullname');
+            $addUsers->email = $request->input('uemail');
+            $addUsers->password = bcrypt($request->input('upassword'));
 
-        $addUsers->save();
+            $addUsers->save();
 
-        $userID = $addUsers->id;
-        $roleID = $request->input('uroles');
+            $userID = $addUsers->id;
+            $roleID = $request->input('uroles');
 
-        $user = User::find($userID);
-        $role = Role::where('id', '=', $roleID)->get()->first();
-        $user->attachRole($role);
+            $user = User::find($userID);
+            $role = Role::where('id', '=', $roleID)->get()->first();
+            $user->attachRole($role);
 
-        return redirect('allusers');
+            return redirect('allusers');
+        }
+        else {
+            return view('User::login');
+        }
     }
 
     public function editUsers($id) {
-        $editUser = User::where('id', '=', $id)->get();
-        
-        $getRoles = Role::leftJoin('role_user', function($join) use ($id) {
-                    $join->on('role_user.role_id', '=', 'roles.id')->where('role_user.user_id', '=', $id);
-                })->get();
+        if (Auth::check()) {
+            $editUser = User::where('id', '=', $id)->get();
+            
+            $getRoles = Role::leftJoin('role_user', function($join) use ($id) {
+                        $join->on('role_user.role_id', '=', 'roles.id')->where('role_user.user_id', '=', $id);
+                    })->get();
 
-        return view('User::edit_users')->with('getRoles', $getRoles)->with('editUser', $editUser);
+            return view('User::edit_users')->with('getRoles', $getRoles)->with('editUser', $editUser);
+        }
+        else {
+            return view('User::login');
+        }
     }
 
     public function editUsersProcess(\App\Http\Requests\UserUpdateRequest $request) {
-        $userID = $request->input('uid');        
-        $password = $request->input('upassword');
-        
-        $addUsers = User::findOrFail($userID);
+        if (Auth::check()) {
+            $userID = $request->input('uid');        
+            $password = $request->input('upassword');
+            
+            $addUsers = User::findOrFail($userID);
 
-        $addUsers->name = $request->input('fullname');
-        $addUsers->email = $request->input('uemail');
+            $addUsers->name = $request->input('fullname');
+            $addUsers->email = $request->input('uemail');
 
-        if (isset($password) && $password != '') {
-            $addUsers->password = bcrypt($password);
+            if (isset($password) && $password != '') {
+                $addUsers->password = bcrypt($password);
+            }
+
+            $addUsers->save();
+            
+            $dRoleUser = RoleUser::where('user_id', '=', $userID)->delete();
+
+            $roleID = $request->input('uroles');
+
+            $user = User::find($userID);
+            $role = Role::where('id', '=', $roleID)->get()->first();
+            $user->attachRole($role);
+
+            return redirect('users/'.$userID.'/edit');
         }
-
-        $addUsers->save();
-        
-        $dRoleUser = RoleUser::where('user_id', '=', $userID)->delete();
-
-        $roleID = $request->input('uroles');
-
-        $user = User::find($userID);
-        $role = Role::where('id', '=', $roleID)->get()->first();
-        $user->attachRole($role);
-
-        return redirect('users/'.$userID.'/edit');
+        else {
+            return view('User::login');
+        }
     }
 
     /****************
@@ -146,18 +177,22 @@ class IndexController extends Controller {
     *****************/
 
     public function deleteUser($id) {
-        
-        $user = User::find($id);
-        $role_user = RoleUser::where('user_id',$id)->first();
-        if ($role_user->role_id == 2) {
-            $user->teacher_detail()->delete();
-            $user->delete();
+        if (Auth::check()) {
+            $user = User::find($id);
+            $role_user = RoleUser::where('user_id',$id)->first();
+            if ($role_user->role_id == 2) {
+                $user->teacher_detail()->delete();
+                $user->delete();
+            }
+            else {
+                $user->delete();
+            }
+            
+            return redirect('allusers');
         }
         else {
-            $user->delete();
+            return view('User::login');
         }
-        
-        return redirect('allusers');
     }
 
 }

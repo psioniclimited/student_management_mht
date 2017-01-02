@@ -48,39 +48,6 @@
 
 
 
-       // $('#batch_id').select2({
-       //      allowClear: true,
-       //      placeholder: 'Set Day and Time',
-       //      ajax: {
-       //          url: "/getallbatch",
-       //          dataType: 'json',
-       //          delay: 250,
-       //          tags: true,
-       //          data: function (params) {
-       //            return {
-       //              q: params.term, // search term
-       //              page: params.page
-       //            };
-       //          },
-       //          processResults: function (data, params) {
-       //            // parse the results into the format expected by Select2
-       //            // since we are using custom formatting functions we do not need to
-       //            // alter the remote JSON data, except to indicate that infinite
-       //            // scrolling can be used
-       //            params.page = params.page || 1;
-       //            // console.log(data);
-       //            return {
-       //              results: data,
-       //              pagination: {
-       //                more: (params.page * 30) < data.total_count
-       //              }
-
-       //            };
-       //          },
-       //          cache: true
-       //      }
-       //  });
-
 
         //Date picker for Start Date
         $('#start_date').datepicker({
@@ -109,18 +76,32 @@
 
 
 
-        $("#add_batch_form").ajaxForm({
-            url: '/create_new_batch_process', 
-            type: 'post',
-            clearForm: true,
-            success:  function(e) { 
-                console.log(e); 
-                 table.ajax.reload();
-            } 
-        });
+        // $("#add_batch_form").ajaxForm({
+        //     url: '/create_new_batch_process', 
+        //     type: 'post',
+        //     clearForm: true,
+        //     success:  function(e) { 
+        //         console.log(e); 
+        //          table.ajax.reload();
+        //     } 
+        // });
 
+        // $('#add_new_batch').click(function(event) {
 
+        //     $.post( '/create_new_batch_process', $('#add_batch_form').serialize())
+        //     .done(function( data ) {
+        //       table.ajax.reload();
+        //       console.log( data );
 
+        //     }).fail(function(data) {
+
+        //       console.log( data );
+
+        //     });
+        //     event.preventDefault();
+        // });
+        
+        // var user_id = null;
         // Edit Batch
         $('#confirm_edit').on('shown.bs.modal', function(e) {
             
@@ -160,10 +141,10 @@
                   url: "/batch_update_process",
                   data: edit_batch_form,
                   success: function(data) {
-                      console.log("Successfully Edited");
+                      location.reload();
                   },
                   error: function() {
-                      delete_msg
+                      // delete_msg
                       alert('Other infomation is related to this batch. So You can not delete it');
                   }
               });
@@ -171,26 +152,23 @@
               $('#confirm_edit').modal('toggle');
               table.ajax.reload(null, false);
               e.preventDefault();               
-            
+              
             });
+        });
 
 
 
-    });
-
-
-            
-
-
-
-
-        // Delete Customer
-       $('#confirm_delete').on('show.bs.modal', function(e) {
-           var $modal = $(this),
-           user_id = e.relatedTarget.id;
-               console.log(user_id);
-
-           $('#delete_customer').click(function(e){    
+      var user_id = null;      
+      // Delete Customer
+     $('#confirm_delete').on('show.bs.modal', function(e) {
+         var $modal = $(this);
+         if(e.relatedTarget.id){
+          user_id = e.relatedTarget.id;
+         }
+         
+             console.log(user_id);
+          if (user_id!=null) {
+            $('#delete_batch').click(function(e){    
                $.ajax({
                    cache: false,
                    type: 'POST',
@@ -206,107 +184,16 @@
                       
                   }
                });
-           });
-        });
+              });
+          }
+         
+         $('#cancel_batch_modal').click(function(e){    
+             user_id = null;
+         });
 
+      });
 
-
-
-
-        // initialize tooltipster on text input elements
-        // $('form input,select,textarea').tooltipster({
-        //     trigger: 'custom',
-        //     onlyOne: false,
-        //     position: 'right'
-        // });
-
-        // initialize validate plugin on the form
-        // $('#add_member_form').validate({
-        //     errorPlacement: function (error, element) {
-
-        //         var lastError = $(element).data('lastError'),
-        //                 newError = $(error).text();
-
-        //         $(element).data('lastError', newError);
-
-        //         if (newError !== '' && newError !== lastError) {
-        //             $(element).tooltipster('content', newError);
-        //             $(element).tooltipster('show');
-        //         }
-        //     },
-        //     success: function (label, element) {
-        //         $(element).tooltipster('hide');
-        //     },
-        //     rules: {
-        //         fullname: {
-        //             required: true
-        //         },
-        //         date_of_birth: {
-        //             required: true
-        //         },
-        //         addrs: {
-        //             required: true
-        //         },
-        //         mob_num: {
-        //             required: true
-        //         },
-        //         off_num: {
-        //             required: true
-        //         },
-        //         email: {
-        //             required: true
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "default"
-        //         },
-        //         password: {
-        //             required: true
-        //         },
-        //         password_confirmation: {
-        //             required: true
-        //         },
-        //         pic: {
-        //             required: true
-        //         }
-                
-                
-                
-        //     },
-        //     messages: {
-        //         fullname: {
-        //             required: "provide fullname"
-        //         },
-        //         date_of_birth: {
-        //             required: "provide date of birth"
-        //         },
-        //         addrs: {
-        //             required: "provide address"
-        //         },
-        //         mob_num: {
-        //             required: "provide mobile number"
-        //         },
-        //         off_num: {
-        //             required: "provide office number"
-        //         },
-        //         email: {
-        //             required: "provide email"
-        //         },
-        //         member_type: {
-        //             valueNotEquals: "provide member type"
-        //         },
-        //         password: {
-        //             valueNotEquals: "provide password"
-        //         },
-        //         password_confirmation: {
-        //             valueNotEquals: "provide password again"
-        //         },
-        //         pic: {
-        //             required: "provide a photo"
-        //         }
-        //     }
-        // });
-
-    });
+});
 </script>
 
 
@@ -380,10 +267,21 @@
         
             <div class="box-header with-border">
               <h3 class="box-title">Create a New Batch</h3>
+              <div class="form-group">
+                @if (count($errors) > 0)
+                <div class="alert alert-danger alert-login col-sm-4">
+                    <ul class="list-unstyled">
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+              </div>
             </div>
             <div class="box-body">
                 <div class="row">
-                {!! Form::open(array('id' => 'add_batch_form')) !!}
+                {!! Form::open(array('url' => 'create_new_batch_process','id' => 'add_batch_form')) !!}
                 <div class="col-md-1">
                     <label for="price" >Price*</label>
                     <input type="text" class="form-control" name="price" id="price" placeholder="Price">
@@ -429,7 +327,7 @@
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            <input type="text" class="form-control" id="start_date" name="start_date" placeholder="Select Start Date">
+                            <input type="text" class="form-control" id="start_date" name="start_date" placeholder="Select Start Date" autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -440,7 +338,7 @@
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="Select End date">
+                            <input type="text" class="form-control" id="end_date" name="end_date" placeholder="Select End date" autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -618,8 +516,8 @@
                    
                </div>
                <div class="modal-footer">
-                   <button type="button" class="btn btn-danger" id="delete_customer">Delete</button>
-                   <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                   <button type="button" class="btn btn-danger" id="delete_batch">Delete</button>
+                   <button type="button" class="btn btn-default" id="cancel_batch_modal" data-dismiss="modal">Cancel</button>
                </div>
            </div>
            <!-- /. Modal content ends here -->

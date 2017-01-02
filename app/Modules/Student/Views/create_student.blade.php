@@ -62,71 +62,6 @@ $(document).ready(function () {
         }
     });
 
-    // $('#batch_id').select2({
-    //     allowClear: true,
-    //     placeholder: 'Select batch',
-    //     ajax: {
-    //         url: "/getallbatch",
-    //         dataType: 'json',
-    //         delay: 250,
-    //         data: function (params) {
-    //           return {
-    //             q: params.term, // search term
-    //             page: params.page
-    //           };
-    //         },
-    //         processResults: function (data, params) {
-    //           // parse the results into the format expected by Select2
-    //           // since we are using custom formatting functions we do not need to
-    //           // alter the remote JSON data, except to indicate that infinite
-    //           // scrolling can be used
-    //           params.page = params.page || 1;
-    //           console.log(data);
-    //           return {
-    //             results: data,
-    //             pagination: {
-    //               more: (params.page * 30) < data.total_count
-    //             }
-
-    //           };
-    //         },
-    //         cache: true
-    //     }
-    // });
-
-    // Working ............................................
-    // $('#batch_id').select2({
-    //     allowClear: true,
-    //     placeholder: 'Select batch',
-    //     ajax: {
-    //         url: "/getallbatch",
-    //         dataType: 'json',
-    //         delay: 250,
-    //         tags: true,
-    //         data: function (params) {
-    //           return {
-    //             q: params.term, // search term
-    //             page: params.page
-    //           };
-    //         },
-    //         processResults: function (data, params) {
-    //           // parse the results into the format expected by Select2
-    //           // since we are using custom formatting functions we do not need to
-    //           // alter the remote JSON data, except to indicate that infinite
-    //           // scrolling can be used
-    //           params.page = params.page || 1;
-    //           // console.log(data);
-    //           return {
-    //             results: data,
-    //             pagination: {
-    //               more: (params.page * 30) < data.total_count
-    //             }
-    //           };
-    //         },
-    //         cache: true
-    //     }
-    // });
-
     $('#batch_types_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
         $('.batchSelection').hide();
@@ -332,7 +267,6 @@ $(document).ready(function () {
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <button type="submit" class="btn btn-default">Cancel</button>
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </div>
         <!-- /.box-footer -->

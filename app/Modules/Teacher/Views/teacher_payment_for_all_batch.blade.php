@@ -93,8 +93,19 @@
                     {"data": "name"},
                     {"data": "teacher_payment_per_batch"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
-                ]
-        	});
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    var total_price = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        console.log(aaData[i]['teacher_payment_per_batch']);
+                        total_price += aaData[i]['teacher_payment_per_batch'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[1].innerHTML = total_price;
+                }
+            });
 
     });
 
@@ -188,6 +199,12 @@
                                 <th>Action</th>                            
                             </tr>
                         </thead>
+                        <tfoot>
+                          <tr>
+                            <th>Total:</th> 
+                            <th></th>
+                          </tr>
+                        </tfoot>                      
                         <tbody>                            
                             <!-- user list -->
                         </tbody>                        

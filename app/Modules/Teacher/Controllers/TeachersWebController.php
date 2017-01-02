@@ -154,7 +154,7 @@ class TeachersWebController extends Controller {
         $batches = Batch::with('batchType', 'grade')->where('teacher_details_users_id', $request->teacher_user_id)->get();
         
         return Datatables::of($batches)
-            ->addColumn('teacher_payment_per_batch', function ($batches) use($getmonth,$request){
+            ->addColumn('teacher_payment_per_batch', function ($batches) use($getmonth,$request)    {
                 
                 $price_per_batch = InvoiceDetail::where('batch_id', $batches->id)->where('payment_to', $getmonth)->sum('price');
                 $teacherPercentage = TeacherDetail::select('teacher_percentage')->where('users_id',$request->teacher_user_id)->first();

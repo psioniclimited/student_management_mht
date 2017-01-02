@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class EventUpdateRequest extends Request
+class AddNewBatchRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,16 +21,15 @@ class EventUpdateRequest extends Request
      *
      * @return array
      */
-
     public function rules()
     {
-        return [	
-            'name' => 'required',
+        return [
+            'price' => 'required|numeric',
+            'batch_types_id' => 'required|not_in:default',
+            'grades_id' => 'required|not_in:default',
+            'schedule' => 'required',
             'start_date' => 'required|date_format:d/m/Y',
             'end_date' => 'required|date_format:d/m/Y',
-            'event_Time' => 'required',
-            'venue' => 'required',
-            'description' => 'required',
         ];
     }
 }
