@@ -161,7 +161,12 @@
         });
     }
 
-
+    var invoice_serial_number = 0;
+    $.get('/get_invoice_id',function(serial_number){
+        invoice_serial_number = serial_number;
+        $('#serial_number').val(serial_number);
+        console.log(invoice_serial_number);
+    });
     
 
     // $( "#student_payment" ).submit(function( event ) {
@@ -171,7 +176,7 @@
         // var options = { mode : mode, popClass : close };
         // $('#printPaymentArea').printArea(options);
         // $.print("#printPaymentArea" /*, options*/);
-        var top = "<div>Money Receipt no: "+111+"<div/>"+
+        var top = "<div>Money Receipt no: INV/"+moment().year()+"/"+(moment().month()+1)+"/"+invoice_serial_number+"<div/>"+
                     "<div>Date: "+$('#ref_date').val()+"<div/>"+
                     "<div>Student Name: "+$('p#student_name').text()+"<div/>"+
                     "<div>Father's Name: "+$('p#fathers_name').text()+"<div/>"+
@@ -192,7 +197,7 @@
                         "<tbody>";                         
                         
 
-        console.log("Batch Length : "+batch_length);
+        console.log("Batch Length : " + batch_length);
         
         var date_of_payment = $('.ref_date').attr('value');
 
@@ -235,19 +240,19 @@
         // $('#printFormat').html(final_output);
 
         // $.print("#student_payment" /*, options*/);
-        $(final_output).print({
-            globalStyles: true,
-            mediaPrint: false,
-            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
-            noPrintSelector: ".no-print",
-            iframe: true,
-            append: null,
-            prepend: null,
-            manuallyCopyFormValues: true,
-            deferred: $.Deferred(),
-            timeout: 750,
-            title: null,
-            doctype: '<!doctype html>'
+    $(final_output).print({
+        globalStyles: true,
+        mediaPrint: false,
+        stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+        noPrintSelector: ".no-print",
+        iframe: true,
+        append: null,
+        prepend: null,
+        manuallyCopyFormValues: true,
+        deferred: $.Deferred(),
+        timeout: 750,
+        title: null,
+        doctype: '<!doctype html>'
     });
         console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
         console.log(payment_data);
@@ -414,6 +419,7 @@
                 {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
                 <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                 <input type='hidden' id="students_id" name="students_id">
+                <input type='hidden' id="serial_number" name="serial_number">
                 <table id="all_user_list" class="table table-bordered table-striped">
                     <thead>
                         <tr>

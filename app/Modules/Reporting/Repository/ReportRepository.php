@@ -39,7 +39,7 @@ class ReportRepository {
 		return $payments;
 	}
 
-	public function getDueByDate($date){
+	public function getDueByDate($date)	{
 		
 		$payments = Student::with(['batch' => function ($query) use( $date )  {
     		

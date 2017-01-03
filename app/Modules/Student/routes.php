@@ -51,6 +51,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getStudentInfoForPayment');
     Route::get('get_batch_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getBatchInfoForPayment');     
     Route::post('student_payment', 'App\Modules\Student\Controllers\StudentPaymentController@studentPaymentProcess');
+    Route::get('get_invoice_id', 'App\Modules\Student\Controllers\StudentPaymentController@getInvoiceId');
     
     /**********************
     * Create a new School *

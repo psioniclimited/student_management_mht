@@ -18,7 +18,13 @@
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
+<script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
 <script>
+
+    var monthNames = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];    
+
     // add the rule here
     $.validator.addMethod("valueNotEquals", function (value, element, arg) {
         return arg != value;
@@ -60,6 +66,59 @@
                 ]
             });
 
+    });
+    $("#print_daily_payment_reporting").click(function() {
+        $.get('/get_daily_reporting',function(daily_data) {
+            var data = daily_data.data;
+            console.log(data);
+            var top = "<div><b>Daily Reporting</b><div/><br>";
+            var due_payment_output = "<table class='table table-bordered table-striped'>"+
+                            "<thead>"+
+                                "<tr>"+
+                                    "<th>Student Name</th>"+
+                                    "<th>Phone Number</th>"+
+                                    "<th>Additional Phone Number</th>"+
+                                    "<th>Payment Date</th>"+
+                                    "<th>Total Paid Amount /- </th>"+
+                                "</tr>"+
+                            "</thead>"+
+                        "<tbody>";
+            var total_paid = 0;
+            for (var i = 0; i < data.length; i++) {
+                total_paid += data[i].total;
+                due_payment_output += "<tr role='row' class='even'>"+
+                                "<td>"+data[i].student.name+"</td>"+
+                                "<td>"+data[i].student.phone_home+"</td>"+
+                                "<td>"+data[i].student.phone_away+"</td>"+
+                                "<td>"+data[i].payment_date+"</td>"+
+                                "<td>"+data[i].total+"</td>"+
+                                "</tr>";
+            }
+            
+            due_payment_output += "<tr role='row' class='even'>"+
+                                "<td></td>"+
+                                "<td></td>"+
+                                "<td></td>"+
+                                "<td>Total Price</td>"+
+                                "<td>"+total_paid+"</td>"+
+                                "</tr>";
+            
+            var final_output = top + due_payment_output;
+            $(final_output).print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 750,
+            title: null,
+            doctype: '<!doctype html>'
+            });
+        });
     });
     
     $("#all_payment_reporting").click(function() {
@@ -113,6 +172,49 @@
                 ]
             });
 
+    });
+    $("#print_due_payment_reporting").click(function() {
+        $.get('/get_due_reporting',function(due_data) {
+            var data = due_data.data;
+            var top = "<div>Due Reporting For: <b>"+monthNames[moment().month()]+"</b><div/>"+
+                                "<br>";
+            var due_payment_output = "<table class='table table-bordered table-striped'>"+
+                            "<thead>"+
+                                "<tr>"+
+                                    "<th>Student Name</th>"+
+                                    "<th>Phone Number</th>"+
+                                    "<th>Additional Phone Number</th>"+
+                                    "<th>Total Due Amount /- </th>"+
+                                "</tr>"+
+                            "</thead>"+
+                        "<tbody>";  
+            for (var i = 0; i < data.length; i++) {
+                due_payment_output += "<tr role='row' class='even'>"+
+                                "<td>"+data[i].name+"</td>"+
+                                "<td>"+data[i].phone_home+"</td>"+
+                                "<td>"+data[i].phone_away+"</td>"+
+                                "<td>"+data[i].TotalDuePrice+"</td>"+
+                                "</tr>";
+            }
+            
+            due_payment_output += "</tbody ></table>";
+            
+            var final_output = top + due_payment_output;
+            $(final_output).print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 750,
+            title: null,
+            doctype: '<!doctype html>'
+            });
+        });
     });
     
     $("#range_payment_reporting").click(function() {
@@ -201,7 +303,12 @@
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
+                        <div class="col-xs-6">
+                            <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
+                        </div>
+                        <div class="col-xs-6">
+                            <button type="submit" id="print_daily_payment_reporting" class="btn btn-block btn-warning"><strong>Print </strong>Daily Reporting</button>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -229,7 +336,12 @@
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
+                        <div class="col-xs-6">
+                            <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
+                        </div>
+                        <div class="col-xs-6">
+                            <button type="submit" id="print_due_payment_reporting" class="btn btn-block btn-danger"><strong>Print</strong> Due Reporting</button>
+                        </div>
                     </div>
                 </div>
 

@@ -20,7 +20,8 @@ class InvoiceMaster extends Model
         'students_id',
         'total',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'serial_number'
    ];
 
    	public function student() {

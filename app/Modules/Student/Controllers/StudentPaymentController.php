@@ -70,9 +70,8 @@ class StudentPaymentController extends Controller {
     }
 
     public function studentPaymentProcess(Request $request) {
+        $invoice_master = InvoiceMaster::create($request->all());
         
-    	$invoice_master = InvoiceMaster::create($request->all());
-
     	for ( $i=0; $i < count($request->batch_id); $i++) {
             $last_payment_date = 0;
             if($request->month[$i] != 0) {
@@ -103,5 +102,22 @@ class StudentPaymentController extends Controller {
 
 		return back();
         
+    }
+
+    public function getInvoiceId()  {
+        $refDate = Carbon::now();
+        $data = InvoiceMaster::whereYear('payment_date', '=', $refDate->year)
+                                ->whereMonth('payment_date', '=', $refDate->month)
+                                ->get();
+                                // ->sortByDesc("serial_number");
+
+        error_log(count($data));
+        
+        if (count($data) == 0) {
+            return 1;
+        }
+        else {
+            return $data[count($data)-1]->serial_number + 1;
+        }
     }
 }
