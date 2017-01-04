@@ -202,29 +202,33 @@
         var date_of_payment = $('.ref_date').attr('value');
 
         var payment_data = $('#student_payment').serializeArray();
+        console.log(payment_data);
         var payment_data_count = 0;
         var payment_output = "";
 
         for (var count = 0; count < batch_length; count++) {
-            var human_readable_last_paid_date = moment(payment_data[5+payment_data_count].value);
+            // var human_readable_last_paid_date = moment(payment_data[5+payment_data_count].value);
+            //     human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
+            // payment_output += "<tr role='row' class='even'>"+
+            //                     "<td>"+payment_data[7+payment_data_count].value+"</td>"+
+            //                     "<td>"+human_readable_last_paid_date+"</td>"+
+            //                     "<td>"+payment_data[6+payment_data_count].value+"</td>"+
+            //                     "<td>"+payment_data[8+payment_data_count].value+"</td>"+
+            //                     "<td>"+payment_data[9+payment_data_count].value+"</td>"+
+            //                 "</tr>";
+
+            var human_readable_last_paid_date = moment(payment_data[6+payment_data_count].value);
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
             payment_output += "<tr role='row' class='even'>"+
-                                "<td>"+payment_data[7+payment_data_count].value+"</td>"+
-                                "<td>"+human_readable_last_paid_date+"</td>"+
-                                "<td>"+payment_data[6+payment_data_count].value+"</td>"+
                                 "<td>"+payment_data[8+payment_data_count].value+"</td>"+
+                                "<td>"+human_readable_last_paid_date+"</td>"+
+                                "<td>"+payment_data[7+payment_data_count].value+"</td>"+
                                 "<td>"+payment_data[9+payment_data_count].value+"</td>"+
-                            "</tr>";
+                                "<td>"+payment_data[10+payment_data_count].value+"</td>"+
+                            "</tr>";                
 
 
-
-
-            // var batch_name = payment_data[7+payment_data_count].value;
-            // var last_paid_date = payment_data[5+payment_data_count].value;
-            // var unit_price_per_course = payment_data[6+payment_data_count].value;
-            // var no_of_month_per_course = payment_data[8+payment_data_count].value;
-            // var total_price_per_course = payment_data[9+payment_data_count].value;
-            // console.log(batch_name+", "+last_paid_date+", "+unit_price_per_course+", "+no_of_month_per_course+", "+total_price_per_course +", "+date_of_payment);
+            
 
             payment_data_count += 7;
         }
