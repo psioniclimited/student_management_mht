@@ -27,6 +27,16 @@ class ReportRepository {
 		return $payments;
 	}
 
+	public function getMonthlyPaymentReporting($current_month, $current_year)	{
+		$payments = InvoiceMaster::with(['student'=> function($query){
+			$query->withTrashed();
+		}])->whereYear('payment_date', '=', $current_year)
+            ->whereMonth('payment_date', '=', $current_month)
+            ->get(); 
+
+		return $payments;
+	}
+
 	public function getDailyPaymentReportingByDate($date)	{
 		$payments = InvoiceMaster::with('student')->where('payment_date', $date)->get(); 
 		return $payments;

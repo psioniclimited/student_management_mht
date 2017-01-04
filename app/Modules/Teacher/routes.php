@@ -23,7 +23,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     ***********************************************/
     Route::get('teacher/{Teacher}/show/', 'App\Modules\Teacher\Controllers\TeachersWebController@get_one_Teacher');
 
-
+    
     /***********************
     * Create a new Teacher *
     ************************/
@@ -32,7 +32,7 @@ Route::group(['middleware' => ['web','auth']], function () {
 
 
     /***************************
-    * Edit and Update a Teacher *
+    * Edit and Update a Teacher*
     ****************************/    
     Route::get('teacher/{teacher}/edit/', 'App\Modules\Teacher\Controllers\TeachersWebController@editTeacher');
     Route::patch('/teacher_update_process/{teacherdetail}/', 'App\Modules\Teacher\Controllers\TeachersWebController@teacherUpdate');

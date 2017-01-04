@@ -53,13 +53,21 @@ class ReportingWebController extends Controller {
         return Datatables::of($allReporting)->make(true);    
     }
 
+    public function getMonthlyReporting(ReportRepository $report)
+    {
+        $allReporting = $report->getMonthlyPaymentReporting(Carbon::now()->month, Carbon::now()->year);
+        
+        return Datatables::of($allReporting)->make(true);    
+    }
+
     public function getDailyReporting(ReportRepository $report)
     {
         $today = Carbon::today();
         $today = $today->toDateString();
         $dailyReporting = $report->getDailyPaymentReportingByDate($today);
-        
-        return Datatables::of($dailyReporting)->make(true);    
+        $datatables = Datatables::of($dailyReporting)->make(true);
+        dd($datatables);
+        return $datatables->data[0];   
     }
 
     public function getDueReporting(ReportRepository $report)

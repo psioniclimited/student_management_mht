@@ -5,6 +5,10 @@
 <link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
 <!-- bootstrap datepicker -->
 <link rel="stylesheet" href="{{asset('../../plugins/datepicker/datepicker3.css')}}">
+
+<!-- bootstrap datepicker -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
 @endsection
 
 @section('scripts')
@@ -18,6 +22,17 @@
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
+
+<!-- DataTables Printing Operation -->
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
+<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js"></script>
+
+
 <script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
 <script>
 
@@ -40,14 +55,14 @@
       autoclose: true
     });
 
-
+    var daily_payment_reporting_table = "";
     $("#daily_payment_reporting").click(function() {
         $("#box_color").attr("class","box box-warning");
         $("#payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
         $("#alternate_data").text("Payment Date");
         $("#total_amount").text("Total Paid Amount/-");
-        var table = $('#all_user_list').DataTable({
-            "paging": true,
+        var daily_payment_reporting_table = $('#all_user_list').DataTable({
+            "paging": false,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
@@ -63,67 +78,123 @@
                     {"data": "student.phone_home"},                    
                     {"data": "payment_date"},
                     {"data": "total"},
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    var total_price = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        console.log(aaData[i]['total']);
+                        total_price += aaData[i]['total'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[nCells.length-1].innerHTML = total_price;
+                    var nCells = $('#total_money').text(total_price);
+                    nCells = total_price;
+                },
+            dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'DailyPaymentReporting'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'DailyPaymentReporting'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'DailyPaymentReporting'
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Daily Payment Report',
+                    }
                 ]
             });
 
     });
     $("#print_daily_payment_reporting").click(function() {
-        $.get('/get_daily_reporting',function(daily_data) {
-            var data = daily_data.data;
-            console.log(data);
-            var top = "<div><b>Daily Reporting</b><div/><br>";
-            var due_payment_output = "<table class='table table-bordered table-striped'>"+
-                            "<thead>"+
-                                "<tr>"+
-                                    "<th>Student Name</th>"+
-                                    "<th>Phone Number</th>"+
-                                    "<th>Additional Phone Number</th>"+
-                                    "<th>Payment Date</th>"+
-                                    "<th>Total Paid Amount /- </th>"+
-                                "</tr>"+
-                            "</thead>"+
-                        "<tbody>";
-            var total_paid = 0;
-            for (var i = 0; i < data.length; i++) {
-                total_paid += data[i].total;
-                due_payment_output += "<tr role='row' class='even'>"+
-                                "<td>"+data[i].student.name+"</td>"+
-                                "<td>"+data[i].student.phone_home+"</td>"+
-                                "<td>"+data[i].student.phone_away+"</td>"+
-                                "<td>"+data[i].payment_date+"</td>"+
-                                "<td>"+data[i].total+"</td>"+
-                                "</tr>";
-            }
+    
+        $('#all_user_list').DataTable( {
+            dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'DailyPaymentReporting'
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'DailyPaymentReporting'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'DailyPaymentReporting'
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Daily Payment Report',
+                    }
+                ]
+        } );
+        // $.get('/get_daily_reporting',function(daily_data) {
+        //     var data = daily_data.data;
+        //     console.log(data);
+        //     var top = "<div><b>Daily Reporting</b><div/><br>";
+        //     var due_payment_output = "<table class='table table-bordered table-striped'>"+
+        //                     "<thead>"+
+        //                         "<tr>"+
+        //                             "<th>Student Name</th>"+
+        //                             "<th>Phone Number</th>"+
+        //                             "<th>Additional Phone Number</th>"+
+        //                             "<th>Payment Date</th>"+
+        //                             "<th>Total Paid Amount /- </th>"+
+        //                         "</tr>"+
+        //                     "</thead>"+
+        //                 "<tbody>";
+        //     var total_paid = 0;
+        //     for (var i = 0; i < data.length; i++) {
+        //         total_paid += data[i].total;
+        //         due_payment_output += "<tr role='row' class='even'>"+
+        //                         "<td>"+data[i].student.name+"</td>"+
+        //                         "<td>"+data[i].student.phone_home+"</td>"+
+        //                         "<td>"+data[i].student.phone_away+"</td>"+
+        //                         "<td>"+data[i].payment_date+"</td>"+
+        //                         "<td>"+data[i].total+"</td>"+
+        //                         "</tr>";
+        //     }
             
-            due_payment_output += "<tr role='row' class='even'>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td>Total Price</td>"+
-                                "<td>"+total_paid+"</td>"+
-                                "</tr>";
+        //     due_payment_output += "<tr role='row' class='even'>"+
+        //                         "<td></td>"+
+        //                         "<td></td>"+
+        //                         "<td></td>"+
+        //                         "<td>Total Price</td>"+
+        //                         "<td>"+total_paid+"</td>"+
+        //                         "</tr>";
             
-            var final_output = top + due_payment_output;
-            $(final_output).print({
-            globalStyles: true,
-            mediaPrint: false,
-            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
-            noPrintSelector: ".no-print",
-            iframe: true,
-            append: null,
-            prepend: null,
-            manuallyCopyFormValues: true,
-            deferred: $.Deferred(),
-            timeout: 750,
-            title: null,
-            doctype: '<!doctype html>'
-            });
-        });
+        //     var final_output = top + due_payment_output;
+        //     $(final_output).print({
+        //     globalStyles: true,
+        //     mediaPrint: false,
+        //     stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+        //     noPrintSelector: ".no-print",
+        //     iframe: true,
+        //     append: null,
+        //     prepend: null,
+        //     manuallyCopyFormValues: true,
+        //     deferred: $.Deferred(),
+        //     timeout: 750,
+        //     title: null,
+        //     doctype: '<!doctype html>'
+        //     });
+        // });
     });
     
-    $("#all_payment_reporting").click(function() {
+    $("#monthly_payment_reporting").click(function() {
         $("#box_color").attr("class","box box-success");
-        $("#payment_title").html("<b>All</b> Payment Reporting");
+        $("#payment_title").html("<b>Monthly</b> Payment Reporting");
         $("#alternate_data").text("Payment Date");
         $("#total_amount").text("Total Paid Amount/-");
         var table = $('#all_user_list').DataTable({
@@ -136,13 +207,28 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_all_reporting')}}",
+            "ajax": "{{URL::to('/get_monthly_reporting')}}",
             "columns": [
                     {"data": "id"},
                     {"data": "student.name"},
                     {"data": "student.phone_home"},                    
                     {"data": "payment_date"},
                     {"data": "total"},
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    var total_price = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        console.log(aaData[i]['total']);
+                        total_price += aaData[i]['total'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[nCells.length-1].innerHTML = total_price;
+                },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
                 ]
             });
     });
@@ -169,7 +255,23 @@
                     {"data": "phone_home"},                    
                     {"data": "phone_away"},
                     {"data": "TotalDuePrice"},
-                ]
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    var TotalDuePrice = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        console.log(aaData[i]['TotalDuePrice']);
+                        TotalDuePrice += aaData[i]['TotalDuePrice'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[nCells.length-1].innerHTML = TotalDuePrice;
+                },
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+
             });
 
     });
@@ -246,7 +348,18 @@
                         {"data": "student.phone_home"},                    
                         {"data": "payment_date"},
                         {"data": "total"},
-                    ]
+                    ],
+                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    var TotalDuePrice = 0;
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        console.log(aaData[i]['total']);
+                        TotalDuePrice += aaData[i]['total'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[nCells.length-1].innerHTML = TotalDuePrice;
+                }
             });
         }
 
@@ -302,12 +415,14 @@
                         </div>
                     </div>
                     <div class="col-xs-6">
-                        <label for="" ></label>
-                        <div class="col-xs-6">
-                            <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
-                        </div>
-                        <div class="col-xs-6">
-                            <button type="submit" id="print_daily_payment_reporting" class="btn btn-block btn-warning"><strong>Print </strong>Daily Reporting</button>
+                    <label for="" ></label>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button type="submit" id="print_daily_payment_reporting" class="btn btn-block btn-warning"><strong>Print </strong>Daily Reporting</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -326,7 +441,14 @@
                     
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="all_payment_reporting" class="btn btn-block btn-success"><strong>All Payment</strong> Reporting</button>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Monthly Payment</strong> Reporting</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Print</strong> Monthly Payment Reporting</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -335,12 +457,14 @@
                         <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show</strong></button>
                     </div>
                     <div class="col-xs-6">
-                        <label for="" ></label>
-                        <div class="col-xs-6">
-                            <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
-                        </div>
-                        <div class="col-xs-6">
-                            <button type="submit" id="print_due_payment_reporting" class="btn btn-block btn-danger"><strong>Print</strong> Due Reporting</button>
+                    <label for="" ></label>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
+                            </div>
+                            <div class="col-xs-6">
+                                <button type="submit" id="print_due_payment_reporting" class="btn btn-block btn-danger"><strong>Print</strong> Due Reporting</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -369,6 +493,15 @@
                         <th id="total_amount">Total Amount/-</th>
                     </tr>
                 </thead>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Total:</th>
+                        <th></th> 
+                    </tr>
+                </tfoot>                
                 <tbody>
                     <!-- user list -->
                 </tbody>
