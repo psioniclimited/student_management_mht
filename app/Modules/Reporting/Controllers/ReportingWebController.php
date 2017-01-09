@@ -66,8 +66,8 @@ class ReportingWebController extends Controller {
         $today = $today->toDateString();
         $dailyReporting = $report->getDailyPaymentReportingByDate($today);
         $datatables = Datatables::of($dailyReporting)->make(true);
-        dd($datatables);
-        return $datatables->data[0];   
+        // dd($datatables);
+        return $datatables;   
     }
 
     public function getDueReporting(ReportRepository $report)

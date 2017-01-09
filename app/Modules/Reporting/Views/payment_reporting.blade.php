@@ -6,9 +6,9 @@
 <!-- bootstrap datepicker -->
 <link rel="stylesheet" href="{{asset('../../plugins/datepicker/datepicker3.css')}}">
 
-<!-- bootstrap datepicker -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css">
+<!-- DataTables Printing Operation -->
+<link rel="stylesheet" href="{{asset('plugins/DataTablePrint/jquery.dataTables.min.css')}}">
+<link rel="stylesheet" href="{{asset('plugins/DataTablePrint/buttons.dataTables.min.css')}}">
 @endsection
 
 @section('scripts')
@@ -24,13 +24,13 @@
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
 
 <!-- DataTables Printing Operation -->
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.flash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
-<script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.2.4/js/buttons.print.min.js"></script>
+<script src="{{asset('plugins/DataTablePrint/dataTables.buttons.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/buttons.flash.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/jszip.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/pdfmake.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/vfs_fonts.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/buttons.html5.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/buttons.print.min.js')}}"></script>
 
 
 <script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
@@ -80,7 +80,6 @@
                     {"data": "total"},
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    
                     var total_price = 0;
                     for ( var i=0 ; i<aaData.length ; i++ ) {
                         console.log(aaData[i]['total']);
@@ -97,100 +96,29 @@
                     'copy',
                     {
                         extend: 'csvHtml5',
-                        title: 'DailyPaymentReporting'
+                        title: 'DailyPaymentReporting',
+                        "footer": true
                     },
                     {
                         extend: 'excelHtml5',
-                        title: 'DailyPaymentReporting'
+                        title: 'DailyPaymentReporting',
+                        "footer": true
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'DailyPaymentReporting'
+                        title: 'DailyPaymentReporting',
+                        "footer": true
                     },
                     {
                         extend: 'print',
                         title: 'Daily Payment Report',
+                        "footer": true
                     }
                 ]
             });
+    });
 
-    });
-    $("#print_daily_payment_reporting").click(function() {
-    
-        $('#all_user_list').DataTable( {
-            dom: 'Bfrtip',
-            buttons: [
-                    'copy',
-                    {
-                        extend: 'csvHtml5',
-                        title: 'DailyPaymentReporting'
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'DailyPaymentReporting'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'DailyPaymentReporting'
-                    },
-                    {
-                        extend: 'print',
-                        title: 'Daily Payment Report',
-                    }
-                ]
-        } );
-        // $.get('/get_daily_reporting',function(daily_data) {
-        //     var data = daily_data.data;
-        //     console.log(data);
-        //     var top = "<div><b>Daily Reporting</b><div/><br>";
-        //     var due_payment_output = "<table class='table table-bordered table-striped'>"+
-        //                     "<thead>"+
-        //                         "<tr>"+
-        //                             "<th>Student Name</th>"+
-        //                             "<th>Phone Number</th>"+
-        //                             "<th>Additional Phone Number</th>"+
-        //                             "<th>Payment Date</th>"+
-        //                             "<th>Total Paid Amount /- </th>"+
-        //                         "</tr>"+
-        //                     "</thead>"+
-        //                 "<tbody>";
-        //     var total_paid = 0;
-        //     for (var i = 0; i < data.length; i++) {
-        //         total_paid += data[i].total;
-        //         due_payment_output += "<tr role='row' class='even'>"+
-        //                         "<td>"+data[i].student.name+"</td>"+
-        //                         "<td>"+data[i].student.phone_home+"</td>"+
-        //                         "<td>"+data[i].student.phone_away+"</td>"+
-        //                         "<td>"+data[i].payment_date+"</td>"+
-        //                         "<td>"+data[i].total+"</td>"+
-        //                         "</tr>";
-        //     }
-            
-        //     due_payment_output += "<tr role='row' class='even'>"+
-        //                         "<td></td>"+
-        //                         "<td></td>"+
-        //                         "<td></td>"+
-        //                         "<td>Total Price</td>"+
-        //                         "<td>"+total_paid+"</td>"+
-        //                         "</tr>";
-            
-        //     var final_output = top + due_payment_output;
-        //     $(final_output).print({
-        //     globalStyles: true,
-        //     mediaPrint: false,
-        //     stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
-        //     noPrintSelector: ".no-print",
-        //     iframe: true,
-        //     append: null,
-        //     prepend: null,
-        //     manuallyCopyFormValues: true,
-        //     deferred: $.Deferred(),
-        //     timeout: 750,
-        //     title: null,
-        //     doctype: '<!doctype html>'
-        //     });
-        // });
-    });
+
     
     $("#monthly_payment_reporting").click(function() {
         $("#box_color").attr("class","box box-success");
@@ -198,7 +126,7 @@
         $("#alternate_data").text("Payment Date");
         $("#total_amount").text("Total Paid Amount/-");
         var table = $('#all_user_list').DataTable({
-            "paging": true,
+            "paging": false,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
@@ -228,7 +156,27 @@
                 },
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'MonthlyPaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'MonthlyPaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Monthly Payment Report',
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Monthly Payment Report',
+                        "footer": true
+                    }
                 ]
             });
     });
@@ -239,7 +187,7 @@
         $("#alternate_data").text("Additional Phone Number");
         $("#total_amount").text("Total Due Amount/-");
         var table = $('#all_user_list').DataTable({
-            "paging": true,
+            "paging": false,
             "lengthChange": false,
             "searching": false,
             "ordering": true,
@@ -269,54 +217,31 @@
                 },
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
-                ],
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'DuePaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'DuePaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Due Payment Report',
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Due Payment Report',
+                        "footer": true
+                    }
+                ]
 
             });
 
-    });
-    $("#print_due_payment_reporting").click(function() {
-        $.get('/get_due_reporting',function(due_data) {
-            var data = due_data.data;
-            var top = "<div>Due Reporting For: <b>"+monthNames[moment().month()]+"</b><div/>"+
-                                "<br>";
-            var due_payment_output = "<table class='table table-bordered table-striped'>"+
-                            "<thead>"+
-                                "<tr>"+
-                                    "<th>Student Name</th>"+
-                                    "<th>Phone Number</th>"+
-                                    "<th>Additional Phone Number</th>"+
-                                    "<th>Total Due Amount /- </th>"+
-                                "</tr>"+
-                            "</thead>"+
-                        "<tbody>";  
-            for (var i = 0; i < data.length; i++) {
-                due_payment_output += "<tr role='row' class='even'>"+
-                                "<td>"+data[i].name+"</td>"+
-                                "<td>"+data[i].phone_home+"</td>"+
-                                "<td>"+data[i].phone_away+"</td>"+
-                                "<td>"+data[i].TotalDuePrice+"</td>"+
-                                "</tr>";
-            }
-            
-            due_payment_output += "</tbody ></table>";
-            
-            var final_output = top + due_payment_output;
-            $(final_output).print({
-            globalStyles: true,
-            mediaPrint: false,
-            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
-            noPrintSelector: ".no-print",
-            iframe: true,
-            append: null,
-            prepend: null,
-            manuallyCopyFormValues: true,
-            deferred: $.Deferred(),
-            timeout: 750,
-            title: null,
-            doctype: '<!doctype html>'
-            });
-        });
     });
     
     $("#range_payment_reporting").click(function() {
@@ -326,7 +251,7 @@
             $("#alternate_data").text("Payment Date");
             $("#total_amount").text("Total Paid Amount/-");
             var table = $('#all_user_list').DataTable({
-                "paging": true,
+                "paging": false,
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,
@@ -359,7 +284,31 @@
 
                     var nCells = nRow.getElementsByTagName('th');
                     nCells[nCells.length-1].innerHTML = TotalDuePrice;
-                }
+                },
+                dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Payment Report from '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Payment Report from '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Payment Report from '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Payment Report from '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
+                        "footer": true
+                    }
+                ]
             });
         }
 
@@ -415,15 +364,8 @@
                         </div>
                     </div>
                     <div class="col-xs-6">
-                    <label for="" ></label>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
-                            </div>
-                            <div class="col-xs-6">
-                                <button type="submit" id="print_daily_payment_reporting" class="btn btn-block btn-warning"><strong>Print </strong>Daily Reporting</button>
-                            </div>
-                        </div>
+                        <label for="" ></label>
+                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
                     </div>
                 </div>
                 <div class="row">
@@ -438,17 +380,9 @@
                             </div>
                         </div>
                     </div>
-                    
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Monthly Payment</strong> Reporting</button>
-                            </div>
-                            <div class="col-xs-6">
-                                <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Print</strong> Monthly Payment Reporting</button>
-                            </div>
-                        </div>
+                        <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Monthly Payment</strong> Reporting</button>
                     </div>
                 </div>
                 <div class="row">
@@ -457,15 +391,8 @@
                         <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show</strong></button>
                     </div>
                     <div class="col-xs-6">
-                    <label for="" ></label>
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
-                            </div>
-                            <div class="col-xs-6">
-                                <button type="submit" id="print_due_payment_reporting" class="btn btn-block btn-danger"><strong>Print</strong> Due Reporting</button>
-                            </div>
-                        </div>
+                        <label for="" ></label>
+                        <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
                     </div>
                 </div>
 

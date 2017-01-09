@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
 <!-- bootstrap datepicker -->
 <link rel="stylesheet" href="{{asset('../../plugins/datepicker/datepicker3.css')}}">
+<!-- DataTables Printing Operation -->
+<link rel="stylesheet" href="{{asset('plugins/DataTablePrint/jquery.dataTables.min.css')}}">
+<link rel="stylesheet" href="{{asset('plugins/DataTablePrint/buttons.dataTables.min.css')}}">
 @endsection
 
 @section('scripts')
@@ -18,9 +21,16 @@
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
-<!-- <script src="http://www.position-absolute.com/creation/print/jquery.printPage.js" ></script> -->
-<!-- <script src="{{asset('plugins/jqueryPrintArea/jquery.PrintArea.js')}}" ></script> -->
 <script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
+
+<!-- DataTables Printing Operation -->
+<script src="{{asset('plugins/DataTablePrint/dataTables.buttons.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/buttons.flash.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/jszip.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/pdfmake.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/vfs_fonts.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/buttons.html5.min.js')}}"></script>
+<script src="{{asset('plugins/DataTablePrint/buttons.print.min.js')}}"></script>
 <script>
     // add the rule here
     $.validator.addMethod("valueNotEquals", function (value, element, arg) {
@@ -104,7 +114,31 @@
 
                     var nCells = nRow.getElementsByTagName('th');
                     nCells[1].innerHTML = total_price;
-                }
+                },
+            dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Payment for '+$('select[id=teacher_user_id]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'DailyPaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'DailyPaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Payment for '+$('#teacher_user_id').text()+"\n"+" Date: "+ $('input[id=ref_date]').val(),
+                        "footer": true
+                    }
+                ]
             });
 
     });

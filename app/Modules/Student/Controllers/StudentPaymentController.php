@@ -87,7 +87,7 @@ class StudentPaymentController extends Controller {
                     $last_paid_date_from = $last_paid_date_from->addMonths($month);  
                     $invoice_detail->payment_from = $last_paid_date_from->toDateString();
 
-                    $no_of_month = $request->month[$i];
+                    // $no_of_month = $request->month[$i];
                     $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
                     $last_paid_date_to = $last_paid_date_to->addMonths($month);
                     $invoice_detail->payment_to = $last_paid_date_to->toDateString();

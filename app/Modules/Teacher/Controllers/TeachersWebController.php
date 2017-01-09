@@ -136,7 +136,7 @@ class TeachersWebController extends Controller {
         get(['id', 'name as text']));
 
 
-        dd(User::has('roles', 'admin'));
+        // dd(User::has('roles', 'admin'));
         $getTeacher = User::where('name', "LIKE", "%{$search_term}%")
                     ->get(['id', 'name as text']);
 
@@ -146,17 +146,32 @@ class TeachersWebController extends Controller {
 
     
     public function getAllBatchForTeacherPayment(Request $request) {
-
-        $getmonth = \Carbon\Carbon::createFromFormat('d/m/Y', $request->ref_date);
-        $getmonth->day = 01;
-        $getmonth = $getmonth->toDateString();
         
+        $get_current_date_month_year = \Carbon\Carbon::createFromFormat('d/m/Y', $request->ref_date);
+        $get_current_date_month_year->day = 01;
+        $get_current_date_month_year = $get_current_date_month_year->toDateString();
+        // $all_batches_for_a_Teacher = 
+        // "
+        // SELECT batch.id, batch.name, SUM(invoice_details.price) * teacher_details.teacher_percentage / 100
+        // FROM batch 
+
+        // JOIN invoice_details ON invoice_details.batch_id = batch.id
+        // JOIN invoice_masters ON invoice_masters.id = invoice_details.invoice_masters_id
+
+        // JOIN teacher_details ON batch.teacher_details_id = teacher_details.id
+
+        // WHERE batch.teacher_details_id = 7 AND invoice_details.payment_from BETWEEN '2017-01-01' AND '2017-01-30'
+        // GROUP BY batch.id, teacher_details.teacher_percentage
+        
+        // ";
+
         $batches = Batch::with('batchType', 'grade')->where('teacher_details_users_id', $request->teacher_user_id)->get();
         
         return Datatables::of($batches)
-            ->addColumn('teacher_payment_per_batch', function ($batches) use($getmonth,$request)    {
+            ->addColumn('teacher_payment_per_batch', function ($batches) use($get_current_date_month_year,$request)    {
                 
-                $price_per_batch = InvoiceDetail::where('batch_id', $batches->id)->where('payment_to', $getmonth)->sum('price');
+                $price_per_batch = InvoiceDetail::where('batch_id', $batches->id)->where('payment_to', $get_current_date_month_year)->sum('price');
+                
                 $teacherPercentage = TeacherDetail::select('teacher_percentage')->where('users_id',$request->teacher_user_id)->first();
                 // dd($teacherPercentage);
                 $price_per_batch = $price_per_batch * ( ($teacherPercentage->teacher_percentage)  / 100);
@@ -166,11 +181,11 @@ class TeachersWebController extends Controller {
                 return $price_per_batch;
 
             })
-            ->addColumn('Link', function ($batches) use($getmonth) {
+            ->addColumn('Link', function ($batches) use($get_current_date_month_year) {
                 
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                 
-                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$getmonth.'/'.$batches->name. '/all_student_for_teacher_payment/'. '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$get_current_date_month_year.'/'.$batches->name. '/all_student_for_teacher_payment/'. '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 // return '<a id="batch_'. $batches->id . '" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 }
                 else {
