@@ -121,23 +121,35 @@
                     {
                         extend: 'csvHtml5',
                         title: 'Payment for '+$('select[id=teacher_user_id]').val(),
-                        "footer": true
+                        "footer": true,
+                        exportOptions: {
+                            columns: [ 0, 1 ]
+                        }
                     },
                     {
                         extend: 'excelHtml5',
                         title: 'DailyPaymentReporting',
-                        "footer": true
+                        "footer": true,
+                        exportOptions: {
+                            columns: [ 0, 1 ]
+                        }
                     },
                     {
                         extend: 'pdfHtml5',
                         title: 'DailyPaymentReporting',
-                        "footer": true
+                        "footer": true,
+                        exportOptions: {
+                            columns: [ 0, 1 ]
+                        }
                     },
                     {
                         extend: 'print',
                         title: 'Payment for '+$('#teacher_user_id').text()+"\n"+" Date: "+ $('input[id=ref_date]').val(),
-                        "footer": true
-                    }
+                        "footer": true,
+                        exportOptions: {
+                            columns: [ 0, 1 ]
+                        }
+                    },
                 ]
             });
 
