@@ -120,4 +120,19 @@ class StudentPaymentController extends Controller {
             return $data[count($data)-1]->serial_number + 1;
         }
     }
+
+    public function invoiceHistory($id)
+    {
+        return InvoiceMaster::with('invoiceDetail')->where('students_id',$id)->get();
+        $invoice_details = InvoiceDetail::whereHas('invoiceMaster', function($query) use ($id){
+            $query->where('students_id', $id);
+        })->get();
+        
+        // $invoice_details = InvoiceMaster::where('students_id',$id)->invoiceDetail()->first();
+        // dd($invoice_details->toArray());
+        // $invoice_details = $invoice_details->toArray();
+        return $invoice_details;
+        dd($invoice_details);
+        return Datatables::of($invoice_details)->make(true);
+    }
 }

@@ -53,6 +53,16 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::post('student_payment', 'App\Modules\Student\Controllers\StudentPaymentController@studentPaymentProcess');
     Route::get('get_invoice_id', 'App\Modules\Student\Controllers\StudentPaymentController@getInvoiceId');
     
+
+    /**************************************
+    * Invoice History Update of a Student *
+    ***************************************/
+    Route::get('student/{student}/invoice_edit/', 'App\Modules\Student\Controllers\StudentPaymentController@invoiceHistory');
+
+
+
+
+
     /**********************
     * Create a new School *
     ***********************/
