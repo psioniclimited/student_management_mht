@@ -40,4 +40,8 @@ class InvoiceDetail extends Model
         return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');
     }
 
+    public function refund() {
+        return $this->hasOne('App\Modules\Student\Models\Refund','invoice_details_id');
+    }
+
 }

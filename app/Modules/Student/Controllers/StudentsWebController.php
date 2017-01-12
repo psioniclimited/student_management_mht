@@ -55,7 +55,7 @@ class StudentsWebController extends Controller {
                         		'<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>'.'&nbsp &nbsp &nbsp'.
-                                '<a href="' . url('/student') . '/' . $students->id . '/invoice_edit/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Invoice Update</a>';
+                                '<a href="' . url('/student') . '/' . $students->id . '/invoice_detail_page/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Invoice Update</a>';
                         }
                         else {
                         	return 'N/A';

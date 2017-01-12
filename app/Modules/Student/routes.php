@@ -57,8 +57,9 @@ Route::group(['middleware' => ['web','auth']], function () {
     /**************************************
     * Invoice History Update of a Student *
     ***************************************/
-    Route::get('student/{student}/invoice_edit/', 'App\Modules\Student\Controllers\StudentPaymentController@invoiceHistory');
-
+    Route::get('student/{student}/invoice_detail_page/', 'App\Modules\Student\Controllers\StudentPaymentController@invoiceDetailPage');
+    Route::get('student/get_all_invoice_details_for_a_student_payment/', 'App\Modules\Student\Controllers\StudentPaymentController@getAllInvoiceDetailsForAStudent');
+    Route::get('refund/{invoice_details}/{students}/', 'App\Modules\Student\Controllers\StudentPaymentController@refundPayment');
 
 
 
