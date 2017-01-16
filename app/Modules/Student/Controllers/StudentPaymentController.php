@@ -244,5 +244,14 @@ class StudentPaymentController extends Controller {
                                     })
                         ->make(true);
     }
-// /last_payment_date_update
+    public function last_payment_date_update(Request $request)
+    {   
+        $last_paid_date = Carbon::createFromFormat('d/m/Y', $request->last_paid_date)->format('Y-m-d');
+        $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $last_paid_date);
+        return $last_paid_date->day;
+        $batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id)
+                                                    ->where('students_id', $request->student_id)
+                                                    ->update(['last_paid_date' => $last_paid_date]);
+    }
+
 }

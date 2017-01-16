@@ -63,6 +63,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     
     Route::get('student/{student}/last_paid_update_page/', 'App\Modules\Student\Controllers\StudentPaymentController@lastPaidUpdatePage');
     Route::get('student/get_all_batches_for_last_paid_upddate/', 'App\Modules\Student\Controllers\StudentPaymentController@get_all_batches_for_last_paid_upd');
+    Route::post('student/last_payment_date_update', 'App\Modules\Student\Controllers\StudentPaymentController@last_payment_date_update');
 
 
 

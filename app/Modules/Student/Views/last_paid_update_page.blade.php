@@ -56,10 +56,18 @@
                     
                     $(".update_button").click(function() {
                         var date_value = '.update_'+this.id;
-                        console.log("Batch ID:  " + this.id);
-                        console.log("Student ID:  " + {{ $studentDetails->id }} );
-                        console.log($(date_value).val());
-
+                        // console.log("Batch ID:  " + this.id);
+                        // console.log("Student ID:  " + {{ $studentDetails->id }} );
+                        // console.log($(date_value).val());
+                        $.post( "/student/last_payment_date_update",{ 
+                            student_id: {{ $studentDetails->id }}, 
+                            batch_id: this.id,
+                            last_paid_date: $(date_value).val()
+                        })
+                        .done(function( data ) {
+                            console.log(data);
+                            // location.reload();
+                        });
                     });
                   
                   },
