@@ -3,15 +3,36 @@
 @section('css')
 <!-- DataTables -->
 <link rel="stylesheet" href="{{asset('plugins/datatables/dataTables.bootstrap.css')}}">
+<link rel="stylesheet" href="{{asset('../../plugins/datepicker/datepicker3.css')}}">
+
+<link rel="stylesheet" href="{{asset('plugins/tooltipster/tooltipster.css')}}">
+<link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
 @endsection
 
 @section('scripts')
 <!-- DataTables -->
+<!-- bootstrap datepicker -->
+<script src="{{asset('../../plugins/datepicker/bootstrap-datepicker.js')}}"></script>
+<script src="{{asset('plugins/validation/dist/jquery.validate.js')}}"></script>
+<script src="{{asset('plugins/jQuery/jquery.form.min.js')}}"></script>
+<script src="{{asset('plugins/tooltipster/tooltipster.js')}}"></script>
+
+<!-- DataTables -->
 <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
+<script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
+<script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
+<!-- <script src="http://www.position-absolute.com/creation/print/jquery.printPage.js" ></script> -->
+<!-- <script src="{{asset('plugins/jqueryPrintArea/jquery.PrintArea.js')}}" ></script> -->
+<script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
+<!-- bootstrap datepicker -->
+
 
 <script>
-    $(document).ready(function () {        
+    $(document).ready(function () {     
+
+           
+
         var table = $('#all_user_list').DataTable({
             "paging": false,
             "lengthChange": false,
@@ -22,22 +43,35 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                    'url': "{{URL::to('/student/get_all_invoice_details_for_a_student_payment')}}",
+                    'url': "{{URL::to('/student/get_all_batches_for_last_paid_upddate')}}",
                     'data': {
                        student_id: {{ $studentDetails->id }},
                     },
                 },
+                "initComplete": function(settings, json) {
+                    $('.ref_date').datepicker({
+                      format: 'dd/mm/yyyy',
+                      autoclose: true
+                    });
+                    
+                    $(".update_button").click(function() {
+                        var date_value = '.update_'+this.id;
+                        console.log("Batch ID:  " + this.id);
+                        console.log("Student ID:  " + {{ $studentDetails->id }} );
+                        console.log($(date_value).val());
+
+                    });
+                  
+                  },
             "columns": [
                     {"data": "id"},
-                    {"data": "batch.name"},
+                    {"data": "name"},
                     {"data": "price"},
-                    {"data": "payment_from"},
-                    {"data": "payment_to"},
+                    {"data": "LastPaidDate"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
 
-       
     });
 </script>
 
@@ -78,12 +112,11 @@
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Invoice Details Id</th>
+                                <th>Batch Id</th>
                                 <th>Batch Name</th>
                                 <th>Price</th>
-                                <th>payment_from</th>
-                                <th>payment_to</th>
-                                <th>Refund</th>
+                                <th>Last Paid Date</th>
+                                <th>Update</th>
                             </tr>
                         </thead>
                         <tbody>                            

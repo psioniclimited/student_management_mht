@@ -21,7 +21,8 @@ class InvoiceDetail extends Model
         'subjects_id',
         'price',
         'payment_from',
-        'payment_to'
+        'payment_to',
+        'refund'
    ];
 
    	public function invoiceMaster() {

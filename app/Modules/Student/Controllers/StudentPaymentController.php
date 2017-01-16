@@ -92,6 +92,7 @@ class StudentPaymentController extends Controller {
                     $last_paid_date_to = $last_paid_date_to->addMonths($month);
                     $invoice_detail->payment_to = $last_paid_date_to->toDateString();
                     $last_payment_date = $invoice_detail->payment_to;
+                    $invoice_detail->refund = false;
                     $invoice_detail->save();
                 }
             	$batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id[$i])
@@ -133,7 +134,7 @@ class StudentPaymentController extends Controller {
         
         $invoice_details = InvoiceDetail::whereHas('invoiceMaster', function($query) use ($student_id){
             $query->where('students_id', $student_id);
-        })->with('batch')->orderBy('payment_to', 'DESC')->get()->unique('batch_id');
+        })->where('refund',false)->with('batch')->orderBy('payment_to', 'DESC')->get()->unique('batch_id');
         
         return Datatables::of($invoice_details)
                         ->addColumn('Link', function ($invoice_details) use ($student_id) {
@@ -155,6 +156,10 @@ class StudentPaymentController extends Controller {
         $current_date = $current_date->toDateString();
         
         if ($current_date == $invoice_details->payment_to) {
+            
+            $invoice_details->refund = true;
+            $invoice_details->save();
+            
             $refund = new Refund();
             $refund->refund_from = $invoice_details->payment_to;
             $refund->amount = $invoice_details->price;
@@ -166,11 +171,14 @@ class StudentPaymentController extends Controller {
                                                     ->where('students_id', $student_id)
                                                     ->update(['last_paid_date' => $last_payment_date->toDateString()]);
             return back();
-            return "Current Operation";
         }
         elseif ( $invoice_details->payment_to < $current_date ) {
+
+            $invoice_details->refund = true;
+            $invoice_details->save();
+
             $refund = new Refund();
-            $refund->refund_from = $current_date;
+            $refund->refund_from = $invoice_details->payment_to;
             $refund->amount = $invoice_details->price;
             $refund->invoice_details_id = $invoice_details->id;
             $refund->save();
@@ -179,12 +187,62 @@ class StudentPaymentController extends Controller {
             $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
                                                     ->where('students_id', $student_id)
                                                     ->update(['last_paid_date' => $last_payment_date]);
-            return "Previous Operation";
+            return back();
         }
         else {
             
+            $invoice_details->delete();
+            
+            $refDate = Carbon::createFromFormat('Y-m-d', $invoice_details->payment_to);
+            $last_payment_date = $refDate->subMonths(1);
+            $last_payment_date = $last_payment_date->toDateString();
+            $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
+                                                    ->where('students_id', $student_id)
+                                                    ->update(['last_paid_date' => $last_payment_date]);
+            return back();
         }
         
         return $invoice_detail_id. ' ' .$student_id;
     }
+
+    public function lastPaidUpdatePage($id)
+    {
+        // $student_details = Student::with('batch')->find($id);
+        $student_details = Student::find($id);
+
+        // return$student_details
+        // dd($student_details->batch[1]->pivot);
+        // return $student_details->batch[1]->pivot->last_paid_date;
+        return view('Student::last_paid_update_page')->with('studentDetails', $student_details);
+    }
+
+    public function get_all_batches_for_last_paid_upd(Request $request)
+    {
+        $student_id = $request->student_id;
+        $student_details = Student::with('batch')->find($student_id);
+        $student_details = $student_details->batch;
+        // dd($student_details);
+        return Datatables::of($student_details)
+                        ->addColumn('LastPaidDate', function ($student_details) use ($student_id) {
+                                        if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                                        
+                                            $refDate = Carbon::createFromFormat('Y-m-d', $student_details->pivot->last_paid_date)->format('d/m/Y');
+                                            $class_name = 'form-control ref_date update_'.$student_details->id;
+                                            return "<div class='input-group date'><input type='text' class='".$class_name."' name='last_payment_date' value='" . $refDate . "' autocomplete='off'></div>";
+                                        }
+                                        else {
+                                            return 'N/A';
+                                        }
+                                    })
+                        ->addColumn('Link', function ($student_details) use ($student_id) {
+                                        if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                                        return "<button id='".$student_details->id."' class='btn btn-xs btn-info update_button'><i class='glyphicon glyphicon-edit'></i> Update</button>";
+                                        }
+                                        else {
+                                            return 'N/A';
+                                        }
+                                    })
+                        ->make(true);
+    }
+// /last_payment_date_update
 }

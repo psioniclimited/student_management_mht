@@ -60,6 +60,9 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('student/{student}/invoice_detail_page/', 'App\Modules\Student\Controllers\StudentPaymentController@invoiceDetailPage');
     Route::get('student/get_all_invoice_details_for_a_student_payment/', 'App\Modules\Student\Controllers\StudentPaymentController@getAllInvoiceDetailsForAStudent');
     Route::get('refund/{invoice_details}/{students}/', 'App\Modules\Student\Controllers\StudentPaymentController@refundPayment');
+    
+    Route::get('student/{student}/last_paid_update_page/', 'App\Modules\Student\Controllers\StudentPaymentController@lastPaidUpdatePage');
+    Route::get('student/get_all_batches_for_last_paid_upddate/', 'App\Modules\Student\Controllers\StudentPaymentController@get_all_batches_for_last_paid_upd');
 
 
 
