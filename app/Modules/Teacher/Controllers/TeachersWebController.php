@@ -14,6 +14,7 @@ use App\Modules\Student\Models\Subject;
 use App\Modules\Teacher\Models\TeacherDetail;
 use App\Modules\Student\Models\InvoiceDetail;
 use App\Modules\Student\Models\InvoiceMaster;
+use App\Modules\Student\Models\Refund;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
@@ -280,4 +281,49 @@ class TeachersWebController extends Controller {
         ->make(true);
     }
 
+    public function getStudentRefundforTeacherPayment(Request $request)
+    {
+        $get_current_date_month_year = Carbon::createFromFormat('d/m/Y', $request->ref_date);
+        $get_current_date_month_year->day = 01;
+        $get_current_date_month_year = $get_current_date_month_year->toDateString();
+
+        // $query =
+        // "
+        // SELECT * FROM refunds
+        // LEFT JOIN invoice_details ON invoice_details.id = refunds.invoice_details_id
+        // LEFT JOIN invoice_masters ON invoice_masters.id = invoice_details.invoice_masters_id
+        // LEFT JOIN students ON students.id = invoice_masters.students_id
+        // LEFT JOIN batch ON batch.id = invoice_details.batch_id
+        // LEFT JOIN teacher_details ON teacher_details.users_id = batch.teacher_details_users_id
+        // WHERE teacher_details.users_id = ". $request->teacher_user_id . " AND refunds.refund_from = '" . $get_current_date_month_year."'";
+
+        
+        // $query = DB::select($query);
+
+        $data = DB::table('refunds')
+                    
+                    ->leftJoin('invoice_details', 'invoice_details.id', '=', 'refunds.invoice_details_id')
+                    ->leftJoin('invoice_masters', 'invoice_masters.id', '=', 'invoice_details.invoice_masters_id')
+                    ->leftJoin('students', 'students.id', '=', 'invoice_masters.students_id')
+                    ->leftJoin('batch', 'batch.id', '=', 'invoice_details.batch_id')
+                    ->leftJoin('teacher_details', 'teacher_details.users_id', '=', 'batch.teacher_details_users_id')
+                    ->where('teacher_details.users_id', '=', $request->teacher_user_id)
+                    ->where('refunds.refund_from', '=', $get_current_date_month_year)
+                    ->select('students.name as student_name','batch.name as batch_name','refunds.*', 'invoice_details.payment_to as refunded_month','teacher_details.teacher_percentage');
+        
+        return Datatables::of($data)
+        ->addColumn('price_per_student', function ($data){
+                return ($data->teacher_percentage * $data->amount) / 100;
+        })
+        ->addColumn('validate', function ($data){
+                return "<button id='".$data->id."' class='btn btn-xs btn-primary refunded_amount'><i class='glyphicon glyphicon-edit'></i> Validate</button>";
+        })
+        ->make(true);
+        
+
+
+        
+    }
+// http://localhost:8000/get_student_refund_for_teacher_payment?teacher_user_id=?ref_date=17/01/2017
+// $request->ref_date
 }

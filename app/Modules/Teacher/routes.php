@@ -56,4 +56,6 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('/get_paid_students_for_a_batch', 'App\Modules\Teacher\Controllers\TeachersWebController@getPaidStudentsForABatch');
 
     Route::get('/get_non_paid_students_for_a_batch', 'App\Modules\Teacher\Controllers\TeachersWebController@getNonPaidStudentsForABatch');
+
+    Route::get('/get_student_refund_for_teacher_payment', 'App\Modules\Teacher\Controllers\TeachersWebController@getStudentRefundforTeacherPayment');
 });

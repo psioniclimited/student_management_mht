@@ -83,7 +83,8 @@ class StudentsWebController extends Controller {
         $Batches = Batch::with('batchType','grade')->get();
         $batchTypes = batchType::all();
 		$Subjects = Subject::all();
-		return view('Student::create_student',compact("Schools","Batches", "batchTypes","Subjects"));
+        $getGrades = Grade::all();
+		return view('Student::create_student',compact("Schools","Batches", "batchTypes","Subjects","getGrades"));
 	}
 
 
@@ -105,18 +106,22 @@ class StudentsWebController extends Controller {
     ****************************/
     public function editStudent($id) {
 
-    	$getStudent = Student::with('school', 'batch','subject','batchType')->find($id);
+    	$getStudent = Student::with('school', 'batch.grade','subject','batchType')->find($id);
         $schools = School::all();
 		$batches = Batch::all();
         $batchTypes = BatchType::all();
 		$subjects = Subject::all();
+        $getGrades = Grade::all();
         
+        $studentGrade = $getStudent->batch->first()->grade;
         return view('Student::edit_student')
 		->with('getStudent', $getStudent)
 		->with('Schools', $schools)
 		->with('Batches', $batches)
 		->with('Subjects', $subjects)
-        ->with('batchTypes', $batchTypes);
+        ->with('batchTypes', $batchTypes)
+        ->with('getGrades', $getGrades)
+        ->with('studentGrade', $studentGrade);
 	}
 
     public function StudentBatchForEdit(Request $request)

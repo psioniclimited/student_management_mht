@@ -39,7 +39,7 @@
 
     $(document).ready(function () {
 
-
+    var total_money = 0;
 
 	//Date picker for Start Date
     $('.ref_date').datepicker({
@@ -82,7 +82,7 @@
 
     $("#all_batch_for_teacher_payment").click(function() {
         
-        var table = $('#all_user_list').DataTable({
+        var table = $('#teacher_payment_datatable').DataTable({
             "paging": true,
             "lengthChange": false,
             "searching": false,
@@ -113,6 +113,7 @@
                     }
 
                     var nCells = nRow.getElementsByTagName('th');
+                    total_money = total_price;
                     nCells[1].innerHTML = total_price;
                 },
             dom: 'Bfrtip',
@@ -151,9 +152,56 @@
                         }
                     },
                 ]
-            });
+            }); // #teacher_payment_datatable ends
 
-    });
+        var refund_tatble = $('#student_refund_datatable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                    'url': "{{URL::to('/get_student_refund_for_teacher_payment')}}",
+                    'data': {
+                       teacher_user_id: $('select[id=teacher_user_id]').val(),
+                       ref_date: $('input[id=ref_date]').val()
+                    },
+                },
+            "initComplete": function(settings, json) {
+                $(".refunded_amount").click(function() {
+                    total_money = total_money - $(this).parent().siblings()[4].innerHTML;
+                    $('#total_teacher_payment').text(total_money);
+                });
+              
+            },
+            "columns": [
+                    {"data": "id"},
+                    {"data": "student_name"},
+                    {"data": "batch_name"},
+                    {"data": "refunded_month"},
+                    {"data": "price_per_student"},
+                    {"data": "validate"},
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    var total_amount = 0;
+                    
+                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                        console.log(aaData[i]['price_per_student']);
+                        total_amount += aaData[i]['price_per_student'];
+                    }
+
+                    var nCells = nRow.getElementsByTagName('th');
+                    nCells[4].innerHTML = total_amount;
+                },
+            
+            }); // #student_refund_datatable ends
+
+    });// #all_batch_for_teacher_payment ends
 
 
 
@@ -186,7 +234,7 @@
 <section class="content">
     
     <!-- Horizontal Form -->
-    <div class="box box-danger">
+    <div class="box box-primary">
         
         <div class="box-body">
         
@@ -228,40 +276,72 @@
 
 
 
-        <!-- Horizontal Form -->
+    <!-- Teacher payment Datatable -->
     <div class="box box-warning">
-            <div class="box-header">
-                <h4>
-                    All Batches under 
-                </h4>            
+        <div class="box-header">
+                <h4>Teacher's Payment Table</h4>      
+        </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="teacher_payment_datatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Batch Name</th>
+                            <th>Price Tk/=</th>
+                            <th>Action</th>                            
+                        </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                        <th>Total:</th> 
+                        <th id="total_teacher_payment"></th>
+                      </tr>
+                    </tfoot>                      
+                    <tbody>                            
+                        <!-- user list -->
+                    </tbody>                        
+                </table>
             </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <table id="all_user_list" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Batch Name</th>
-                                <th>Price Tk/=</th>
-                                <th>Action</th>                            
-                            </tr>
-                        </thead>
-                        <tfoot>
-                          <tr>
-                            <th>Total:</th> 
-                            <th></th>
-                          </tr>
-                        </tfoot>                      
-                        <tbody>                            
-                            <!-- user list -->
-                        </tbody>                        
-                    </table>
-                </div>
-                <!-- /.box-body -->
+            <!-- /.box-body -->
     </div>
     <!-- /.box -->
 
 
-
+    <!-- Student's Refund Datatable -->
+    <div class="box box-danger">
+        <div class="box-header">
+            <h4>Student's Refund Table</h4>          
+        </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <table id="student_refund_datatable" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Refund Id</th>
+                            <th>Student Name</th>
+                            <th>Batch Name</th>
+                            <th>Refunded Month</th>
+                            <th>Amount /=</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th>Total:</th> 
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </tfoot>                      
+                    <tbody>                            
+                        <!-- user list -->
+                    </tbody>                        
+                </table>
+            </div>
+            <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
 
 
 </section>

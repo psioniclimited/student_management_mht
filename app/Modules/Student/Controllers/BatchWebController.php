@@ -141,8 +141,11 @@ class BatchWebController extends Controller {
         error_log($request->input('batchType_id'));
         error_log('Subject ID');
         error_log($request->input('subject_id'));
+        error_log('Grade ID');
+        error_log($request->input('grades_id'));
 
         $batch_information = Batch::where('batch_types_id',$request->input('batchType_id'))
+                                    ->where('grades_id', $request->input('grades_id'))
                                     ->where('subjects_id', $request->input('subject_id'))
                                     ->get(['id', 'name as text']);
 

@@ -48,29 +48,26 @@
                        student_id: {{ $studentDetails->id }},
                     },
                 },
-                "initComplete": function(settings, json) {
-                    $('.ref_date').datepicker({
-                      format: 'dd/mm/yyyy',
-                      autoclose: true
+            "initComplete": function(settings, json) {
+                $('.ref_date').datepicker({
+                  format: 'dd/mm/yyyy',
+                  autoclose: true
+                });
+                
+                $(".update_button").click(function() {
+                    var date_value = '.update_'+this.id;
+                    $.post( "/student/last_payment_date_update",{ 
+                        student_id: {{ $studentDetails->id }}, 
+                        batch_id: this.id,
+                        last_paid_date: $(date_value).val()
+                    })
+                    .done(function( data ) {
+                        console.log(data);
+                        location.reload();
                     });
-                    
-                    $(".update_button").click(function() {
-                        var date_value = '.update_'+this.id;
-                        // console.log("Batch ID:  " + this.id);
-                        // console.log("Student ID:  " + {{ $studentDetails->id }} );
-                        // console.log($(date_value).val());
-                        $.post( "/student/last_payment_date_update",{ 
-                            student_id: {{ $studentDetails->id }}, 
-                            batch_id: this.id,
-                            last_paid_date: $(date_value).val()
-                        })
-                        .done(function( data ) {
-                            console.log(data);
-                            // location.reload();
-                        });
-                    });
-                  
-                  },
+                });
+              
+            },
             "columns": [
                     {"data": "id"},
                     {"data": "name"},

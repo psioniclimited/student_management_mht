@@ -49,6 +49,7 @@ $(document).ready(function () {
             phone_home: {required: true},
             phone_away: {required: true},
             schools_id: {valueNotEquals: "default"},
+            grades_id: {valueNotEquals: "default"},
             batch_types_id: {valueNotEquals: "default"},
         },
         messages: {
@@ -58,11 +59,18 @@ $(document).ready(function () {
             phone_home: {required: "Enter Home Phone Number"},
             phone_away: {required: "Enter Additional Phone Number"},
             schools_id: {valueNotEquals: "Select a School"},
+            grades_id: {valueNotEquals: "Select a Grade"},
             batch_types_id: {valueNotEquals: "Select a Batch"},
         }
     });
 
     $('#batch_types_id').change(function(event){
+        $('.sub_checkbox').attr('checked',false);
+        $('.batchSelection').hide();
+        $('.select2').val('');
+    });
+
+    $('#grades_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
         $('.batchSelection').hide();
         $('.select2').val('');
@@ -76,11 +84,13 @@ $(document).ready(function () {
            $( this ).parent().siblings(".form-group").show();
             
             var batchType = $('#batch_types_id').find(":selected").val();
-            console.log("batchType");
-            console.log(batchType);
+            var grade = $('#grades_id').find(":selected").val();
+            console.log("batchType "+batchType);
+            console.log("Grade  "+grade);
+            
             var subject_id = "#subject" + this.value;
             var subject_id_for_select2 = this.value;
-            // var full_url = "/getallbatch/" + subject_id + "/" + batchType;
+            
             $( subject_id ).select2({
                 allowClear: true,
                 placeholder: 'Select batch',
@@ -91,10 +101,11 @@ $(document).ready(function () {
                     tags: true,
                     data: function (params) {
                       return {
-                        q: params.term, // search term
-                        page: params.page,
-                        subject_id: subject_id_for_select2,
-                        batchType_id:batchType
+                            q: params.term, // search term
+                            page: params.page,
+                            subject_id: subject_id_for_select2,
+                            batchType_id:batchType,
+                            grades_id:grade
                         };
                     },
                     processResults: function (data, params) {
@@ -215,6 +226,16 @@ $(document).ready(function () {
                             <option value="default">Choose...</option>
                             @foreach ($Schools as $school)
                                 <option value="{{ $school->id }}">{{ $school->name }}</option>
+                            @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="grades_id" >Grade*</label>
+                    <select class="form-control" id="grades_id" name="grades_id">
+                            <option value="default">Choose...</option>
+                            @foreach ($getGrades as $grade)
+                                <option value="{{ $grade->id }}">{{ $grade->name }}</option>
                             @endforeach
                     </select>
                 </div>

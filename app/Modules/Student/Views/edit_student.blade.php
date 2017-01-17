@@ -62,20 +62,24 @@ $(document).ready(function () {
             student_id: "{{ $getStudent->id }}" 
     })
     .done(function( data ) {
-
+        console.log(data);
         var batchType = $('#batch_types_id').find(":selected").val();
+        var grade = $('#grades_id').find(":selected").val();
+        console.log("batchType "+batchType);
+        console.log("Grade " + grade);
 
         for (var i = 0; i < data.length; i++) {
             
             var subject_id = "#subject" + data[i].subjects_id;
             var subject_id_for_select2 = data[i].subjects_id;
-            
+            console.log("subject_id_for_select2 " + subject_id_for_select2);
             
             $( subject_id ).select2({
             allowClear: true,
-            data: [
-               { id: data[i].id, text:  data[i].name }
-           ],
+            data: [{ 
+                    id: data[i].id, 
+                    text:  data[i].name 
+                }],
             ajax: {
                 url: "/getallbatch",
                 dataType: 'json',
@@ -83,10 +87,11 @@ $(document).ready(function () {
                 tags: true,
                 data: function (params) {
                   return {
-                    q: params.term, // search term
-                    page: params.page,
-                    subject_id: subject_id_for_select2,
-                    batchType_id:batchType
+                        q: params.term, // search term
+                        page: params.page,
+                        subject_id: subject_id_for_select2,
+                        batchType_id:batchType,
+                        grades_id:grade
                     };
                 },
                 processResults: function (data, params) {
@@ -94,6 +99,7 @@ $(document).ready(function () {
                   // since we are using custom formatting functions we do not need to
                   // alter the remote JSON data, except to indicate that infinite
                   // scrolling can be used
+                  console.log("Inside");
                   params.page = params.page || 1;
                   // console.log(data);
                   return {
@@ -108,11 +114,7 @@ $(document).ready(function () {
             });
 
         }
-        console.log(data);
-        
-        
-
-     });
+    });
 
     
 
@@ -120,6 +122,12 @@ $(document).ready(function () {
 
 
     $('#batch_types_id').change(function(event){
+        $('.sub_checkbox').attr('checked',false);
+        $('.batchSelection').hide();
+        $('.select2').val('');
+    });
+
+    $('#grades_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
         $('.batchSelection').hide();
         $('.select2').val('');
@@ -133,7 +141,9 @@ $(document).ready(function () {
            $( this ).parent().siblings(".form-group").show();
             
             var batchType = $('#batch_types_id').find(":selected").val();
-            // console.log("batchType");
+            var grade = $('#grades_id').find(":selected").val();
+            console.log("batchType "+batchType);
+            console.log("Grade " + grade);
             // console.log(batchType);
             var subject_id = "#subject" + this.value;
             var subject_id_for_select2 = this.value;
@@ -148,10 +158,11 @@ $(document).ready(function () {
                     tags: true,
                     data: function (params) {
                       return {
-                        q: params.term, // search term
-                        page: params.page,
-                        subject_id: subject_id_for_select2,
-                        batchType_id:batchType
+                            q: params.term, // search term
+                            page: params.page,
+                            subject_id: subject_id_for_select2,
+                            batchType_id:batchType,
+                            grades_id:grade
                         };
                     },
                     processResults: function (data, params) {
@@ -159,6 +170,7 @@ $(document).ready(function () {
                       // since we are using custom formatting functions we do not need to
                       // alter the remote JSON data, except to indicate that infinite
                       // scrolling can be used
+                      
                       params.page = params.page || 1;
                       // console.log(data);
                       return {
@@ -280,6 +292,15 @@ $(document).ready(function () {
                         
                 </div>
                 <div class="form-group">
+                    <label for="grades_id" >Grade*</label>
+                    <select class="form-control" id="grades_id" name="grades_id">
+                            <option value="{{ $studentGrade->id }}">{{ $studentGrade->name }}</option>
+                            @foreach ($getGrades as $grade)
+                                <option value="{{ $grade->id }}">{{ $grade->name }}</option>
+                            @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="batch_types_id" >Batch type*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
                             <option value="{{ $getStudent->batchType->id }}">{{ $getStudent->batchType->name}}</option>
@@ -362,7 +383,6 @@ $(document).ready(function () {
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <button type="submit" class="btn btn-default">Cancel</button>
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </div>
         <!-- /.box-footer -->
