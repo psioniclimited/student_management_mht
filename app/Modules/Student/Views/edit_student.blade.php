@@ -53,12 +53,8 @@ $(document).ready(function () {
             phone_away: {required: "Enter Additional Phone Number"},
         }
     });
-
-
-
     
-    
-    $.get("/get_student_batch_for_edit", { 
+    $.get("/get_student_batch_for_edit", {
             student_id: "{{ $getStudent->id }}" 
     })
     .done(function( data ) {
@@ -70,8 +66,8 @@ $(document).ready(function () {
 
         for (var i = 0; i < data.length; i++) {
             
-            var subject_id = "#subject" + data[i].subjects_id;
-            var subject_id_for_select2 = data[i].subjects_id;
+            let subject_id = "#subject" + data[i].subjects_id;
+            let subject_id_for_select2 = data[i].subjects_id;
             console.log("subject_id_for_select2 " + subject_id_for_select2);
             
             $( subject_id ).select2({
@@ -86,6 +82,7 @@ $(document).ready(function () {
                 delay: 250,
                 tags: true,
                 data: function (params) {
+                  console.log("Inside data object " + subject_id_for_select2);
                   return {
                         q: params.term, // search term
                         page: params.page,
@@ -99,7 +96,7 @@ $(document).ready(function () {
                   // since we are using custom formatting functions we do not need to
                   // alter the remote JSON data, except to indicate that infinite
                   // scrolling can be used
-                  console.log("Inside");
+                  console.log("Inside Initial Select2");
                   params.page = params.page || 1;
                   // console.log(data);
                   return {
@@ -254,6 +251,12 @@ $(document).ready(function () {
                     
                 </div>
                 <div class="form-group">
+                <label for="student_email" >Email*</label>
+                
+                    <input type="email" class="form-control" id="student_email" name="student_email" size="35" value="{{ $getStudent->student_email }}">
+                    
+                </div>
+                <div class="form-group">
                     <label for="fathers_name">Father's name*</label>
                     
                         <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name" value="{{$getStudent->fathers_name}}">
@@ -275,6 +278,14 @@ $(document).ready(function () {
                     <label for="phone_away">Edditional Phone Number*</label>
                     
                         <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{ $getStudent->phone_away }}">
+                    
+                </div>
+                <div class="form-group">
+                    <label for="pic" >Upload Photo*</label>
+                       
+                        <!-- {{Form::file('pic')}} -->
+                        <input type="file" name="pic" id="pic">
+                        <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
                     
                 </div>
             </div>

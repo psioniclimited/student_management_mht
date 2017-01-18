@@ -25,9 +25,11 @@
             "columns": [
                     {"data": "id"},
                     {"data": "name"},
+                    {"data": "student_email"},
                     {"data": "batch", "name": "batch.name"},                    
                     {"data": "phone_home"},
-                    {"data": "batch_type.name"},
+                    // {"data": "batch_type.name"},
+                    {"data": "batch_type.name", "name": "batch_type.name"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -91,6 +93,7 @@
                             <tr>
                                 <th>Student Id</th>
                                 <th>Student Name</th>
+                                <th>Email Address</th>
                                 <th>Batch</th>
                                 <th>Phone Home</th>
                                 <th>Batch Type</th>

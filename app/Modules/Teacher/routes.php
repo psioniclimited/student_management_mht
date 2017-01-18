@@ -58,4 +58,13 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('/get_non_paid_students_for_a_batch', 'App\Modules\Teacher\Controllers\TeachersWebController@getNonPaidStudentsForABatch');
 
     Route::get('/get_student_refund_for_teacher_payment', 'App\Modules\Teacher\Controllers\TeachersWebController@getStudentRefundforTeacherPayment');
+
+    Route::get('app/images/student_Images/{imgname}', function($imgname){
+        $file_path = storage_path(). '/app/images/student_Images/' . $imgname;
+        $file = File::get($file_path);
+        $type = File::mimeType($file_path);
+        $response = response()->make($file, 200);
+        $response->header("Content-Type", $type);
+        return $response;
+    });
 });

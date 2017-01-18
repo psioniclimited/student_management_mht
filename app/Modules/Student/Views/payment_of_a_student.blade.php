@@ -270,15 +270,18 @@
                 student_id: $('select[id=student_id]').val() 
         })
         .done(function( data ) {
+            console.log(data.students_image);
+            var img_address = "{{ URL::to('/') }}";
             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
                $("#student_payment_div").css({ display: "block" });
                $('p#student_name').text(data.name);
-               $('p#student_email').text(data.email);
+               $('p#student_email').text(data.student_email);
                $('p#fathers_name').text(data.fathers_name);
                $('p#mothers_name').text(data.mothers_name);
                $('p#phone_home').text(data.phone_home);
                $('p#phone_away').text(data.phone_away);
                $('input#students_id').val(data.id);
+               $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
                getBatches(data.id);
             }
            
@@ -286,9 +289,7 @@
 
     });
 
-
-
-    });
+});
 </script>
 
 
@@ -375,6 +376,9 @@
               <h3 class="box-title">Student's Information</h3>
             </div>
                 <div class="col-md-4">
+                    <div id="student_pofile_image" class="form-group">
+                        
+                    </div>
                     <div class="form-group">
                         <label for="name" >Student Name : </label>
                         <p id="student_name"></p>
@@ -383,6 +387,8 @@
                         <label for="student_email" >Email : </label>
                         <p id="student_email"></p>
                     </div>
+                </div>
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="fathers_name" >Father's Name : </label>
                         <p id="fathers_name"></p>
@@ -391,8 +397,6 @@
                         <label for="mothers_name" >Mother's Name : </label>
                         <p id="mothers_name"></p>
                     </div>
-                </div>
-                <div class="col-md-4">
                     <div class="form-group">
                         <label for="phone_home" >Phone(Home) : </label>
                         <p id="phone_home"></p>

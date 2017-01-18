@@ -81,7 +81,7 @@ class StudentsWebController extends Controller {
     public function addStudent() {
 		$Schools = School::all();
         $Batches = Batch::with('batchType','grade')->get();
-        $batchTypes = batchType::all();
+        $batchTypes = BatchType::all();
 		$Subjects = Subject::all();
         $getGrades = Grade::all();
 		return view('Student::create_student',compact("Schools","Batches", "batchTypes","Subjects","getGrades"));
@@ -96,6 +96,14 @@ class StudentsWebController extends Controller {
         $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
         $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => $last_paid_date]);
+
+        $filename = Carbon::now();
+        $filename = $filename->timestamp;
+        $filename = $request->phone_home . "_" . $filename;
+
+        $request->file('pic')->move(storage_path('app/images/student_Images'), $filename);
+        $student->students_image = 'app/images/student_Images/' . $filename;
+        $student->save();
         
         return redirect("all_students");
     }
@@ -158,6 +166,24 @@ class StudentsWebController extends Controller {
             $batch_has_student->delete();
             $student->subject()->detach();
         }
+        
+        if ($request->file("pic") !== null) {
+
+            $del_prev_file = storage_path($student->students_image);
+            if (File::exists($del_prev_file)) {
+                File::delete($del_prev_file);
+            }
+
+            $filename = Carbon::now();
+            $filename = $filename->timestamp;
+            $filename = $student->phone_home . "_" . $filename;
+
+            $request->file('pic')->move(storage_path('app/images/student_Images/'), $filename);
+            $student->students_image = 'app/images/student_Images/' . $filename;
+            $student->save();           
+        }
+
+        
     	return redirect('all_students');
     }
 

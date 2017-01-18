@@ -194,6 +194,12 @@ $(document).ready(function () {
                     
                 </div>
                 <div class="form-group">
+                <label for="student_email" >Email*</label>
+                
+                    <input type="email" class="form-control" id="student_email" name="student_email" size="35" placeholder="Enter email">
+                    
+                </div>
+                <div class="form-group">
                     <label for="fathers_name">Father's name*</label>
                     
                         <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name">
@@ -216,6 +222,12 @@ $(document).ready(function () {
                     
                         <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number">
                     
+                </div>
+                <div class="form-group">
+                    <label for="pic" >Upload Photo*</label>
+                    <!-- {{Form::file('pic')}} -->
+                    <input type="file" name="pic" id="pic">
+                    <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
                 </div>
             </div>
             <div class="col-md-2"></div>
