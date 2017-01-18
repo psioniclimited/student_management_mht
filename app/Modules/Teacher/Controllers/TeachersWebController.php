@@ -186,7 +186,7 @@ class TeachersWebController extends Controller {
                 
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                 
-                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$get_current_date_month_year.'/'.$batches->name. '/all_student_for_teacher_payment/'. '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$get_current_date_month_year.'/'.$batches->name. '/all_student_for_teacher_payment/'. '"' . 'class="btn btn-xs btn-info"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 // return '<a id="batch_'. $batches->id . '" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 }
                 else {

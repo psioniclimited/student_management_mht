@@ -40,7 +40,7 @@ class StudentsWebController extends Controller {
 
 	public function getStudents() {
     // $students = $studentRepository->getAllStudent();
-    $students = Student::with('batch','batchType');
+    $students = Student::with('batch','batch_type');
 	// $students = Student::with('school', 'batch')->get();
      
     return Datatables::of($students)
@@ -114,7 +114,7 @@ class StudentsWebController extends Controller {
     ****************************/
     public function editStudent($id) {
 
-    	$getStudent = Student::with('school', 'batch.grade','subject','batchType')->find($id);
+    	$getStudent = Student::with('school', 'batch.grade','subject','batch_type')->find($id);
         $schools = School::all();
 		$batches = Batch::all();
         $batchTypes = BatchType::all();
@@ -134,7 +134,7 @@ class StudentsWebController extends Controller {
 
     public function StudentBatchForEdit(Request $request)
     {
-        $getStudent = Student::with('school', 'batch','subject','batchType')->find($request->student_id);
+        $getStudent = Student::with('school', 'batch','subject','batch_type')->find($request->student_id);
         $studentBatch = $getStudent->batch;
         return response()->json($studentBatch);
     }

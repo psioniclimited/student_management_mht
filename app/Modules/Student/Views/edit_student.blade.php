@@ -53,7 +53,7 @@ $(document).ready(function () {
             phone_away: {required: "Enter Additional Phone Number"},
         }
     });
-    
+
     $.get("/get_student_batch_for_edit", {
             student_id: "{{ $getStudent->id }}" 
     })
@@ -314,7 +314,7 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="batch_types_id" >Batch type*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
-                            <option value="{{ $getStudent->batchType->id }}">{{ $getStudent->batchType->name}}</option>
+                            <option value="{{ $getStudent->batch_type->id }}">{{ $getStudent->batch_type->name}}</option>
                             @foreach ($batchTypes as $batchType)
                                 <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach

@@ -36,14 +36,14 @@ class Student extends Model
         return $this->belongsTo('App\Modules\Student\Models\School', 'schools_id');
     }
 
-    public function batchType()
-    {
-        return $this->belongsTo('App\Modules\Student\Models\BatchType', 'batch_types_id');
-    }
-    // public function batch_Type()
+    // public function batchType()
     // {
     //     return $this->belongsTo('App\Modules\Student\Models\BatchType', 'batch_types_id');
     // }
+    public function batch_type()
+    {
+        return $this->belongsTo('App\Modules\Student\Models\BatchType', 'batch_types_id');
+    }
 
 
 
