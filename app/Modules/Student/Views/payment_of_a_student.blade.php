@@ -172,11 +172,7 @@
 
     // $( "#student_payment" ).submit(function( event ) {
     $('#payment_print').click(function() {
-        // var mode = 'iframe';
-        // var close = mode == 'popup';
-        // var options = { mode : mode, popClass : close };
-        // $('#printPaymentArea').printArea(options);
-        // $.print("#printPaymentArea" /*, options*/);
+        
         var top = "<div>Money Receipt no: INV/"+moment().year()+"/"+(moment().month()+1)+"/"+invoice_serial_number+"<div/>"+
                     "<div>Date: "+$('#ref_date').val()+"<div/>"+
                     "<div>Student Name: "+$('p#student_name').text()+"<div/>"+
@@ -189,7 +185,7 @@
                             "<thead>"+
                                 "<tr>"+
                                     "<th>Batch Name</th>"+
-                                    "<th>Payment from</th>"+
+                                    "<th>Payment From</th>"+
                                     "<th>Unit Price /=</th>"+
                                     "<th>no of month</th>"+
                                     "<th>Total Price Per Course /= </th>"+
@@ -208,17 +204,8 @@
         var payment_output = "";
 
         for (var count = 0; count < batch_length; count++) {
-            // var human_readable_last_paid_date = moment(payment_data[5+payment_data_count].value);
-            //     human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
-            // payment_output += "<tr role='row' class='even'>"+
-            //                     "<td>"+payment_data[7+payment_data_count].value+"</td>"+
-            //                     "<td>"+human_readable_last_paid_date+"</td>"+
-            //                     "<td>"+payment_data[6+payment_data_count].value+"</td>"+
-            //                     "<td>"+payment_data[8+payment_data_count].value+"</td>"+
-            //                     "<td>"+payment_data[9+payment_data_count].value+"</td>"+
-            //                 "</tr>";
-
             var human_readable_last_paid_date = moment(payment_data[6+payment_data_count].value);
+                human_readable_last_paid_date = moment(human_readable_last_paid_date).add(1, 'M');
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
             payment_output += "<tr role='row' class='even'>"+
                                 "<td>"+payment_data[8+payment_data_count].value+"</td>"+
@@ -242,23 +229,21 @@
                                 "<td>"+payment_data[ payment_data.length - 1 ].value+"</td>"+
                             "</tr></tbody ></table>";                
         var final_output = top + header + payment_output;
-        // $('#printFormat').html(final_output);
-
-        // $.print("#student_payment" /*, options*/);
-    $(final_output).print({
-        globalStyles: true,
-        mediaPrint: false,
-        stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
-        noPrintSelector: ".no-print",
-        iframe: true,
-        append: null,
-        prepend: null,
-        manuallyCopyFormValues: true,
-        deferred: $.Deferred(),
-        timeout: 750,
-        title: null,
-        doctype: '<!doctype html>'
-    });
+        
+        $(final_output).print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet : "http://fonts.googleapis.com/css?family=Inconsolata",
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 750,
+            title: null,
+            doctype: '<!doctype html>'
+        });
         // console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
         // console.log(payment_data);
     });
@@ -322,7 +307,7 @@
                        
                        let msg = '<div class="alert alert-success alert-dismissible">'+
                                 '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
-                                '<h4><i class="icon fa fa-check"></i> Payment Complete for '+data.name+'</h4>'+
+                                '<h4><i class="icon fa fa-check"></i> Payment Complete for <strong>'+data.name+'</strong></h4>'+
                                 '</div>';
                        
                        $('#payment_success_msg').html(msg);
@@ -424,16 +409,17 @@
                     <div id="student_pofile_image" class="form-group">
                         
                     </div>
-                    <div class="form-group">
-                        <label for="name" >Student Name : </label>
-                        <p id="student_name"></p>
-                    </div>
+                    
                     <div class="form-group">
                         <label for="student_email" >Email : </label>
                         <p id="student_email"></p>
                     </div>
                 </div>
                 <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="name" >Student Name : </label>
+                        <p id="student_name"></p>
+                    </div>
                     <div class="form-group">
                         <label for="fathers_name" >Father's Name : </label>
                         <p id="fathers_name"></p>
@@ -442,6 +428,10 @@
                         <label for="mothers_name" >Mother's Name : </label>
                         <p id="mothers_name"></p>
                     </div>
+                    
+                </div>
+                
+                <div class="col-md-4">
                     <div class="form-group">
                         <label for="phone_home" >Phone(Home) : </label>
                         <p id="phone_home"></p>
@@ -450,9 +440,6 @@
                         <label for="phone_away" >Phone(Additional) : </label>
                         <p id="phone_away"></p>
                     </div>
-                </div>
-                
-                <div class="col-md-4">
                 </div>
             </div>
             <!-- /.box-body -->
@@ -478,9 +465,9 @@
                     <thead>
                         <tr>
                             <th>Batch Name</th>
-                            <th>Last Paid</th>
+                            <th>Payment From</th>
                             <th>Unit Price /=</th>
-                            <th>no of month</th>
+                            <th>no of months</th>
                             <th>Total Price Per Course /= </th>
                         </tr>
                     </thead>

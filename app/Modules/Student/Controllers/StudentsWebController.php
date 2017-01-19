@@ -99,11 +99,12 @@ class StudentsWebController extends Controller {
 
         $filename = Carbon::now();
         $filename = $filename->timestamp;
-        $filename = $request->phone_home . "_" . $filename;
-
-        $request->file('pic')->move(storage_path('app/images/student_Images'), $filename);
-        $student->students_image = 'app/images/student_Images/' . $filename;
-        $student->save();
+        // $filename = $request->phone_home . "_" . $filename;
+        if ($request->file("pic") !== null) {
+            $request->file('pic')->move(storage_path('app/images/student_Images'), $filename);
+            $student->students_image = 'app/images/student_Images/' . $filename;
+            $student->save();
+        }
         
         return redirect("all_students");
     }
@@ -176,7 +177,7 @@ class StudentsWebController extends Controller {
 
             $filename = Carbon::now();
             $filename = $filename->timestamp;
-            $filename = $student->phone_home . "_" . $filename;
+            // $filename = $student->phone_home . "_" . $filename;
 
             $request->file('pic')->move(storage_path('app/images/student_Images/'), $filename);
             $student->students_image = 'app/images/student_Images/' . $filename;

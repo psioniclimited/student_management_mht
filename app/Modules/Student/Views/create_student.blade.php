@@ -60,7 +60,7 @@ $(document).ready(function () {
             phone_away: {required: "Enter Additional Phone Number"},
             schools_id: {valueNotEquals: "Select a School"},
             grades_id: {valueNotEquals: "Select a Grade"},
-            batch_types_id: {valueNotEquals: "Select a Batch"},
+            batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
         }
     });
 
