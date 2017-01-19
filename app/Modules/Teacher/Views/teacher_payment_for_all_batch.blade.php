@@ -226,7 +226,7 @@
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Payment</a></li>
-        <li class="active">Student Payment Page</li>
+        <li class="active">Teacher Payment Page</li>
     </ol>
 </section>
 
@@ -257,7 +257,7 @@
 	                
                     
 	                <div class="col-xs-4">
-	                    <label for="batch_id" >Student*</label>
+	                    <label for="batch_id" >Teacher*</label>
 	                    <select class="form-control select2" name="teacher_user_id" id="teacher_user_id"></select>
                 	</div>
 	                <div class="col-xs-4">
