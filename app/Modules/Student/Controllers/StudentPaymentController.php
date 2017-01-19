@@ -71,6 +71,7 @@ class StudentPaymentController extends Controller {
     }
 
     public function studentPaymentProcess(Request $request) {
+        // return $request->all();
         $invoice_master = InvoiceMaster::create($request->all());
         
     	for ( $i=0; $i < count($request->batch_id); $i++) {

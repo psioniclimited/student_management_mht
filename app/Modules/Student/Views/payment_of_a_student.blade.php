@@ -93,6 +93,7 @@
                 }
 
                 var human_readable_last_paid_date = moment(batches[i].pivot.last_paid_date);
+                human_readable_last_paid_date = moment(human_readable_last_paid_date).add(1, 'M');
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
                 var payment_for_each_batch = month_diffrence * batches[i].price;
                              
@@ -165,7 +166,7 @@
     $.get('/get_invoice_id',function(serial_number){
         invoice_serial_number = serial_number;
         $('#serial_number').val(serial_number);
-        console.log(invoice_serial_number);
+        // console.log(invoice_serial_number);
     });
     
 
@@ -188,7 +189,7 @@
                             "<thead>"+
                                 "<tr>"+
                                     "<th>Batch Name</th>"+
-                                    "<th>Last Paid</th>"+
+                                    "<th>Payment from</th>"+
                                     "<th>Unit Price /=</th>"+
                                     "<th>no of month</th>"+
                                     "<th>Total Price Per Course /= </th>"+
@@ -197,12 +198,12 @@
                         "<tbody>";                         
                         
 
-        console.log("Batch Length : " + batch_length);
+        // console.log("Batch Length : " + batch_length);
         
         var date_of_payment = $('.ref_date').attr('value');
 
         var payment_data = $('#student_payment').serializeArray();
-        console.log(payment_data);
+        // console.log(payment_data);
         var payment_data_count = 0;
         var payment_output = "";
 
@@ -258,8 +259,8 @@
         title: null,
         doctype: '<!doctype html>'
     });
-        console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
-        console.log(payment_data);
+        // console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
+        // console.log(payment_data);
     });
     
 
@@ -270,7 +271,7 @@
                 student_id: $('select[id=student_id]').val() 
         })
         .done(function( data ) {
-            console.log(data.students_image);
+            // console.log(data.students_image);
             var img_address = "{{ URL::to('/') }}";
             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
                $("#student_payment_div").css({ display: "block" });
@@ -287,6 +288,50 @@
            
         });
 
+    });
+
+    $("#student_payment").submit(function(e) {
+        e.preventDefault();
+        var url = "/student_payment"; // the script where you handle the form input.
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $("#student_payment").serialize(), // serializes the form's elements.
+            success: function(reply_data) {
+                console.log(reply_data); // show response from the php script.
+                console.log($('select[id=student_id]').val());
+                
+                $.get("/get_student_info_for_payment", { 
+                        student_id: $('select[id=student_id]').val() 
+                })
+                .done(function( data ) {
+                    // console.log(data.students_image);
+                    var img_address = "{{ URL::to('/') }}";
+                    if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
+                       $("#student_payment_div").css({ display: "block" });
+                       $('p#student_name').text(data.name);
+                       $('p#student_email').text(data.student_email);
+                       $('p#fathers_name').text(data.fathers_name);
+                       $('p#mothers_name').text(data.mothers_name);
+                       $('p#phone_home').text(data.phone_home);
+                       $('p#phone_away').text(data.phone_away);
+                       $('input#students_id').val(data.id);
+                       $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
+                       getBatches(data.id);
+                       
+                       let msg = '<div class="alert alert-success alert-dismissible">'+
+                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+                                '<h4><i class="icon fa fa-check"></i> Payment Complete for '+data.name+'</h4>'+
+                                '</div>';
+                       
+                       $('#payment_success_msg').html(msg);
+
+                    }
+                   
+                });
+            }
+        });
     });
 
 });
@@ -420,11 +465,12 @@
             <div class="box-header">
                 <h4>
                     Payment 
-                </h4>            
+                </h4>
+                <div id="payment_success_msg"></div>            
             </div>
             
             <div id="student_payment_div" class="box-body" style="display: none;">
-                {!! Form::open(array('url' => 'student_payment', 'id' => 'student_payment', 'class' => 'form-horizontal')) !!}
+                {!! Form::open(array('id' => 'student_payment', 'class' => 'form-horizontal')) !!}
                 <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                 <input type='hidden' id="students_id" name="students_id">
                 <input type='hidden' id="serial_number" name="serial_number">
@@ -448,7 +494,7 @@
                         <button id="payment_print" type="button" class="btn btn-block btn-primary">Print</button>
                     </div>
                     <div class="col-md-6">
-                        <button type="submit" class="btn btn-block btn-success">Payment</button>
+                        <button type="submit" class="btn btn-block btn-success payment_submit">Payment</button>
                     </div>
                     </div>
                 </div>
