@@ -51,6 +51,7 @@
     
     //Date picker for Start Date
     $('.ref_date').datepicker({
+
       format: 'dd/mm/yyyy',
       autoclose: true
     });
@@ -80,16 +81,15 @@
                     {"data": "total"},
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    var total_price = 0;
-                    for ( var i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['total']);
-                        total_price += aaData[i]['total'];
+                    let total_price = parseFloat(0);;
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        total_price += parseFloat(aaData[i]['total']);
                     }
 
-                    var nCells = nRow.getElementsByTagName('th');
-                    nCells[nCells.length-1].innerHTML = total_price;
-                    var nCells = $('#total_money').text(total_price);
-                    nCells = total_price;
+                    // let nCells = nRow.getElementsByTagName('th');
+                    // nCells[nCells.length-1].innerHTML = total_price;
+                    $('#total_taka').text(total_price);
+                    // nCells = total_price;
                 },
             dom: 'Bfrtip',
             buttons: [
@@ -145,14 +145,14 @@
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     
-                    var total_price = 0;
-                    for ( var i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['total']);
-                        total_price += aaData[i]['total'];
+                    let total_price = 0.0;
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        total_price += parseFloat(aaData[i]['total']);
                     }
-
-                    var nCells = nRow.getElementsByTagName('th');
-                    nCells[nCells.length-1].innerHTML = total_price;
+                    // let nCells = nRow.getElementsByTagName('th');
+                    // nCells[nCells.length-1].innerHTML = total_price;
+                    $('#total_taka').text(total_price);
+                    // nCells = total_price;
                 },
             dom: 'Bfrtip',
             buttons: [
@@ -206,13 +206,12 @@
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     
-                    var TotalDuePrice = 0;
-                    for ( var i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['TotalDuePrice']);
-                        TotalDuePrice += aaData[i]['TotalDuePrice'];
+                    let TotalDuePrice = parseFloat(0);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        TotalDuePrice += parseFloat(aaData[i]['TotalDuePrice']);
                     }
 
-                    var nCells = nRow.getElementsByTagName('th');
+                    let nCells = nRow.getElementsByTagName('th');
                     nCells[nCells.length-1].innerHTML = TotalDuePrice;
                 },
             dom: 'Bfrtip',
@@ -276,14 +275,14 @@
                     ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     
-                    var TotalDuePrice = 0;
-                    for ( var i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['total']);
-                        TotalDuePrice += aaData[i]['total'];
+                    let TotalRangePrice = parseFloat(0);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        TotalRangePrice += parseFloat(aaData[i]['total']);
                     }
 
-                    var nCells = nRow.getElementsByTagName('th');
-                    nCells[nCells.length-1].innerHTML = TotalDuePrice;
+                    // var nCells = nRow.getElementsByTagName('th');
+                    // nCells[nCells.length-1].innerHTML = TotalRangePrice;
+                    $('#total_taka').text(TotalRangePrice);
                 },
                 dom: 'Bfrtip',
             buttons: [
@@ -426,7 +425,7 @@
                         <th></th>
                         <th></th>
                         <th>Total:</th>
-                        <th></th> 
+                        <th id="total_taka"></th> 
                     </tr>
                 </tfoot>                
                 <tbody>
