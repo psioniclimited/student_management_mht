@@ -100,7 +100,6 @@ $(document).ready(function () {
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <button type="submit" class="btn btn-default">Cancel</button>
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </div>
         <!-- /.box-footer -->

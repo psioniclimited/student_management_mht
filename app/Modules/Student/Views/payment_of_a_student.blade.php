@@ -251,7 +251,7 @@
 
 
     $("#student_info_for_payment").click(function() {
-        console.log($('select[id=student_id]').val());
+        // console.log($('select[id=student_id]').val());
         $.get("/get_student_info_for_payment", { 
                 student_id: $('select[id=student_id]').val() 
         })
@@ -278,45 +278,50 @@
     $("#student_payment").submit(function(e) {
         e.preventDefault();
         var url = "/student_payment"; // the script where you handle the form input.
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: $("#student_payment").serialize(), // serializes the form's elements.
-            success: function(reply_data) {
-                console.log(reply_data); // show response from the php script.
-                console.log($('select[id=student_id]').val());
-                
-                $.get("/get_student_info_for_payment", { 
-                        student_id: $('select[id=student_id]').val() 
-                })
-                .done(function( data ) {
-                    // console.log(data.students_image);
-                    var img_address = "{{ URL::to('/') }}";
-                    if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
-                       $("#student_payment_div").css({ display: "block" });
-                       $('p#student_name').text(data.name);
-                       $('p#student_email').text(data.student_email);
-                       $('p#fathers_name').text(data.fathers_name);
-                       $('p#mothers_name').text(data.mothers_name);
-                       $('p#phone_home').text(data.phone_home);
-                       $('p#phone_away').text(data.phone_away);
-                       $('input#students_id').val(data.id);
-                       $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
-                       getBatches(data.id);
-                       
-                       let msg = '<div class="alert alert-success alert-dismissible">'+
-                                '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
-                                '<h4><i class="icon fa fa-check"></i> Payment Complete for <strong>'+data.name+'</strong></h4>'+
-                                '</div>';
-                       
+        if (parseFloat($('#totalpriceAmount').val()) > 0) {
+            
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: $("#student_payment").serialize(), // serializes the form's elements.
+                success: function(reply_data) {
+                    // console.log(reply_data); // show response from the php script.
+                    // console.log($('select[id=student_id]').val());
+                    
+                    $.get("/get_student_info_for_payment", { 
+                            student_id: $('select[id=student_id]').val() 
+                    })
+                    .done(function( data ) {
+                        let msg = '<div class="alert alert-success alert-dismissible">'+
+                                    '<button type="button" id="success_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
+                                    '<h4><i class="icon fa fa-check"></i> Payment Complete for <strong>'+data.name+'</strong></h4>'+
+                                    '</div>';
+                           
                        $('#payment_success_msg').html(msg);
 
-                    }
-                   
-                });
-            }
-        });
+                       $('#success_payment_msg').click(function(e) {
+                            // console.log("Close Button Clicked");
+                            let img_address = "{{ URL::to('/') }}";
+                        if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
+                               $("#student_payment_div").css({ display: "block" });
+                               $('p#student_name').text(data.name);
+                               $('p#student_email').text(data.student_email);
+                               $('p#fathers_name').text(data.fathers_name);
+                               $('p#mothers_name').text(data.mothers_name);
+                               $('p#phone_home').text(data.phone_home);
+                               $('p#phone_away').text(data.phone_away);
+                               $('input#students_id').val(data.id);
+                               $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
+                               getBatches(data.id);
+                        }
+                            e.preventDefault();
+                        });
+                        
+                       
+                    });
+                }
+            });
+        }
     });
 
 });

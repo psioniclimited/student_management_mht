@@ -39,9 +39,9 @@ class StudentsWebController extends Controller {
     }
 
 	public function getStudents() {
-    // $students = $studentRepository->getAllStudent();
+    
     $students = Student::with('batch','batch_type');
-	// $students = Student::with('school', 'batch')->get();
+	
      
     return Datatables::of($students)
                     ->addColumn('batch', function (Student $students) {
@@ -206,6 +206,6 @@ class StudentsWebController extends Controller {
 
     public function addSchoolProcess(Request $request){
         School::create($request->all());
-        return "Saved";     
+        return back();     
     }
 }

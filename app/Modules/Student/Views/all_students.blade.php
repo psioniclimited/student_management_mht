@@ -14,6 +14,7 @@
     $(document).ready(function () {        
         var table = $('#all_user_list').DataTable({
             "paging": true,
+            "pageLength": 50,
             "lengthChange": false,
             "searching": true,
             "ordering": true,
@@ -28,7 +29,6 @@
                     {"data": "student_email"},
                     {"data": "batch", "name": "batch.name"},                    
                     {"data": "phone_home"},
-                    // {"data": "batch_type.name"},
                     {"data": "batch_type.name", "name": "batch_type.name"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]

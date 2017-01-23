@@ -25,16 +25,16 @@ use File;
 use Entrust;
 use DB;
 use Log;
-class GradWebController extends Controller {
+class SubjectWebController extends Controller {
 
 	/*****************************************************
-    * Show the information of all Grades in a data table *
+    * Show the information of all Subjects in a data table *
     ******************************************************/
-    public function allGrades() {
-        return view('Student::all_grades');
+    public function allSubjects() {
+        return view('Student::all_subjects');
     }
 
-    public function getGrades() {
+    public function getSubjects() {
     $grades = Grade::all();
     return Datatables::of($grades)
                     ->addColumn('Link', function ($grades) {
@@ -52,34 +52,34 @@ class GradWebController extends Controller {
     }
 
     /*********************
-    * Create a new Grade *
+    * Create a new Subject *
     **********************/
-    public function addGrade() {
-        return view('Student::create_grade');
+    public function addSubject() {
+        return view('Student::create_subject');
     }
 
-    public function addGradeProcess(Request $request) {
+    public function addSubjectProcess(Request $request) {
         Grade::create($request->all());
-        return redirect("/all_grades");
+        return redirect("/all_subject");
     }
 
     /**************************
-    * Edit and Update a Grade *
+    * Edit and Update a Subject *
     ***************************/
-    public function editGrade(Grade $grade) {
-        return view('Student::edit_grade')
+    public function editSubject(Grade $grade) {
+        return view('Student::edit_subject')
         ->with('getGrade', $grade);
     }
 
-    public function gradeUpdate(Request $request, Grade $grade) {
+    public function subjectUpdateProcess(Request $request, Grade $grade) {
         $grade->update( $request->all()); 
-        return redirect('/all_grades');
+        return redirect('/all_subjects');
     }
 
     /*****************
-    * Delete a Grade *
+    * Delete a Subject *
     ******************/ 
-    public function deleteGrade(Request $request, Grade $grade) {
+    public function deleteSubject(Request $request, Grade $grade) {
         $grade->delete();
         return back();
     }
