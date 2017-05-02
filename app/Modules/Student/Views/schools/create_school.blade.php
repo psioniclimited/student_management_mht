@@ -36,18 +36,14 @@ $(document).ready(function () {
             $(element).tooltipster('hide');
         },
         rules: {
-            fullname: {required: true, minlength: 4},
-            uemail: {required: true, email: true},
-            upassword: {required: true, minlength: 6},
-            upassword_re: {required: true, equalTo: "#upassword"},
-            uroles: {required: true}
+            name: {required: true},
+            description: {required: true},
+            address: {required: true},
         },
         messages: {
-            fullname: {required: "Please give fullname"},
-            uemail: {required: "Insert email address"},
-            upassword: {required: "Six digit password"},
-            upassword_re: {required: "Re-enter same password"},
-            uroles: {required: "Please select a role"}
+            name: {required: "Please Provide a School Name"},
+            description: {required: "Provide School Description"},
+            address: {required: "Provide School address"},
         }
     });
 
@@ -89,7 +85,7 @@ $(document).ready(function () {
         <!-- /.box-header -->
         <!-- form starts here -->
         {!! Form::open(array('url' => 'create_school_process', 'id' => 'add_user_form', 'class' => 'form-horizontal')) !!}
-
+        
         <div class="box-body">
             <div class="col-md-1"></div>
             <div class="col-md-4">

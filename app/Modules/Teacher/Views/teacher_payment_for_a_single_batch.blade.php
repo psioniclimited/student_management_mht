@@ -30,7 +30,7 @@
     $(document).ready(function () {
 	
 	var paid_table = $('#paid_students').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": false,
         "searching": false,
         "ordering": true,
@@ -43,18 +43,18 @@
                 'url': "{{URL::to('/get_paid_students_for_a_batch')}}",
                 'data': {
                    batch_id: "{{ $batchID }}",
-                   ref_date: "{{ $refDate }}",
+                   ref_date: "{{ $refDate }}"
                 },
             },
         "columns": [
                 {"data": "name"},
                 {"data": "phone_home"},
-                {"data": "price"}
+                {"data": "paid_money"}
             ],
         "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     var total_price = 0;
                     for ( var i=0 ; i<aaData.length ; i++ ) {
-                        total_price += aaData[i]['price'];
+                        total_price += aaData[i]['paid_money'];
                     }
 
                     var nCells = nRow.getElementsByTagName('th');
@@ -63,7 +63,7 @@
     	});
 
 	var non_paid_table = $('#non_paid_students').DataTable({
-        "paging": true,
+        "paging": false,
         "lengthChange": false,
         "searching": false,
         "ordering": true,
@@ -76,7 +76,7 @@
                 'url': "{{URL::to('/get_non_paid_students_for_a_batch')}}",
                 'data': {
                    batch_id: "{{ $batchID }}",
-                   ref_date: "{{ $refDate }}",
+                   ref_date: "{{ $refDate }}"
                 },
             },
         "columns": [

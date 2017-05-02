@@ -14,19 +14,21 @@
     $(document).ready(function () {        
         var table = $('#all_user_list').DataTable({
             "paging": true,
-            "lengthChange": false,
-            "searching": false,
+            "pageLength": 50,
+            "lengthChange": true,
+            "searching": true,
             "ordering": true,
             "info": false,
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_teachers')}}",
+            "ajax": "{{URL::to('/get_students')}}",
             "columns": [
-                    {"data": "id"},
-                    {"data": "user.name"},
-                    {"data": "user.email"},
-                    {"data": "description"},                    
+                    {"data": "student_permanent_id"},
+                    {"data": "name"},
+                    {"data": "school.name"},
+                    {"data": "phone_home"},
+                    {"data": "student_email"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -42,7 +44,7 @@
                $.ajax({
                    cache: false,
                    type: 'POST',
-                   url: 'teacher/' + user_id + '/delete',
+                   url: 'student/' + user_id + '/delete',
                    data: user_id,
                    success: function(data) {
                        console.log("Deleted Successfully");
@@ -56,6 +58,8 @@
 </script>
 
 @endsection
+
+
 
 @section('content')
 
@@ -86,10 +90,11 @@
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Teacher Id</th>
-                                <th>Teacher Name</th>
-                                <th>Teacher Email</th>
-                                <th>Subjects</th>
+                                <th>Student Permanent ID</th>
+                                <th>Student Name</th>
+                                <th>School Name</th>
+                                <th>Phone Number</th>
+                                <th>Email</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

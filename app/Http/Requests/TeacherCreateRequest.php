@@ -27,8 +27,7 @@ class TeacherCreateRequest extends Request
             'name' => 'required|min:3',
             'email' => 'required|email',
             'description' => 'required',
-            'subjects_id' => 'required|not_in:default',
-           	'password' => 'required|min:6',
+            'password' => 'required|min:6',
             'password_re' => 'required|min:6|same:password',
         ];
     }

@@ -16,9 +16,10 @@ class VerifyCsrfToken extends BaseVerifier
         'fireBaseSaveREGID',
         'users/*/delete',
         'student/*/delete',
-        'event/*/delete',
         'batch/*/delete',
         'grade/*/delete',
+        'subject/*/delete',
+        'school/*/delete',
         'teacher/*/delete',
         'create_school_process',
         'create_batch_process',
@@ -26,6 +27,7 @@ class VerifyCsrfToken extends BaseVerifier
         'get_student_info_for_payment',
         'student_payment',
         'batch_update_process',
-        'student/last_payment_date_update'
+        'student/last_payment_date_update',
+        'clear_due_payment'
     ];
 }

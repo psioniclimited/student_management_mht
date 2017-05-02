@@ -1,7 +1,9 @@
 <?php
-namespace App\Modules\Student\Repository;
+namespace App\Modules\Student\Helper\StudentPaymentHelper;
 
-class StudentRepository{
+class StudentPaymentHelper{
+	
+
 	public function getAllStudent(){
 		$students = Student::with('school', 'batch');
 		if((Auth::user())->hasRole('teacher')){
@@ -9,4 +11,6 @@ class StudentRepository{
 		}
 		$student->get();
 	}
+
+
 }

@@ -24,9 +24,11 @@ class AddNewBatchRequest extends Request
     public function rules()
     {
         return [
+            'batch_number' => 'required|numeric',
             'price' => 'required|numeric',
             'batch_types_id' => 'required|not_in:default',
             'grades_id' => 'required|not_in:default',
+            'subjects_id' => 'required|not_in:default',
             'schedule' => 'required',
             'start_date' => 'required|date_format:d/m/Y',
             'end_date' => 'required|date_format:d/m/Y',

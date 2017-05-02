@@ -18,7 +18,6 @@ class TeacherDetail extends Model
     protected $fillable = [
         'description',
         'users_id',
-        'subjects_id',
         'teacher_percentage'
     ];
 
@@ -27,10 +26,10 @@ class TeacherDetail extends Model
         return $this->belongsTo('App\Modules\User\Models\User', 'users_id');
     }
 
-    public function subject()
-    {
-        return $this->belongsTo('App\Modules\Student\Models\Subject', 'subjects_id');
-    }
+    // public function subject()
+    // {
+    //     return $this->belongsTo('App\Modules\Student\Models\Subject', 'subjects_id');
+    // }
 
     public function batch()
     {

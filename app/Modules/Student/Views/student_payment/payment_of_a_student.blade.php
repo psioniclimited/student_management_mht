@@ -34,12 +34,15 @@
                 "September","October","November","December"];
 
     var batch_length = 0;
+    let invoice_serial_number = 0;
 
     //Date picker for Start Date
     $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
       autoclose: true
     });
+
+    $("#payment_print").hide();
 
     $('#student_id').select2({
         allowClear: true,
@@ -74,7 +77,8 @@
     });
 
     function getBatches(id) {
-        $.get( "/get_batch_info_for_payment", { id: id } )
+        console.log("Batch Info: "+id);
+        $.get( "/get_batch_info_for_payment", { student_id: id } )
           .done(function( batches ) {
             // console.log("/get_batch_info_for_payment");
             // console.log(batches);
@@ -91,7 +95,7 @@
                 if (month_diffrence < 0) {
                     month_diffrence = 0;
                 }
-
+                console.log(batches[i].pivot.last_paid_date);
                 var human_readable_last_paid_date = moment(batches[i].pivot.last_paid_date);
                 human_readable_last_paid_date = moment(human_readable_last_paid_date).add(1, 'M');
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
@@ -107,8 +111,8 @@
                                 
                                 "<td>"+batches[i].name+"</td>"+
                                 "<td>"+human_readable_last_paid_date+"</td>"+
-                                "<td>"+batches[i].price+"</td>"+
-                                "<td>"+
+                                "<td id='per_batch_price'>"+batches[i].price+"</td>"+
+                                "<td class='no_of_month_per_batch'>"+
                                     "<select class='form-control' id='month_" + i + "' name='month[]' >"+
                                             "<option value='"+month_diffrence+"'>"+month_diffrence+"</option>"+
                                             "<option value=0>0</option>"+
@@ -119,7 +123,19 @@
                                             "<option value=5>5</option>"+
                                     "</select>"+
                                 "</td>"+                       
-                                "<td>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] value='"+payment_for_each_batch+"' readonly></td>"+
+                                "<td class='td_total_price_per_course'>"+"<input id='total_price_"+i+"' class='totalprice' name=total_price[] min='0' value='"+payment_for_each_batch+"' readonly></td>"+
+                                "<td class='regular_radio_td'>"+
+                                "<input type='radio' class='radio_regular' name='due_or_discount_"+i+"[0]' value='regular' checked>"+
+                                "</td>"+
+                                "<td class='due_radio_td'>"+
+                                "<input type='radio' class='radio_due' name='due_or_discount_"+i+"[0]' value='due'>"+
+                                "<input type='number' class='input_due' disabled='true'  min='0' name='due_or_discount_"+i+"[]' >"+
+                                "</td>"+
+                                "<td class='discount_radio_td'>"+
+                                "<input type='radio' class='radio_discount' name='due_or_discount_"+i+"[0]' value='discount'>"+
+                                "<input type='number' class='input_due' disabled='true'  min='0' name='due_or_discount_"+i+"[]' >"+
+                                "</td>"+
+
                             "</tr>";
             }
 
@@ -140,7 +156,82 @@
             });
 
             $('input#totalpriceAmount').val(sum);
-            // console.log(sum);
+            
+            $('[class^=radio_regular]').click(function(event)  {
+                let aaa = $(this).parent().siblings(".due_radio_td").children()[1];
+                $(aaa).val("");
+                aaa.disabled = true;
+                
+                let bbb = $(this).parent().siblings(".discount_radio_td").children()[1];
+                $(bbb).val("");
+                bbb.disabled = true;
+
+
+                let unit_price_per_batch = $(this).parent().siblings("#per_batch_price")[0].innerHTML;
+                let no_of_month_per_batch = $(this).parent().siblings(".no_of_month_per_batch").children().find("option:selected").val();
+                let td_total_price_per_course = no_of_month_per_batch * unit_price_per_batch;
+                $(this).parent().siblings(".td_total_price_per_course").children().val(td_total_price_per_course);
+                sum = 0;
+                $('.totalprice').each(function(){
+                    // console.log(this.value);
+                    sum += parseFloat(this.value);
+                    $('input#totalpriceAmount').val(sum);
+                });
+
+            });
+            
+            $('[class^=radio_due]').click(function(event)  {
+                let ccc = $(this).siblings()[0];
+                ccc.disabled = false;
+                
+                let ddd = $(this).parent().siblings(".discount_radio_td").children()[1];
+                $(ddd).val("");
+                ddd.disabled = true;
+            });
+            $('[class^=radio_discount]').click(function(event)  {
+                let eee = $(this).siblings()[0];
+                eee.disabled = false;
+                let fff = $(this).parent().siblings(".due_radio_td").children()[1];
+                $(fff).val("");
+                fff.disabled = true;
+            });
+            
+            $('[name^=due_or_discount_]').keyup(function(event)  {
+
+                // if(event.which == 13) {
+                    let due_or_discount_value = this.value;
+                    let unit_price_per_batch = $(this).parent().siblings("#per_batch_price")[0].innerHTML;
+                    let no_of_month_per_batch = $(this).parent().siblings(".no_of_month_per_batch").children().find("option:selected").val();
+                    let td_total_price_per_course = no_of_month_per_batch * unit_price_per_batch;
+                    // let td_total_price_per_course = $(this).parent().siblings(".td_total_price_per_course").children().val();
+                    
+                    let final_price_per_course = td_total_price_per_course - due_or_discount_value;
+                    // console.log('final_price_per_course');
+                    // console.log(final_price_per_course);
+                    if(final_price_per_course < 0)  { 
+                        final_price_per_course = 0; 
+                    }
+                    
+                    $(this).parent().siblings(".td_total_price_per_course").children().val(final_price_per_course);
+                    sum = 0;
+                    $('.totalprice').each(function(){
+                        // console.log(this.value);
+                        sum += parseFloat(this.value);
+                        $('input#totalpriceAmount').val(sum);
+                    });
+
+                    // $('input#totalpriceAmount').val(sum);
+                    
+                    // let final_price_total = $('#totalpriceAmount').val() - due_or_discount_value;
+                    // if(final_price_total < 0)  { 
+                    //     final_price_total = 0; 
+                    // }
+                    // $('#totalpriceAmount').val(final_price_total);
+                    
+                    // return false;
+                // }
+
+            });
 
             $('[id^=month_]').change(function(event)  {
                 var no_of_month = this.value;
@@ -162,19 +253,17 @@
         });
     }
 
-    var invoice_serial_number = 0;
-    $.get('/get_invoice_id',function(serial_number){
-        invoice_serial_number = serial_number;
-        $('#serial_number').val(serial_number);
-        // console.log(invoice_serial_number);
-    });
-    
 
-    // $( "#student_payment" ).submit(function( event ) {
+    // function print_money_receipt() {
     $('#payment_print').click(function() {
-        
-        var top = "<div>Money Receipt no: INV/"+moment().year()+"/"+(moment().month()+1)+"/"+invoice_serial_number+"<div/>"+
-                    "<div>Date: "+$('#ref_date').val()+"<div/>"+
+        $.get('/get_invoice_id',function(serial_number) {
+            console.log(serial_number);
+            invoice_serial_number = serial_number;
+            $('#serial_number').val(serial_number);
+            console.log('Print Option invoice_serial_number: '+invoice_serial_number);
+        // });        
+        var top = "<div>Money Receipt no: "+invoice_serial_number+"<div/>"+
+                    "<div>Date: {{ $refDate }}<div/>"+
                     "<div>Student Name: "+$('p#student_name').text()+"<div/>"+
                     "<div>Father's Name: "+$('p#fathers_name').text()+"<div/>"+
                     "<div>Phone Number: "+$('p#phone_home').text()+"<div/>"+
@@ -194,12 +283,12 @@
                         "<tbody>";                         
                         
 
-        // console.log("Batch Length : " + batch_length);
-        
-        var date_of_payment = $('.ref_date').attr('value');
 
+        
+        // var date_of_payment = $('.ref_date').attr('value');
+        let date_of_payment = "{{ $refDate }}";
         var payment_data = $('#student_payment').serializeArray();
-        // console.log(payment_data);
+        console.log(payment_data);
         var payment_data_count = 0;
         var payment_output = "";
 
@@ -216,9 +305,12 @@
                             "</tr>";                
 
 
-            
+            if (payment_data[11 + payment_data_count].value == "due" || payment_data[11+payment_data_count].value == "discount") {
+                payment_data_count += 1;
+                console.log("payment_data_count" + payment_data_count);
+            }
 
-            payment_data_count += 7;
+            payment_data_count += 8;
         }
 
             payment_output += "<tr role='row' class='even'>"+
@@ -244,23 +336,26 @@
             title: null,
             doctype: '<!doctype html>'
         });
-        // console.log("Total : "+payment_data[ payment_data.length - 1 ].value);
-        // console.log(payment_data);
-    });
+
+        }); // $.get('/get_invoice_id',function(serial_number){
+    }); // End of Print Function
     
+    // }
 
 
     $("#student_info_for_payment").click(function() {
-        // console.log($('select[id=student_id]').val());
+        $("#payment_print").hide();
         $.get("/get_student_info_for_payment", { 
-                student_id: $('select[id=student_id]').val() 
+                student_id: $('select[id=student_id]').val(),
+                student_phonenumber: $("#student_phonenumber").val()
         })
         .done(function( data ) {
-            // console.log(data.students_image);
-            var img_address = "{{ URL::to('/') }}";
-            if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
+            console.log(data);
+            let img_address = "{{ URL::to('/') }}";
+            if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null) && !jQuery.isEmptyObject(data)) {
                $("#student_payment_div").css({ display: "block" });
                $('p#student_name').text(data.name);
+               $('p#school_name').text(data.school.name);
                $('p#student_email').text(data.student_email);
                $('p#fathers_name').text(data.fathers_name);
                $('p#mothers_name').text(data.mothers_name);
@@ -270,28 +365,83 @@
                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
                getBatches(data.id);
             }
+            
            
         });
 
     });
 
+    $("#student_due_payment").click(function() {
+            var due_table = $('#student_due_datatable').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                    'url': "{{URL::to('/due_payment_student')}}",
+                    'data': {
+                       student_id: $('select[id=student_id]').val(),
+                    },
+                },
+            "initComplete": function(settings, json) {
+                
+                $('.temp_due').click(function(event)  {
+                    $.post("/clear_due_payment", { 
+                        invoice_detail_id: this.id,
+                    })
+                    .done(function( data ) {
+                        console.log(data);
+                        due_table.ajax.reload(null, false);
+                    });
+                    due_table.ajax.reload(null, true);
+                    event.preventDefault();
+                });
+              
+            },
+            "columns": [
+                    {"data": "batch_name"},
+                    {"data": "payment_date"},
+                    {"data": "payment_to"},
+                    {"data": "invoice_details_price"},
+                    {"data": "due_amount"},
+                    {"data": "Link", name: 'link', orderable: false, searchable: false}
+                ]
+        });
+    });
+    
+    
+    
+
     $("#student_payment").submit(function(e) {
         e.preventDefault();
+        // $(':button[class="payment_submit"]').prop('disabled', true);
         var url = "/student_payment"; // the script where you handle the form input.
         if (parseFloat($('#totalpriceAmount').val()) > 0) {
-            
+            $( ".payment_submit" ).attr( "disabled", true );
+            $.get('/get_payment_invoice_id',function(serial_number) {
+                invoice_serial_number = serial_number;
+                $('#serial_number').val(serial_number);
+                // console.log(invoice_serial_number);
+            // });
             $.ajax({
                 type: "POST",
                 url: url,
                 data: $("#student_payment").serialize(), // serializes the form's elements.
                 success: function(reply_data) {
-                    // console.log(reply_data); // show response from the php script.
-                    // console.log($('select[id=student_id]').val());
-                    
-                    $.get("/get_student_info_for_payment", { 
-                            student_id: $('select[id=student_id]').val() 
+                    console.log(reply_data); 
+                    $.get("/get_student_info_for_payment", {
+                            student_id: $('select[id=student_id]').val(),
+                            student_phonenumber: $("#student_phonenumber").val() 
                     })
                     .done(function( data ) {
+                        console.log("student_payment");
+                        console.log(data);
+                        $("#payment_print").show();
                         let msg = '<div class="alert alert-success alert-dismissible">'+
                                     '<button type="button" id="success_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
                                     '<h4><i class="icon fa fa-check"></i> Payment Complete for <strong>'+data.name+'</strong></h4>'+
@@ -300,9 +450,10 @@
                        $('#payment_success_msg').html(msg);
 
                        $('#success_payment_msg').click(function(e) {
-                            // console.log("Close Button Clicked");
+                            $( ".payment_submit" ).attr( "disabled", false );
+                            $("#payment_print").hide();
                             let img_address = "{{ URL::to('/') }}";
-                        if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
+                            if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
                                $("#student_payment_div").css({ display: "block" });
                                $('p#student_name').text(data.name);
                                $('p#student_email').text(data.student_email);
@@ -313,7 +464,7 @@
                                $('input#students_id').val(data.id);
                                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
                                getBatches(data.id);
-                        }
+                            }
                             e.preventDefault();
                         });
                         
@@ -321,9 +472,11 @@
                     });
                 }
             });
+           }); // $.get('/get_invoice_id',function(serial_number){
         }
+        // print_money_receipt();
     });
-
+    
 });
 </script>
 
@@ -353,7 +506,7 @@
 <section class="content">
     
     <!-- Horizontal Form -->
-    <div class="box box-danger">
+    <div class="box box-primary">
         
         <div class="box-body">
         
@@ -371,27 +524,22 @@
             @endif
             <div id="search_student_div" class="box-body">
                 <div class="row">
-	                <div class="col-xs-4">
-	                    <div class="form-group">
-	                        <label for="start_date">Refference Date</label>
-	                        <div class="input-group date">
-	                            <div class="input-group-addon">
-	                                <i class="fa fa-calendar"></i>
-	                            </div>
-	                            <input id="ref_date" type="text" class="form-control ref_date" name="ref_date" value="{{ $refDate }}" autocomplete="off">
-	                        </div>
-	                    </div>
+	                <div class="col-xs-3">
+	                    <label for="batch_id" >Student*</label>
+	                    <select class="form-control select2" name="student_id" id="student_id"></select>
+                	</div>
+                    <div class="col-xs-3">
+                        <label for="student_phonenumber" >Phone Number*</label>
+                        <input type="text" class="form-control" name="student_phonenumber" id="student_phonenumber">
+                    </div>
+	                <div class="col-xs-3">
+	                    <label for="" ></label>
+	                    <button type="submit" id="student_info_for_payment" class="btn btn-block btn-success">Show Info</button>
 	                </div>
-	                
-                    
-    	                <div class="col-xs-4">
-    	                    <label for="batch_id" >Student*</label>
-    	                    <select class="form-control select2" name="student_id" id="student_id"></select>
-                    	</div>
-    	                <div class="col-xs-4">
-    	                    <label for="" ></label>
-    	                    <button type="submit" id="student_info_for_payment" class="btn btn-block btn-success">Show</button>
-    	                </div>
+                    <div class="col-xs-3">
+                        <label for="" ></label>
+                        <button type="submit" id="student_due_payment" class="btn btn-block btn-danger">Show Due</button>
+                    </div>
                     
                     
                 </div>
@@ -401,7 +549,25 @@
     </div>
     <!-- /.box-body -->
 
-
+        <!-- /.box-header -->
+        <div class="box box-danger">
+            <table id="student_due_datatable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Batch Name</th>
+                        <th>Payment Date</th>
+                        <th>Due For</th>
+                        <th>Paid Amount</th>
+                        <th>Due Amount</th>
+                        <th>Clear</th>
+                    </tr>
+                </thead>
+                <tbody>                            
+                    <!-- user list -->
+                </tbody>                        
+            </table>
+        </div>
+        <!-- /.box-body -->
 
 
     <!-- Horizontal Form -->
@@ -416,8 +582,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="student_email" >Email : </label>
-                        <p id="student_email"></p>
+                        <label for="school_name" >School Name : </label>
+                        <p id="school_name"></p>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -445,6 +611,10 @@
                         <label for="phone_away" >Phone(Additional) : </label>
                         <p id="phone_away"></p>
                     </div>
+                    <div class="form-group">
+                        <label for="student_email" >Email : </label>
+                        <p id="student_email"></p>
+                    </div>
                 </div>
             </div>
             <!-- /.box-body -->
@@ -463,7 +633,7 @@
             
             <div id="student_payment_div" class="box-body" style="display: none;">
                 {!! Form::open(array('id' => 'student_payment', 'class' => 'form-horizontal')) !!}
-                <input type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
+                <input id="ref_date" type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                 <input type='hidden' id="students_id" name="students_id">
                 <input type='hidden' id="serial_number" name="serial_number">
                 <table id="all_user_list" class="table table-bordered table-striped">
@@ -474,6 +644,9 @@
                             <th>Unit Price /=</th>
                             <th>no of months</th>
                             <th>Total Price Per Course /= </th>
+                            <th>Regular</th>
+                            <th>Due</th>
+                            <th>Discount</th>
                         </tr>
                     </thead>
                     <tbody id="batch_table">                            

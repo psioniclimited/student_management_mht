@@ -6,7 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Modules\User\Models\Role;
 Use App\Modules\User\Models\Permission;
 use App\Modules\User\Models\PermissionRole;
+
 use Datatables;
+
+
+
+
+use App\Modules\Student\Models\InvoiceMaster;
+use Carbon\Carbon;
+
+
+
 
 class UserSettingsController extends Controller {
 
@@ -116,5 +126,24 @@ class UserSettingsController extends Controller {
         
         return redirect('permission/' . $permissionId . '/edit');
     }
+
+    // public function invoice_correction() {
+
+    //     $invoice_data = InvoiceMaster::all();
+        
+    //     for ($i=0; $i < count($invoice_data); $i++) {
+    //         $date = Carbon::createFromFormat('d/m/Y', $invoice_data[$i]->payment_date)->format('Y-m-d ');
+    //         $date = Carbon::parse($date);
+    //         $formated_serial_number = $date->year . "" . sprintf('%02d', $date->month) . "" . sprintf('%02d', $date->day) . "" . 
+    //                                     substr($invoice_data[$i]->serial_number, -4);
+    //         $invoice_data[$i]->serial_number = $formated_serial_number;
+    //         $invoice_data[$i]->save();
+    //         // return $invoice_data[$i];
+    //     }
+    //     return 'invoice_correction Works'; 
+
+    // }
+
+    
 
 }

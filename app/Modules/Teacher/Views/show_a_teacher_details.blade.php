@@ -74,34 +74,6 @@
         });
 
 
-
-
-        // $("#add_batch_form").ajaxForm({
-        //     url: '/create_new_batch_process', 
-        //     type: 'post',
-        //     clearForm: true,
-        //     success:  function(e) { 
-        //         console.log(e); 
-        //          table.ajax.reload();
-        //     } 
-        // });
-
-        // $('#add_new_batch').click(function(event) {
-
-        //     $.post( '/create_new_batch_process', $('#add_batch_form').serialize())
-        //     .done(function( data ) {
-        //       table.ajax.reload();
-        //       console.log( data );
-
-        //     }).fail(function(data) {
-
-        //       console.log( data );
-
-        //     });
-        //     event.preventDefault();
-        // });
-        
-        // var user_id = null;
         // Edit Batch
         $('#confirm_edit').on('shown.bs.modal', function(e) {
             
@@ -115,9 +87,8 @@
                url: '/batch/' + user_id + '/edit',
                data: user_id,
                success: function(data) {
-                   console.log(data);
+                   // console.log(data);
                    $('input#batch_id').val(data.id);
-                   $('input#name').val(data.name);
                    $('input#price').val(data.price);
                    $('input#schedule').val(data.schedule);
                    $('input#start_date_edit').val(data.start_date);
@@ -126,6 +97,8 @@
                    $("option#edit_batch_types_id").attr("value",data.batch_types_id);
                    $('option#edit_grades_id').text(data.grade.name);
                    $("option#edit_grades_id").attr("value",data.grades_id);
+                   $('option#edit_subject_id').text(data.subject.name);
+                   $("option#edit_subject_id").attr("value",data.subjects_id);
                    //table.ajax.reload(null, false);
                    // $('#confirm_edit').modal('toggle');
                }
@@ -141,6 +114,7 @@
                   url: "/batch_update_process",
                   data: edit_batch_form,
                   success: function(data) {
+                      // console.log(data);
                       location.reload();
                   },
                   error: function() {
@@ -239,13 +213,16 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="addrs" >Description</label>
-                        <p>{{ $getTeacher->description }}</p>  
+                        <label for="teacher_percentage" >Teacher's Percentage</label>
+                        <p>{{ $getTeacher->teacher_percentage }}</p>  
                     </div>
                     <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <p>{{ $getTeacher->subject->name }}</p>
+                        <label for="addrs" >Sucjects</label>
+                        <p>{{ $getTeacher->description }}</p>  
                     </div>
+                </div>
+                <div class="col-md-4">
+                    
                 </div>
                 
                 <div class="col-md-4">
@@ -282,13 +259,17 @@
             <div class="box-body">
                 <div class="row">
                 {!! Form::open(array('url' => 'create_new_batch_process','id' => 'add_batch_form')) !!}
-                <div class="col-md-1">
+                <div class="col-md-3">
+                    <label for="batch_number" >Batch No.*</label>
+                    <input type="number" min="1" class="form-control" name="batch_number" id="batch_number" value="1">
+                </div>
+                <div class="col-md-3">
                     <label for="price" >Price*</label>
                     <input type="text" class="form-control" name="price" id="price" placeholder="Price">
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-3">
                     <div class="form-group">
-                        <label for="batch_types_id" >Batch Type*</label>
+                        <label for="batch_types_id" >Education Board*</label>
                         <select class="form-control" name="batch_types_id">
                                 <option value="default">Choose...</option>
                                 @foreach ($batchType as $batch)
@@ -297,13 +278,26 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-md-1">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="grades_id" >Grade*</label>
                         <select class="form-control" name="grades_id">
                             <option value="default">Choose...</option>
                             @foreach ($getGrades as $grade)
                                 <option value="{{ $grade->id }}">{{ $grade->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="subjects_id" >Subject*</label>
+                        <select class="form-control" name="subjects_id">
+                            <option value="default">Choose...</option>
+                            @foreach ($getSubjects as $subject)
+                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -320,7 +314,7 @@
                         <input type="text" class="form-control" name="schedule" id="schedule" placeholder="Schedule">
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="start_date" >Start Date</label>
                         <div class="input-group date">
@@ -331,7 +325,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-3">
                     <div class="form-group">
                         <label for="end_date" >End Date</label>
                         <div class="input-group date">
@@ -342,14 +336,18 @@
                         </div>
                     </div>
                 </div>
+                </div>
+                <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6"> 
                 <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
                 <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
-                <input type="hidden" name="subjects_id" value="{{ $getTeacher->subject->id }}">
-                <div class="col-md-2">
+                <div class="col-md-12">
                     <label for="" ></label>
                     <button type="submit" class="btn btn-block btn-success">Add Batch</button>
                 </div>
                 {!! Form::close() !!}
+              </div>
               </div>
             </div>
             <!-- /.box-body -->
@@ -375,7 +373,7 @@
                                 <th>Schedule</th>
                                 <th>Batch Name</th>
                                 <th>Price Tk/=</th>
-                                <th>Batch Type</th>
+                                <th>Education Board</th>
                                 <th>Grade</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
@@ -408,8 +406,8 @@
                <div class="modal-body">
                     <div class="row">
                         <div class="col-xs-6">
-                            <label for="name" >Batch name*</label>
-                            <input type="text" class="form-control" name="name" id="name" />
+                            <label for="batch_number" >Batch No.*</label>
+                            <input type="number" min="1" class="form-control" name="batch_number" id="batch_number" value="1">
                         </div>
                         <div class="col-xs-6">
                             <label for="price" >Price*</label>
@@ -419,7 +417,7 @@
                     <div class="row">
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <label for="batch_types_id" >Batch Type*</label>
+                                <label for="batch_types_id" >Education Board*</label>
                                 <select class="form-control" name="batch_types_id">
                                         <option id="edit_batch_types_id" value=""></option>
                                         @foreach ($batchType as $batch)
@@ -447,11 +445,20 @@
                             </div>
                         </div> -->
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-xs-6">
                             <div class="form-group">
                                 <label for="batch_id" >Schedule*</label>
                                 <input type="text" class="form-control" name="schedule" id="schedule" placeholder="Schedule">
                             </div>
+                        </div>
+                        <div class="col-xs-6">
+                          <label for="subjects_id" >Subject*</label>
+                          <select class="form-control" name="subjects_id">
+                              <option id="edit_subject_id" value=""></option>
+                              @foreach ($getSubjects as $subject)
+                                  <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                              @endforeach
+                          </select>
                         </div>
                     </div>
                     <div class="row">
@@ -483,7 +490,6 @@
                     <input type="hidden" id="batch_id" name="batch_id">
                     <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
                     <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
-                    <input type="hidden" name="subjects_id" value="{{ $getTeacher->subject->id }}">
                    <button type="submit" class="btn btn-warning" id="edit_batch">Edit</button>
                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                </div>

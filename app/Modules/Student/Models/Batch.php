@@ -44,6 +44,11 @@ class Batch extends Model
         return $this->belongsTo('App\Modules\Student\Models\Grade','grades_id');
     }
 
+    public function subject()
+    {
+        return $this->belongsTo('App\Modules\Student\Models\Subject','subjects_id');
+    }
+
     public function teacherDetail()
     {
         return $this->belongsTo('App\Modules\Teacher\Models\TeacherDetail','teacher_details_id');

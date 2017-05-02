@@ -127,15 +127,6 @@ $(document).ready(function () {
                         <input type="text" class="form-control" id="description" name="description" placeholder="Enter Description">
                     
                 </div>
-                <div class="form-group">
-                    <label for="subjects_id" >Subject*</label>
-                        <select class="form-control" name="subjects_id">
-                            <option value="default">Choose...</option>
-                            @foreach ($getSubjects as $subject)
-                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
-                            @endforeach
-                        </select>
-                </div>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">

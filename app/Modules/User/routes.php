@@ -48,7 +48,14 @@ Route::group(['middleware' => ['web']], function () {
     /****************
     * Delete a User *
     *****************/     
-    Route::post('users/{user}/delete', 'App\Modules\User\Controllers\IndexController@deleteUser');    
+    Route::post('users/{user}/delete', 'App\Modules\User\Controllers\IndexController@deleteUser');
+
+    /**********************
+    * Correct the Invoice *
+    ***********************/
+
+  Route::get('invoice_correction', 'App\Modules\User\Controllers\UserSettingsController@invoice_correction');
+
     
 });
 

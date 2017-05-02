@@ -31,6 +31,7 @@ class StudentCreateRequest extends Request
             'phone_away' => 'required',
             'schools_id' => 'required|not_in:default',
             'batch_types_id' => 'required|not_in:default',
+            'joining_year'=> 'required'
         ];
     }
 }

@@ -11,11 +11,6 @@
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script>
 
-// add the rule here
-$.validator.addMethod("valueNotEquals", function (value, element, arg) {
-    return arg != value;
-}, "Value must not equal arg.");
-
 $(document).ready(function () {
 
     // initialize tooltipster on form input elements
@@ -48,9 +43,7 @@ $(document).ready(function () {
             mothers_name: {required: true, minlength: 4},
             phone_home: {required: true},
             phone_away: {required: true},
-            schools_id: {valueNotEquals: "default"},
-            grades_id: {valueNotEquals: "default"},
-            batch_types_id: {valueNotEquals: "default"},
+
         },
         messages: {
             name: {required: "Enter Student Name"},
@@ -58,11 +51,72 @@ $(document).ready(function () {
             mothers_name: {required: "Enter Student's Mother's Name"},
             phone_home: {required: "Enter Home Phone Number"},
             phone_away: {required: "Enter Additional Phone Number"},
-            schools_id: {valueNotEquals: "Select a School"},
-            grades_id: {valueNotEquals: "Select a Grade"},
-            batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
         }
     });
+
+    $.get("/get_student_batch_for_edit", {
+            student_id: "{{ $getStudent->id }}" 
+    })
+    .done(function( data ) {
+        // console.log(data);
+        // var batchType = $('#batch_types_id').find(":selected").val();
+        // var grade = $('#grades_id').find(":selected").val();
+        // console.log("batchType "+batchType);
+        // console.log("Grade " + grade);
+
+        for (var i = 0; i < data.length; i++) {
+            
+            let subject_id = "#subject" + data[i].subjects_id;
+            let subject_id_for_select2 = data[i].subjects_id;
+            console.log("subject_id_for_select2 " + subject_id_for_select2);
+            
+            $( subject_id ).select2({
+            allowClear: true,
+            data: [{ 
+                    id: data[i].id, 
+                    text:  data[i].name 
+                }],
+            ajax: {
+                url: "/getallbatch",
+                dataType: 'json',
+                delay: 250,
+                tags: true,
+                data: function (params) {
+                  console.log("Inside data object " + subject_id_for_select2);
+                  return {
+                        q: params.term, // search term
+                        page: params.page,
+                        subject_id: subject_id_for_select2,
+                        // batchType_id:batchType,
+                        // grades_id:grade
+                    };
+                },
+                processResults: function (data, params) {
+                  // parse the results into the format expected by Select2
+                  // since we are using custom formatting functions we do not need to
+                  // alter the remote JSON data, except to indicate that infinite
+                  // scrolling can be used
+                  console.log("Inside Initial Select2");
+                  params.page = params.page || 1;
+                  // console.log(data);
+                  return {
+                    results: data,
+                    pagination: {
+                      more: (params.page * 30) < data.total_count
+                    }
+                  };
+                },
+                cache: true
+                }
+            });
+
+        }
+    });
+
+    
+
+
+
 
     $('#batch_types_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
@@ -86,11 +140,11 @@ $(document).ready(function () {
             var batchType = $('#batch_types_id').find(":selected").val();
             var grade = $('#grades_id').find(":selected").val();
             console.log("batchType "+batchType);
-            console.log("Grade  "+grade);
-            
+            console.log("Grade " + grade);
+            // console.log(batchType);
             var subject_id = "#subject" + this.value;
             var subject_id_for_select2 = this.value;
-            
+            // var full_url = "/getallbatch/" + subject_id + "/" + batchType;
             $( subject_id ).select2({
                 allowClear: true,
                 placeholder: 'Select batch',
@@ -113,6 +167,7 @@ $(document).ready(function () {
                       // since we are using custom formatting functions we do not need to
                       // alter the remote JSON data, except to indicate that infinite
                       // scrolling can be used
+                      
                       params.page = params.page || 1;
                       // console.log(data);
                       return {
@@ -130,11 +185,10 @@ $(document).ready(function () {
         else{
             // $("#box_color").attr("class","box box-success");
             $( this ).parent().siblings(".form-group").hide();
+            var subject_id = "#subject" + this.value;
+            $(subject_id).val('');
         }
     });
-
-
-
 
 
 });
@@ -150,7 +204,6 @@ $(document).ready(function () {
 @endsection
 
 @section('content')
-
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
@@ -169,7 +222,7 @@ $(document).ready(function () {
     <!-- Horizontal Form -->
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title">Student Create Page</h3>
+            <h3 class="box-title">Student Update Page</h3>
         </div>
         @if (count($errors) > 0)
             <div class="alert alert-danger">
@@ -182,7 +235,11 @@ $(document).ready(function () {
         @endif
         <!-- /.box-header -->
         <!-- form starts here -->
-        {!! Form::open(array('url' => 'create_student_process', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
+        
+		{!! Form::open(array('url' => '/student_update_process/'.$getStudent->id.'/', 'id' => 'add_user_form', 'class' => 'form-horizontal', 'enctype' => 'multipart/form-data')) !!}
+        
+        {!! csrf_field() !!}
+		{{ method_field('PATCH') }}
 
         <div class="box-body">
             <div class="col-md-1"></div>
@@ -190,91 +247,109 @@ $(document).ready(function () {
                 <div class="form-group">
                     <label for="name">Fullname*</label>
                     
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name" value="{{$getStudent->name}}">
                     
                 </div>
                 <div class="form-group">
                 <label for="student_email" >Email*</label>
                 
-                    <input type="email" class="form-control" id="student_email" name="student_email" size="35" placeholder="Enter email">
+                    <input type="email" class="form-control" id="student_email" name="student_email" size="35" value="{{ $getStudent->student_email }}">
                     
                 </div>
                 <div class="form-group">
                     <label for="fathers_name">Father's name*</label>
                     
-                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name">
+                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name" value="{{$getStudent->fathers_name}}">
                     
                 </div>
                 <div class="form-group">
                     <label for="mothers_name">Mother's name*</label>
                     
-                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name">
+                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name" value="{{$getStudent->mothers_name}}">
                     
                 </div>
                 <div class="form-group">
                     <label for="phone_home">Phone Number*</label>
                     
-                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number">
+                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number" value="{{$getStudent->phone_home}}">
                     
                 </div>
                 <div class="form-group">
-                    <label for="phone_away">Additional Phone Number*</label>
+                    <label for="phone_away">Edditional Phone Number*</label>
                     
-                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number">
+                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number" value="{{ $getStudent->phone_away }}">
                     
                 </div>
                 <div class="form-group">
                     <label for="pic" >Upload Photo*</label>
-                    <!-- {{Form::file('pic')}} -->
-                    <input type="file" name="pic" id="pic">
-                    <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
+                       
+                        <!-- {{Form::file('pic')}} -->
+                        <input type="file" name="pic" id="pic">
+                        <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
+                    
                 </div>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="schools_id" >School*</label>
-                    <select class="form-control" name="schools_id">
-                            <option value="default">Choose...</option>
-                            @foreach ($Schools as $school)
-                                <option value="{{ $school->id }}">{{ $school->name }}</option>
-                            @endforeach
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="grades_id" >Grade*</label>
-                    <select class="form-control" id="grades_id" name="grades_id">
-                            <option value="default">Choose...</option>
-                            @foreach ($getGrades as $grade)
-                                <option value="{{ $grade->id }}">{{ $grade->name }}</option>
-                            @endforeach
-                    </select>
+                    
+                        <select class="form-control" name="schools_id">
+                                <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
+                                @foreach ($Schools as $school)
+                                    <option value="{{ $school->id }}">{{ $school->name }}</option>
+                                @endforeach
+                            </select>
+                        
                 </div>
                 
                 <div class="form-group">
-                    <label for="batch_types_id" >Batch type*</label>
+                    <label for="batch_types_id" >Education Board*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
-                            <option value="default">Choose...</option>
+                            <option value="{{ $getStudent->batch_type->id }}">{{ $getStudent->batch_type->name}}</option>
                             @foreach ($batchTypes as $batchType)
                                 <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach
                     </select>
                 </div>
-                <!-- <div class="form-group">
-                    <label for="batch_id" >Batch*</label>
-                    <select class="form-control select2" name="batch_id" id="batch_id"></select>
-                </div> -->
+
+                <div class="form-group">
+                    <label for="joining_year">Joining Year*</label>
+                    <input type="number" min="0" class="form-control" id="joining_year" name="joining_year" value="{{ $getStudent->joining_year }}">
+                </div>
                 
-                <!-- <div class="form-group">
-                    <label for="batch_id" >Batch*</label>
-                    <select class="form-control select2" name="batch_name[]" id="batch_id" ></select>
-                </div> -->
-                
-                <!-- checkbox -->
+
                 <div class="form-group">
                     <label for="subjects_id">Choose Subject*</label>
-                    @foreach ($Subjects as $subject)
+                    @if( ! $getStudent->subject->isEmpty() )
+                    @foreach($Subjects as $subject)
+                    <div class="checkbox">
+
+                        @foreach($getStudent->subject as $selected_subject)
+                            @if($selected_subject->id === $subject->id)
+                              <label>
+                                    <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked>
+                                  {{ $subject->name }}
+                              </label>
+                              <div class="form-group batchSelection">
+                                    <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                              </div>
+                              @break
+                            <!-- @elseif($selected_subject === end($getStudent->subject)) -->
+                            @elseif($getStudent->subject->last()->id == $selected_subject->id)
+                                <label>
+                                    <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
+                                    {{ $subject->name }}
+                                </label>
+                                <div class="form-group batchSelection" style="display:none;">
+                                    <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                    @endforeach
+                    @else
+                        @foreach ($Subjects as $subject)
                     <div class="checkbox">
                         <label>
                           <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
@@ -285,15 +360,10 @@ $(document).ready(function () {
                         </div>
                     </div>
                     @endforeach
+                    @endif
                 </div>
-                <!-- <div class="form-group"> -->
-                        <!-- <label for="pic" >Upload Photo*</label> -->
-                        
-                            <!-- {{Form::file('pic')}} -->
-                            <!-- <input type="file" name="pic" id="pic"> -->
-                            <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
-                        
-                <!-- </div> -->
+
+
             </div>
             <!-- /.col -->
             <div class="col-md-1"></div>

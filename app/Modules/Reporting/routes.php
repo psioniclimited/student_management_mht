@@ -16,11 +16,17 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('get_all_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getAllReporting');
     
     Route::get('get_monthly_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getMonthlyReporting');
+
+    Route::get('refund_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@refundReporting');
     
     Route::get('get_daily_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getDailyReporting');
 
     Route::get('get_due_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getDueReporting');
 
     Route::get('payment_date_range', 'App\Modules\Reporting\Controllers\ReportingWebController@paymentDateRange');
+
+    Route::get('monthly_statement', 'App\Modules\Reporting\Controllers\ReportingWebController@monthlyStatement');
+
+    Route::get('due_statement', 'App\Modules\Reporting\Controllers\ReportingWebController@dueStatement');
 
 });

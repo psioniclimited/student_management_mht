@@ -58,14 +58,17 @@
 
     var daily_payment_reporting_table = "";
     $("#daily_payment_reporting").click(function() {
-        $("#box_color").attr("class","box box-warning");
+        $("#box_color").attr("class","box box-success");
         $("#payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
         $("#alternate_data").text("Payment Date");
+        $("#batch_info").text("Batches(Batch name, Price, Payment for)");
+        $("#invoice_info").text("Invoice ID");
+        $("#phone_num").text("Phone Number");
         $("#total_amount").text("Total Paid Amount/-");
         var daily_payment_reporting_table = $('#all_user_list').DataTable({
             "paging": false,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "destroy": true,
             "info": false,
@@ -74,10 +77,12 @@
             "serverSide": true,
             "ajax": "{{URL::to('/get_daily_reporting')}}",
             "columns": [
-                    {"data": "id"},
+                    {"data": "serial_number"},
+                    {"data": "student.student_permanent_id"},
                     {"data": "student.name"},
                     {"data": "student.phone_home"},                    
                     {"data": "payment_date"},
+                    {"data": "paid_batches"},
                     {"data": "total"},
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
@@ -118,17 +123,84 @@
             });
     });
 
+    $("#refund_reporting").click(function() {
+        $("#box_color").attr("class","box box-primary");
+        $("#payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
+        $("#alternate_data").text("Batch Name");
+        $("#batch_info").text("Payment For");
+        $("#invoice_info").text("Invoice ID");
+        $("#phone_num").text("Payment Date");
+        $("#total_amount").text("Total Amount/-");
+        var daily_payment_reporting_table = $('#all_user_list').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": "{{URL::to('/refund_reporting')}}",
+            "columns": [
+                    {"data": "invoice_detail.invoice_master.serial_number"},
+                    {"data": "invoice_detail.invoice_master.student.student_permanent_id"},
+                    {"data": "invoice_detail.invoice_master.student.name"},
+                    {"data": "invoice_detail.invoice_master.payment_date"},                    
+                    {"data": "invoice_detail.batch.name"},
+                    {"data": "invoice_detail.payment_from"},
+                    {"data": "amount"},
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    let total_price = parseFloat(0);;
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        total_price += parseFloat(aaData[i]['amount']);
+                    }
 
+                    // let nCells = nRow.getElementsByTagName('th');
+                    // nCells[nCells.length-1].innerHTML = total_price;
+                    $('#total_taka').text(total_price);
+                    // nCells = total_price;
+                },
+            dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Refund Reporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Refund Reporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Refund Reporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Refund Reporting',
+                        "footer": true
+                    }
+                ]
+            });
+    });
     
     $("#monthly_payment_reporting").click(function() {
         $("#box_color").attr("class","box box-success");
-        $("#payment_title").html("<b>Monthly</b> Payment Reporting");
+        $("#payment_title").html("<b>Current Month</b> Payment Reporting");
         $("#alternate_data").text("Payment Date");
+        $("#invoice_info").text("Invoice ID");
+        $("#batch_info").text("Batches(Batch name, Price, Payment for)");
+        $("#phone_num").text("Phone Number");
         $("#total_amount").text("Total Paid Amount/-");
         var table = $('#all_user_list').DataTable({
             "paging": false,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "destroy": true,
             "info": false,
@@ -137,10 +209,12 @@
             "serverSide": true,
             "ajax": "{{URL::to('/get_monthly_reporting')}}",
             "columns": [
-                    {"data": "id"},
+                    {"data": "serial_number"},
+                    {"data": "student.student_permanent_id"},
                     {"data": "student.name"},
                     {"data": "student.phone_home"},                    
                     {"data": "payment_date"},
+                    {"data": "paid_batches"},
                     {"data": "total"},
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
@@ -181,78 +255,19 @@
             });
     });
 
-    $("#due_payment_reporting").click(function() {
-        $("#box_color").attr("class","box box-danger");
-        $("#payment_title").html("<p><b>Due</b> Payment Reporting</p>");
-        $("#alternate_data").text("Additional Phone Number");
-        $("#total_amount").text("Total Due Amount/-");
-        var table = $('#all_user_list').DataTable({
-            "paging": false,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "destroy": true,
-            "info": false,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": "{{URL::to('/get_due_reporting')}}",
-            "columns": [
-                    {"data": "id"},
-                    {"data": "name"},
-                    {"data": "phone_home"},                    
-                    {"data": "phone_away"},
-                    {"data": "TotalDuePrice"},
-                ],
-            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    
-                    let TotalDuePrice = parseFloat(0);
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        TotalDuePrice += parseFloat(aaData[i]['TotalDuePrice']);
-                    }
-
-                    let nCells = nRow.getElementsByTagName('th');
-                    nCells[nCells.length-1].innerHTML = TotalDuePrice;
-                },
-            dom: 'Bfrtip',
-            buttons: [
-                    'copy',
-                    {
-                        extend: 'csvHtml5',
-                        title: 'DuePaymentReporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'DuePaymentReporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Due Payment Report',
-                        "footer": true
-                    },
-                    {
-                        extend: 'print',
-                        title: 'Due Payment Report',
-                        "footer": true
-                    }
-                ]
-
-            });
-
-    });
-    
     $("#range_payment_reporting").click(function() {
         if ($('input[id=start_date]').val() && $('input[id=end_date]').val()) {
-            $("#box_color").attr("class","box box-primary");
+            $("#box_color").attr("class","box box-info");
             $("#payment_title").html("<p>Payment Reporting from <b>"+$('input[id=start_date]').val()+"</b> to <b>"+$('input[id=end_date]').val()+"</b></p>");
             $("#alternate_data").text("Payment Date");
+            $("#batch_info").text("Batches(Batch name, Price, Payment for)");
+            $("#invoice_info").text("Invoice ID");
+            $("#phone_num").text("Phone Number");
             $("#total_amount").text("Total Paid Amount/-");
             var table = $('#all_user_list').DataTable({
                 "paging": false,
                 "lengthChange": false,
-                "searching": false,
+                "searching": true,
                 "ordering": true,
                 "destroy": true,
                 "info": false,
@@ -267,10 +282,12 @@
                     },
                 },
                 "columns": [
-                        {"data": "id"},
+                        {"data": "serial_number"},
+                        {"data": "student.student_permanent_id"},
                         {"data": "student.name"},
-                        {"data": "student.phone_home"},                    
+                        {"data": "student.phone_home"},
                         {"data": "payment_date"},
+                        {"data": "paid_batches"},
                         {"data": "total"},
                     ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
@@ -312,6 +329,219 @@
         }
 
     });
+
+    $("#monthly_statement").click(function() {
+        if ($('input[id=statement_date]').val()) {
+            $("#box_color").attr("class","box box-warning");
+            $("#payment_title").html("<p>Monthly Statement for <b>"+$('input[id=statement_date]').val()+"</b></p>");
+            $("#alternate_data").text("Payment For");
+            $("#batch_info").text("Batches(Batch name)");
+            $("#invoice_info").text("Invoice ID");
+            $("#phone_num").text("Payment Date");
+            $("#total_amount").text("Total Paid Amount/-");
+            var table = $('#all_user_list').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "destroy": true,
+                "info": false,
+                "autoWidth": false,
+                "processing": true,
+                "serverSide": true, 
+                "ajax": {
+                    'url': "{{URL::to('/monthly_statement')}}",
+                    'data': {
+                       statement_date: $('input[id=statement_date]').val() 
+                    },
+                },
+                "columns": [
+                        {"data": "invoice_master.serial_number"},
+                        {"data": "invoice_master.student.student_permanent_id"},
+                        {"data": "invoice_master.student.name"},
+                        {"data": "invoice_master.payment_date"}, 
+                        {"data": "payment_from"},
+                        {"data": "batch.name"},
+                        {"data": "price"},
+                    ],
+                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    let TotalRangePrice = parseFloat(0);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        TotalRangePrice += parseFloat(aaData[i]['price']);
+                    }
+
+                    // var nCells = nRow.getElementsByTagName('th');
+                    // nCells[nCells.length-1].innerHTML = TotalRangePrice;
+                    $('#total_taka').text(TotalRangePrice);
+                },
+                dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Monthly Payment Statement for '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
+                        "footer": true
+                    }
+                ]
+            });
+        }
+
+    });
+
+    $("#due_payment_reporting").click(function() {
+        $("#box_color").attr("class","box box-danger");
+        $("#payment_title").html("<p><b>Due</b> Payment Reporting</p>");
+        $("#alternate_data").text("Additional Phone Number");
+        $("#batch_info").text("Batches(Batch name, Price, Last Paid Date)");
+        $("#invoice_info").text("Student ID");
+        $("#phone_num").text("Phone Number");
+        $("#total_amount").text("Total Due Amount/-");
+        var table = $('#all_user_list').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": "{{URL::to('/get_due_reporting')}}",
+            "columns": [
+                    {"data": "id"},
+                    {"data": "student_permanent_id"},
+                    {"data": "name"},
+                    {"data": "phone_home"},                    
+                    {"data": "phone_away"},
+                    {"data": "due_batches"},
+                    {"data": "TotalDuePrice"},
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    let TotalDuePrice = parseFloat(0);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        TotalDuePrice += parseFloat(aaData[i]['TotalDuePrice']);
+                    }
+
+                    let nCells = nRow.getElementsByTagName('th');
+                    nCells[nCells.length-1].innerHTML = TotalDuePrice;
+                },
+            dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'DuePaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'DuePaymentReporting',
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Due Payment Report',
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Due Payment Report',
+                        "footer": true
+                    }
+                ]
+
+            });
+
+    });
+
+    $("#due_statement").click(function() {
+        if ($('input[id=due_statement_date]').val()) {
+            $("#box_color").attr("class","box box-danger");
+            $("#payment_title").html("<p>Due Payment Statement for <b>"+$('input[id=due_statement_date]').val()+"</b></p>");
+            $("#alternate_data").text("Payment Date");
+            $("#phone_num").text("Phone Number");
+            $("#total_amount").text("Total Amount/-");
+            var table = $('#all_user_list').DataTable({
+                "paging": false,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "destroy": true,
+                "info": false,
+                "autoWidth": false,
+                "processing": true,
+                "serverSide": true, 
+                "ajax": {
+                    'url': "{{URL::to('/due_statement')}}",
+                    'data': {
+                       due_statement_date: $('input[id=due_statement_date]').val() 
+                    },
+                },
+                "columns": [
+                        {"data": "student.name"},
+                        {"data": "student.phone_home"},
+                        {"data": "due_batches"},                    
+                        {"data": "payment_date"},
+                        {"data": "total"},
+                    ],
+                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    
+                    let TotalRangePrice = parseFloat(0);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        TotalRangePrice += parseFloat(aaData[i]['total']);
+                    }
+
+                    // var nCells = nRow.getElementsByTagName('th');
+                    // nCells[nCells.length-1].innerHTML = TotalRangePrice;
+                    $('#total_taka').text(TotalRangePrice);
+                },
+                dom: 'Bfrtip',
+            buttons: [
+                    'copy',
+                    {
+                        extend: 'csvHtml5',
+                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    },
+                    {
+                        extend: 'print',
+                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        "footer": true
+                    }
+                ]
+            });
+        }
+
+    });
+
+
 
 });
 </script>
@@ -364,7 +594,7 @@
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-warning"><strong>Daily</strong> Reporting</button>
+                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-success"><strong>Daily</strong> Collection</button>
                     </div>
                 </div>
                 <div class="row">
@@ -379,21 +609,61 @@
                             </div>
                         </div>
                     </div>
+                    <!-- <div class="col-xs-6">
+                        <label for="" ></label>
+                        <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Current Month</strong> Collection</button>
+                    </div> -->
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Monthly Payment</strong> Reporting</button>
+                        <button type="submit" id="refund_reporting" class="btn btn-block btn-primary"><strong>Refund</strong> Reporting</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-6">
                         <label for="" ></label>
-                        <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show</strong></button>
+                        <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show Date Range</strong>  Collection</button>
                     </div>
                     <div class="col-xs-6">
                         <label for="" ></label>
                         <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label for="statement_date">Month (For Monthly Payment Statement)</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input id="statement_date" type="text" class="form-control ref_date" name="statement_date" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <label for="" ></label>
+                        <button type="submit" id="monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
+                    </div>
+                </div>
+                <hr>
+                <!-- <div class="row">
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label for="due_statement_date">Month (For Monthly Due Statement)</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input id="due_statement_date" type="text" class="form-control ref_date" name="due_statement_date" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <label for="" ></label>
+                        <button type="submit" id="due_statement" class="btn btn-block btn-danger"><strong>Monthly Due</strong> Statement</button>
+                    </div>
+                </div> -->
 
 
             </div>
@@ -412,15 +682,19 @@
                 <table id='all_user_list' class='table table-bordered table-striped'>
                 <thead>
                     <tr>
-                        <th>Student Id</th>
+                        <th id="invoice_info"></th>
+                        <th>Student Permanent ID</th>
                         <th>Student Name</th>
-                        <th>Phone Number</th>
+                        <th id="phone_num">Phone Number</th>
                         <th id="alternate_data">Payment Date</th>
+                        <th id="batch_info"></th>
                         <th id="total_amount">Total Amount/-</th>
                     </tr>
                 </thead>
                 <tfoot>
                     <tr>
+                        <th></th>
+                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>

@@ -50,35 +50,41 @@ $(document).ready(function () {
             dname: {required: "Insert role display name"}
         }
     });
+
+    $('#roles_list').DataTable({
+        "paging": false,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax": "{{URL::to('/getroles')}}",
+        "columns": [
+            {"data": "id"},
+            {"data": "name"},
+            {"data": "display_name"},
+            {"data": "description"},
+            {"data": "Link", name: 'link', orderable: false, searchable: false}
+        ],
+        "order": [[1, 'asc']]
+    });
+
+    // $('#invoice_correction').click(function(){
+
+    //     $.get('/invoice_correction',function(data) {
+    //         console.log(data);
+    //     });
+    // });    
+    
+
 });
 
 
 
 </script>
 
-<script>
-    $(document).ready(function () {
-        $('#roles_list').DataTable({
-            "paging": false,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": "{{URL::to('/getroles')}}",
-            "columns": [
-                {"data": "id"},
-                {"data": "name"},
-                {"data": "display_name"},
-                {"data": "description"},
-                {"data": "Link", name: 'link', orderable: false, searchable: false}
-            ],
-            "order": [[1, 'asc']]
-        });
-    });
-</script>
 
 @endsection
 
@@ -215,7 +221,6 @@ $(document).ready(function () {
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
-                    <button type="submit" class="btn btn-default">Cancel</button>
                     <button type="submit" class="btn btn-info pull-right" id="submit-btn">Submit</button>
                 </div>
                 <!-- /.box-footer -->
@@ -255,7 +260,9 @@ $(document).ready(function () {
             <!-- /.box -->
 
         </div>
-        <!-- column -->
+
+        <!-- <button id="invoice_correction">Invoice Correction</button> -->
+        
     </div>
     <!-- row -->
 

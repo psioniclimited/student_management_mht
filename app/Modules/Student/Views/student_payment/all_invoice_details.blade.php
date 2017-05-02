@@ -28,7 +28,7 @@
                     },
                 },
             "columns": [
-                    {"data": "id"},
+                    {"data": "invoice_master.serial_number"},
                     {"data": "batch.name"},
                     {"data": "price"},
                     {"data": "payment_from"},
@@ -78,7 +78,7 @@
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Invoice Details Id</th>
+                                <th>Invoice Master Id</th>
                                 <th>Batch Name</th>
                                 <th>Price</th>
                                 <th>payment_from</th>

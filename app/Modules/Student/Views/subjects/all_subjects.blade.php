@@ -21,12 +21,11 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_teachers')}}",
+            "ajax": "{{URL::to('/get_subjects')}}",
             "columns": [
                     {"data": "id"},
-                    {"data": "user.name"},
-                    {"data": "user.email"},
-                    {"data": "description"},                    
+                    {"data": "name"},
+                    {"data": "description"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -42,7 +41,7 @@
                $.ajax({
                    cache: false,
                    type: 'POST',
-                   url: 'teacher/' + user_id + '/delete',
+                   url: 'subject/' + user_id + '/delete',
                    data: user_id,
                    success: function(data) {
                        console.log("Deleted Successfully");
@@ -62,13 +61,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Students
-        <small>all student list</small>
+        Subject Module
+        <small>it all starts here</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Students</a></li>
-        <li class="active">All Students</li>
+        <li><a href="#">Subject</a></li>
+        <li class="active">All Subject</li>
     </ol>
 </section>
 
@@ -79,17 +78,16 @@
 
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Student list</h3>
+                    <h3 class="box-title">Subject list</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Teacher Id</th>
-                                <th>Teacher Name</th>
-                                <th>Teacher Email</th>
-                                <th>Subjects</th>
+                                <th>Subject Id</th>
+                                <th>Subject Name</th>
+                                <th>Subject Descripttion</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

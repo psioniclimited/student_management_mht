@@ -3,35 +3,24 @@
 namespace App\Modules\Student\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\User\Models\User;
-use App\Modules\User\Models\Role;
-use App\Modules\Student\Models\School;
-use App\Modules\Student\Models\Student;
-use App\Modules\Student\Models\Batch;
-use App\Modules\Student\Models\BatchType;
-use App\Modules\Student\Models\Grade;
-use App\Modules\Student\Models\Subject;
-use App\Modules\Student\Models\BatchDay;
-use App\Modules\Student\Models\BatchTime;
-use App\Modules\Student\Models\BatchDaysHasBatchTime;
-use App\Modules\Student\Models\BatchHasDaysAndTime;
 
+use App\Modules\Student\Models\Student;
+use App\Modules\Student\Models\Grade;
 
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
-use Storage;
-use File;
 use Entrust;
 use DB;
 use Log;
+
 class GradWebController extends Controller {
 
 	/*****************************************************
     * Show the information of all Grades in a data table *
     ******************************************************/
     public function allGrades() {
-        return view('Student::all_grades');
+        return view('Student::grades/all_grades');
     }
 
     public function getGrades() {
@@ -55,7 +44,7 @@ class GradWebController extends Controller {
     * Create a new Grade *
     **********************/
     public function addGrade() {
-        return view('Student::create_grade');
+        return view('Student::grades/create_grade');
     }
 
     public function addGradeProcess(Request $request) {
@@ -67,7 +56,7 @@ class GradWebController extends Controller {
     * Edit and Update a Grade *
     ***************************/
     public function editGrade(Grade $grade) {
-        return view('Student::edit_grade')
+        return view('Student::grades/edit_grade')
         ->with('getGrade', $grade);
     }
 

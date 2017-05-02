@@ -20,7 +20,7 @@
             <li {!! Request::is('*create_users*') ? ' class="active"' : null !!}><a href="{{url('create_users')}}"><i class="fa fa-circle-o"></i> New User</a></li>
         </ul>
     </li>
-    <li {!! Request::is('*student*') || Request::is('*grade*') || Request::is('*school*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+    <li {!! Request::is('*_student*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
         <a href="#">
             <i class="fa fa-files-o"></i>
             <span>Students</span>
@@ -31,11 +31,11 @@
         <ul class="treeview-menu">
         
             <li {!! Request::is('*all_students*') ? ' class="active"' : null !!}><a href="{{url('all_students')}}"><i class="fa fa-circle-o"></i> All Students</a></li>
+            <li {!! Request::is('*active_students*') ? ' class="active"' : null !!}><a href="{{url('active_students')}}"><i class="fa fa-circle-o"></i> Active Students</a></li>
+            <li {!! Request::is('*batch_wise_student_page*') ? ' class="active"' : null !!}><a href="{{url('batch_wise_student_page')}}"><i class="fa fa-circle-o"></i> Batch wise Students</a></li>
             <li {!! Request::is('*create_student*') ? ' class="active"' : null !!}><a href="{{url('create_student')}}"><i class="fa fa-circle-o"></i>Add New Student</a></li>
             <li {!! Request::is('*payment_student*') ? ' class="active"' : null !!}><a href="{{url('payment_student')}}"><i class="fa fa-circle-o"></i> Payment</a></li>
-            <li {!! Request::is('*create_school*') ? ' class="active"' : null !!}><a href="{{url('create_school')}}"><i class="fa fa-circle-o"></i> New School</a></li>
-            <li {!! Request::is('*all_grades*') ? ' class="active"' : null !!}><a href="{{url('all_grades')}}"><i class="fa fa-circle-o"></i> All Grades</a></li>
-            <li {!! Request::is('*create_grade*') ? ' class="active"' : null !!}><a href="{{url('create_grade')}}"><i class="fa fa-circle-o"></i> New Grade</a></li>
+            <li {!! Request::is('*summary_student*') ? ' class="active"' : null !!}><a href="{{url('summary_student')}}"><i class="fa fa-circle-o"></i> Summary</a></li>
         </ul>
     </li>
     <li {!! Request::is('*teacher*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
@@ -48,8 +48,47 @@
         </a>
         <ul class="treeview-menu">
             <li {!! Request::is('*all_teachers*') ? ' class="active"' : null !!}><a href="{{url('all_teachers')}}"><i class="fa fa-circle-o"></i> All Teachers</a></li>
-            <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i> New Teacher</a></li>
+            <li {!! Request::is('*create_teacher*') ? ' class="active"' : null !!}><a href="{{url('create_teacher')}}"><i class="fa fa-circle-o"></i>Add New Teacher</a></li>
             <li {!! Request::is('*teacher_payment_all_batch*') ? ' class="active"' : null !!}><a href="{{url('teacher_payment_all_batch')}}"><i class="fa fa-circle-o"></i>Teacher Payment</a></li>
+        </ul>
+    </li>
+    <li {!! Request::is('*subject*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+        <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Subjects</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li {!! Request::is('*all_subjects*') ? ' class="active"' : null !!}><a href="{{url('all_subjects')}}"><i class="fa fa-circle-o"></i> All Subjects</a></li>
+            <li {!! Request::is('*create_subject*') ? ' class="active"' : null !!}><a href="{{url('create_subject')}}"><i class="fa fa-circle-o"></i>Add New Subject</a></li>
+        </ul>
+    </li>
+    <li {!! Request::is('*grade*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+        <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Grades</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li {!! Request::is('*all_grades*') ? ' class="active"' : null !!}><a href="{{url('all_grades')}}"><i class="fa fa-circle-o"></i> All Grades</a></li>
+            <li {!! Request::is('*create_grade*') ? ' class="active"' : null !!}><a href="{{url('create_grade')}}"><i class="fa fa-circle-o"></i>Add New Grade</a></li>
+        </ul>
+    </li>
+    <li {!! Request::is('*school*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
+        <a href="#">
+            <i class="fa fa-files-o"></i>
+            <span>Schools</span>
+            <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+            </span>
+        </a>
+        <ul class="treeview-menu">
+            <li {!! Request::is('*all_schools*') ? ' class="active"' : null !!}><a href="{{url('all_schools')}}"><i class="fa fa-circle-o"></i> All Schools</a></li>
+            <li {!! Request::is('*create_school*') ? ' class="active"' : null !!}><a href="{{url('create_school')}}"><i class="fa fa-circle-o"></i>Add New School</a></li>
         </ul>
     </li>
     <li {!! Request::is('*reporting*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">

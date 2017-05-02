@@ -20,6 +20,8 @@ use App\Modules\Student\Models\InvoiceMaster;
 use App\Modules\Student\Models\InvoiceDetail;
 use App\Modules\Student\Models\Refund;
 
+use App\Modules\Student\Helper\StudentHelper;
+
 use Illuminate\Http\Request;
 use JWTAuth;
 use Datatables;
@@ -44,7 +46,7 @@ class StudentPaymentController extends Controller {
         $refDate = $refDate->toDateString();
 		$refDate = Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
 
-        return view('Student::payment_of_a_student',compact('getStudent','refDate'));
+        return view('Student::student_payment/payment_of_a_student',compact('getStudent','refDate'));
     }
 
     public function getAllStudentForPayment(Request $request) {
@@ -57,46 +59,128 @@ class StudentPaymentController extends Controller {
     }
 
     public function getStudentInfoForPayment(Request $request) {
-        $getStudent = Student::find($request->student_id);
+        $getStudent = Student::with('school')->find($request->student_id);
         return response()->json($getStudent);
     }
 
     public function getBatchInfoForPayment(Request $request) {
 
         error_log("Student ID");
-        error_log($request->input('id'));
-        $students = Student::with('school', 'batch','subject')->where('id', $request->input('id'))->first();
+        error_log($request->input('student_id'));
+        error_log("Student ID END");
+        $students = Student::with('school', 'batch','subject')->where('id', $request->input('student_id'))->first();
         // return response()->json($students);
         return response()->json($students->batch);
     }
 
     public function studentPaymentProcess(Request $request) {
-        
+        // return $request['due_or_discount_0'];
+        // return $request->all();
         if ( $request->total > 0 ) {
             
             $invoice_master = InvoiceMaster::create($request->all());
             
         	for ( $i=0; $i < count($request->batch_id); $i++) {
                 $last_payment_date = 0;
+                $due_or_discount_ = "due_or_discount_";
                 if($request->month[$i] != 0) {
 
-                    for ($month=1; $month <= $request->month[$i]; $month++) { 
-                        $invoice_detail = new InvoiceDetail();
-                        $invoice_detail->invoice_masters_id = $invoice_master->id;
-                        $invoice_detail->batch_id = $request->batch_id[$i];
-                        $invoice_detail->subjects_id = $request->subjects_id[$i];
-                        $invoice_detail->price = $request->batch_unit_price[$i];
-
-                        $last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
-                        $last_paid_date_from = $last_paid_date_from->addMonths($month);  
-                        $invoice_detail->payment_from = $last_paid_date_from->toDateString();
+                    for ($month=1; $month <= $request->month[$i]; $month++) {
                         
-                        $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
-                        $last_paid_date_to = $last_paid_date_to->addMonths($month);
-                        $invoice_detail->payment_to = $last_paid_date_to->toDateString();
-                        $last_payment_date = $invoice_detail->payment_to;
-                        $invoice_detail->refund = false;
-                        $invoice_detail->save();
+                        $due_or_discount_ = $due_or_discount_ . $i;
+                        
+                        if ( $request[$due_or_discount_][0]   == 'due') {
+                            
+                            // return $request[$due_or_discount_];
+                            $invoice_detail = new InvoiceDetail();
+                            $invoice_detail->invoice_masters_id = $invoice_master->id;
+                            $invoice_detail->batch_id = $request->batch_id[$i];
+                            $invoice_detail->subjects_id = $request->subjects_id[$i];
+                            $calculated_price = $request->batch_unit_price[$i] - $request[$due_or_discount_][1];
+                            if ($calculated_price > 0) {
+                                $invoice_detail->price = $calculated_price;
+                            }
+                            else {
+                                $invoice_detail->price = 0;
+                            }
+                            $invoice_detail->status = 1;
+                            $invoice_detail->due_amount = $request[$due_or_discount_][1];
+                            $last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                            $last_paid_date_from = $last_paid_date_from->addMonths($month);  
+                            $invoice_detail->payment_from = $last_paid_date_from->toDateString();
+                            
+                            $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                            $last_paid_date_to = $last_paid_date_to->addMonths($month);
+                            $invoice_detail->payment_to = $last_paid_date_to->toDateString();
+                            $last_payment_date = $invoice_detail->payment_to;
+                            $invoice_detail->refund = false;
+                            $invoice_detail->save();
+                        
+                        } elseif ($request[$due_or_discount_][0] == 'discount') {
+                            
+                            // return $request[$due_or_discount_];
+                            $invoice_detail = new InvoiceDetail();
+                            $invoice_detail->invoice_masters_id = $invoice_master->id;
+                            $invoice_detail->batch_id = $request->batch_id[$i];
+                            $invoice_detail->subjects_id = $request->subjects_id[$i];
+                            $calculated_price = $request->batch_unit_price[$i] - $request[$due_or_discount_][1];
+                            if ($calculated_price > 0) {
+                                $invoice_detail->price = $calculated_price;
+                            }
+                            else {
+                                $invoice_detail->price = 0;
+                            }
+                            $invoice_detail->status = 2;
+                            $invoice_detail->discount_amount = $request[$due_or_discount_][1];
+                            $last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                            $last_paid_date_from = $last_paid_date_from->addMonths($month);  
+                            $invoice_detail->payment_from = $last_paid_date_from->toDateString();
+                            
+                            $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                            $last_paid_date_to = $last_paid_date_to->addMonths($month);
+                            $invoice_detail->payment_to = $last_paid_date_to->toDateString();
+                            $last_payment_date = $invoice_detail->payment_to;
+                            $invoice_detail->refund = false;
+                            $invoice_detail->save();
+                        
+                        } else {
+                            
+                            // return $request[$due_or_discount_];
+                            $invoice_detail = new InvoiceDetail();
+                            $invoice_detail->invoice_masters_id = $invoice_master->id;
+                            $invoice_detail->batch_id = $request->batch_id[$i];
+                            $invoice_detail->subjects_id = $request->subjects_id[$i];
+                            $invoice_detail->price = $request->batch_unit_price[$i];
+                            $invoice_detail->status = 0;
+                            $last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                            $last_paid_date_from = $last_paid_date_from->addMonths($month);  
+                            $invoice_detail->payment_from = $last_paid_date_from->toDateString();
+                            
+                            $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                            $last_paid_date_to = $last_paid_date_to->addMonths($month);
+                            $invoice_detail->payment_to = $last_paid_date_to->toDateString();
+                            $last_payment_date = $invoice_detail->payment_to;
+                            $invoice_detail->refund = false;
+                            $invoice_detail->save();
+                        
+                        }
+                        
+                        // $invoice_detail = new InvoiceDetail();
+                        // $invoice_detail->invoice_masters_id = $invoice_master->id;
+                        // $invoice_detail->batch_id = $request->batch_id[$i];
+                        // $invoice_detail->subjects_id = $request->subjects_id[$i];
+                        // $invoice_detail->price = $request->batch_unit_price[$i];
+
+                        // $last_paid_date_from = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                        // $last_paid_date_from = $last_paid_date_from->addMonths($month);  
+                        // $invoice_detail->payment_from = $last_paid_date_from->toDateString();
+                        
+                        // $last_paid_date_to = Carbon::createFromFormat('Y-m-d', $request->last_paid_date[$i]);
+                        // $last_paid_date_to = $last_paid_date_to->addMonths($month);
+                        // $invoice_detail->payment_to = $last_paid_date_to->toDateString();
+                        // $last_payment_date = $invoice_detail->payment_to;
+                        // $invoice_detail->refund = false;
+                        // $invoice_detail->save();
                     }
                 	$batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id[$i])
                 										->where('students_id', $request->students_id)
@@ -109,34 +193,56 @@ class StudentPaymentController extends Controller {
         
     }
 
-    public function getInvoiceId()  {
+    public function getInvoiceIdforPrint()  {
         $refDate = Carbon::now();
+
         $data = InvoiceMaster::whereYear('payment_date', '=', $refDate->year)
                                 ->whereMonth('payment_date', '=', $refDate->month)
                                 ->get();
                                 // ->sortByDesc("serial_number");
 
-        error_log(count($data));
+
         
         if (count($data) == 0) {
             return 1;
         }
         else {
-            return $data[count($data)-1]->serial_number + 1;
+            error_log($data[count($data)-1]->serial_number);
+            return $data[count($data)-1]->serial_number;
+        }
+    }
+    
+    public function get_payment_invoice_id()  {
+        
+        $refDate = Carbon::now();
+        $data = InvoiceMaster::whereYear('payment_date', '=', $refDate->year)
+                                ->whereMonth('payment_date', '=', $refDate->month)
+                                ->get();
+
+        if (count($data) == 0) {
+            $formated_serial_number = $refDate->year. "" . sprintf('%02d', $refDate->month)."".sprintf('%02d', $refDate->day). "" .sprintf('%04d', 1);
+            return $formated_serial_number;
+        }
+        else {
+            $get_full_serial_no = $data[count($data)-1]->serial_number;
+            $get_last_four_no = substr($get_full_serial_no, -4);
+            $set_last_four_no = $get_last_four_no  + 1;
+            $formated_serial_number = $refDate->year."". sprintf('%02d', $refDate->month)."".sprintf('%02d', $refDate->day)."".sprintf('%04d', $set_last_four_no);
+            return $formated_serial_number;
+            // return $data[count($data)-1]->serial_number + 1;
         }
     }
 
     public function invoiceDetailPage($id)
     {
         $student_details = Student::find($id);
-        return view('Student::all_invoice_details')->with('studentDetails', $student_details);
+        return view('Student::student_payment/all_invoice_details')->with('studentDetails', $student_details);
     }
 
-    public function getAllInvoiceDetailsForAStudent(Request $request)
-    {
-        $student_id = $request->student_id;
+    public function getAllInvoiceDetailsForAStudent(Request $request) {
         
-        $invoice_details = InvoiceDetail::whereHas('invoiceMaster', function($query) use ($student_id){
+        $student_id = $request->student_id;
+        $invoice_details = InvoiceDetail::with('invoiceMaster')->whereHas('invoiceMaster', function($query) use ($student_id){
             $query->where('students_id', $student_id);
         })->where('refund',false)->with('batch')->orderBy('payment_to', 'DESC')->get()->unique('batch_id');
         
@@ -152,10 +258,47 @@ class StudentPaymentController extends Controller {
                         ->make(true);
     }
 
-    public function refundPayment($invoice_detail_id, $student_id)
+    public function due_payment_student(Request $request) {
+        $data = DB::table('students')
+            ->leftJoin('invoice_masters', 'students.id', '=', 'invoice_masters.students_id')
+            ->leftJoin('invoice_details', 'invoice_masters.id', '=', 'invoice_details.invoice_masters_id')
+            ->leftJoin('batch', 'invoice_details.batch_id', '=', 'batch.id')
+            ->whereNull('deleted_at')
+            ->where('students.id', '=', $request->student_id)
+            // ->where('students.phone_home', '=', $request->input('student_phonenumber'))
+            ->where('due_amount','!=', 0)
+            ->select('students.id as student_id', 'invoice_masters.id as invoice_masters_id','invoice_details.id as invoice_details_id','discount_amount','due_amount','invoice_details.price as invoice_details_price','payment_date','batch.name as batch_name','invoice_details.payment_to');
+        return Datatables::of($data)
+                        ->addColumn('Link', function ($data) {
+                                        if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                                        return '<button id="'. $data->invoice_details_id .'" class="btn btn-xs btn-danger temp_due"><i class="glyphicon glyphicon-edit"></i> Clear</button>';
+                                        }
+                                        else {
+                                            return 'N/A';
+                                        }
+                                    })
+                        ->make(true);
+    }
+
+    public function clear_due_payment(Request $request)
     {
-        $invoice_details = InvoiceDetail::find($invoice_detail_id);
+        $invoice_details = InvoiceDetail::find($request->invoice_detail_id);
         
+        $invoice_master = InvoiceMaster::find($invoice_details->invoice_masters_id);
+        $invoice_master->total = $invoice_master->total + $invoice_details->due_amount;
+        $invoice_master->save();
+
+        $invoice_details->price = $invoice_details->price + $invoice_details->due_amount;
+        $invoice_details->due_amount = 0;
+        $invoice_details->save();
+
+        $invoice_details = InvoiceDetail::find($request->invoice_detail_id);
+        return $invoice_details;
+    }
+
+    public function refundPayment($invoice_detail_id, $student_id) {
+        
+        $invoice_details = InvoiceDetail::find($invoice_detail_id);
         $current_date = new Carbon('first day of this month');
         $current_date = $current_date->toDateString();
         
@@ -211,7 +354,7 @@ class StudentPaymentController extends Controller {
     public function lastPaidUpdatePage($id)
     {
         $student_details = Student::find($id);
-        return view('Student::last_paid_update_page')->with('studentDetails', $student_details);
+        return view('Student::student_payment/last_paid_update_page')->with('studentDetails', $student_details);
     }
 
     public function get_all_batches_for_last_paid_upd(Request $request)
@@ -252,6 +395,13 @@ class StudentPaymentController extends Controller {
         $batch_has_student = BatchHasStudent::where('batch_id',$request->batch_id)
                                                     ->where('students_id', $request->student_id)
                                                     ->update(['last_paid_date' => $last_paid_date]);
+    }
+
+    public function get_student_payment_history(Request $request)
+    {
+        $get_student_payment_history = Student::with('batch')->find($request->student_id);
+        $get_student_payment_history = $get_student_payment_history->batch;
+        return Datatables::of($get_student_payment_history)->make(true);
     }
 
 }

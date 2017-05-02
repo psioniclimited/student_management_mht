@@ -125,21 +125,12 @@ $(document).ready(function () {
                         <input type="text" class="form-control" id="description" name="description" value="{{ $getTeacher->description }}">
                     
                 </div>
-                <div class="form-group">
-                    <label for="subjects_id" >Subject*</label>
-                        <select class="form-control" name="subjects_id">
-                            <option value="{{ $getTeacher->subject->id }}">{{ $getTeacher->subject->name }}</option>
-                            @foreach ($getSubjects as $subject)
-                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
-                            @endforeach
-                        </select>
-                </div>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="teacher_percentage">Percentage*</label>
-                        <input type="number" class="form-control" id="teacher_percentage" name="teacher_percentage" value="{{ $getTeacher->teacher_percentage }}">
+                        <input type="number" step=".01" class="form-control" id="teacher_percentage" name="teacher_percentage" value="{{ $getTeacher->teacher_percentage }}">
                 </div>
                 <div class="form-group">
                     <label for="password">Password*</label>
@@ -159,7 +150,6 @@ $(document).ready(function () {
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <button type="submit" class="btn btn-default">Cancel</button>
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </div>
         <!-- /.box-footer -->

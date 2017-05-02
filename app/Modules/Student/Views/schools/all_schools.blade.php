@@ -14,22 +14,19 @@
     $(document).ready(function () {        
         var table = $('#all_user_list').DataTable({
             "paging": true,
-            "pageLength": 50,
             "lengthChange": false,
-            "searching": true,
+            "searching": false,
             "ordering": true,
             "info": false,
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_students')}}",
+            "ajax": "{{URL::to('/get_schools')}}",
             "columns": [
                     {"data": "id"},
                     {"data": "name"},
-                    {"data": "student_email"},
-                    {"data": "batch", "name": "batch.name"},                    
-                    {"data": "phone_home"},
-                    {"data": "batch_type.name", "name": "batch_type.name"},
+                    {"data": "description"},
+                    {"data": "address"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
         });
@@ -45,7 +42,7 @@
                $.ajax({
                    cache: false,
                    type: 'POST',
-                   url: 'student/' + user_id + '/delete',
+                   url: 'school/' + user_id + '/delete',
                    data: user_id,
                    success: function(data) {
                        console.log("Deleted Successfully");
@@ -60,20 +57,18 @@
 
 @endsection
 
-
-
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Students
-        <small>all student list</small>
+        School Module
+        <small>it all starts here</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Students</a></li>
-        <li class="active">All Students</li>
+        <li><a href="#">School</a></li>
+        <li class="active">All Schools</li>
     </ol>
 </section>
 
@@ -84,19 +79,17 @@
 
             <div class="box">
                 <div class="box-header">
-                    <h3 class="box-title">Student list</h3>
+                    <h3 class="box-title">School list</h3>
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
                     <table id="all_user_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Student Id</th>
-                                <th>Student Name</th>
-                                <th>Email Address</th>
-                                <th>Batch</th>
-                                <th>Phone Home</th>
-                                <th>Batch Type</th>
+                                <th>School Id</th>
+                                <th>School Name</th>
+                                <th>School Descripttion</th>
+                                <th>School Address</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

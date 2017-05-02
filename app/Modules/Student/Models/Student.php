@@ -28,7 +28,9 @@ class Student extends Model
         'batch_id',
         'batch_types_id',
         'students_image',
-        'student_email'
+        'student_email',
+        'joining_year',
+        'student_permanent_id'
     ];
     
     public function school()
@@ -59,6 +61,6 @@ class Student extends Model
 
     public function invoiceMaster()
     {
-        return $this->hasmany('App\Modules\Student\Models\InvoiceMaster');
+        return $this->hasmany('App\Modules\Student\Models\InvoiceMaster', 'students_id');
     }
 }
