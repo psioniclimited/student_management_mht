@@ -80,7 +80,7 @@
                     {"data": "serial_number"},
                     {"data": "student.student_permanent_id"},
                     {"data": "student.name"},
-                    {"data": "student.phone_home"},                    
+                    {"data": "student.student_phone_number"},                    
                     {"data": "payment_date"},
                     {"data": "paid_batches"},
                     {"data": "total"},
@@ -285,7 +285,7 @@
                         {"data": "serial_number"},
                         {"data": "student.student_permanent_id"},
                         {"data": "student.name"},
-                        {"data": "student.phone_home"},
+                        {"data": "student.student_phone_number"},
                         {"data": "payment_date"},
                         {"data": "paid_batches"},
                         {"data": "total"},
@@ -407,10 +407,10 @@
     $("#due_payment_reporting").click(function() {
         $("#box_color").attr("class","box box-danger");
         $("#payment_title").html("<p><b>Due</b> Payment Reporting</p>");
-        $("#alternate_data").text("Additional Phone Number");
+        $("#alternate_data").text("Guardian's Phone Number");
         $("#batch_info").text("Batches(Batch name, Price, Last Paid Date)");
         $("#invoice_info").text("Student ID");
-        $("#phone_num").text("Phone Number");
+        $("#phone_num").text("Student's Phone Number");
         $("#total_amount").text("Total Due Amount/-");
         var table = $('#all_user_list').DataTable({
             "paging": false,
@@ -427,8 +427,8 @@
                     {"data": "id"},
                     {"data": "student_permanent_id"},
                     {"data": "name"},
-                    {"data": "phone_home"},                    
-                    {"data": "phone_away"},
+                    {"data": "student_phone_number"},                    
+                    {"data": "guardian_phone_number"},
                     {"data": "due_batches"},
                     {"data": "TotalDuePrice"},
                 ],
@@ -538,10 +538,7 @@
                 ]
             });
         }
-
     });
-
-
 
 });
 </script>
@@ -571,6 +568,39 @@
 <!-- Main content -->
 <section class="content">
     
+    <!-- Test content -->
+    <!-- <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Choose Reporting Option</h3>
+        </div>
+        
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-2">
+                    <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-success"><strong>Daily</strong> Collection</button>
+                </div>
+                <div class="col-xs-2">
+                    <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
+                </div>
+           </div>  
+        </div>
+        
+    </div>
+    <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Choose Reporting Option</h3>
+        </div>
+        
+        <div class="box-body">
+            <div class="row">
+                asdfasdf
+           </div>  
+        </div>
+        
+    </div> -->
+    <!-- Test content -->
+
+
     <!-- Horizontal Form -->
     <div class="box box-primary">
         

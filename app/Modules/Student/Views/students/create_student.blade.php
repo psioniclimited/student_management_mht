@@ -46,8 +46,8 @@ $(document).ready(function () {
             name: {required: true, minlength: 4},
             fathers_name: {required: true, minlength: 4},
             mothers_name: {required: true, minlength: 4},
-            phone_home: {required: true},
-            phone_away: {required: true},
+            student_phone_number: {required: true},
+            guardian_phone_number: {required: true},
             schools_id: {valueNotEquals: "default"},
             grades_id: {valueNotEquals: "default"},
             batch_types_id: {valueNotEquals: "default"},
@@ -57,8 +57,8 @@ $(document).ready(function () {
             name: {required: "Enter Student Name"},
             fathers_name: {required: "Enter Student's Father Name"},
             mothers_name: {required: "Enter Student's Mother's Name"},
-            phone_home: {required: "Enter Home Phone Number"},
-            phone_away: {required: "Enter Additional Phone Number"},
+            student_phone_number: {required: "Enter Student's Phone Number"},
+            guardian_phone_number: {required: "Enter Guardian's Phone Number"},
             schools_id: {valueNotEquals: "Select a School"},
             grades_id: {valueNotEquals: "Select a Grade"},
             batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
@@ -191,45 +191,42 @@ $(document).ready(function () {
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="name">Fullname*</label>
-                    
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name">
-                    
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name">
                 </div>
-                <div class="form-group">
-                <label for="student_email" >Email*</label>
                 
+                <div class="form-group">
+                    <label for="student_email" >Email*</label>
                     <input type="email" class="form-control" id="student_email" name="student_email" size="35" placeholder="Enter email">
-                    
                 </div>
+                
                 <div class="form-group">
                     <label for="fathers_name">Father's name*</label>
-                    
-                        <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name">
-                    
+                    <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name">
                 </div>
+                
                 <div class="form-group">
                     <label for="mothers_name">Mother's name*</label>
-                    
-                        <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name">
-                    
+                    <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name">
                 </div>
+
                 <div class="form-group">
-                    <label for="phone_home">Phone Number*</label>
-                    
-                        <input type="text" class="form-control" id="phone_home" name="phone_home" placeholder="Enter Phone number">
-                    
+                    <label for="student_phone_number">Student's Phone Number*</label>
+                    <input type="text" class="form-control" id="student_phone_number" name="student_phone_number" placeholder="Enter Student's Phone number">
                 </div>
+
                 <div class="form-group">
-                    <label for="phone_away">Additional Phone Number*</label>
-                    
-                        <input type="text" class="form-control" id="phone_away" name="phone_away" placeholder="Enter additinal Phone number">
-                    
+                    <label for="guardian_phone_number">Guardian's Phone Number*</label>
+                    <input type="text" class="form-control" id="guardian_phone_number" name="guardian_phone_number" placeholder="Enter Guardian's Phone number">
                 </div>
+
+                <div class="form-group">
+                    <label for="driving_license_number" >Driving License Number*</label>
+                    <input type="text" class="form-control" id="driving_license_number" name="driving_license_number" size="255" placeholder="Enter Driving License Number">
+                </div>
+                
                 <div class="form-group">
                     <label for="pic" >Upload Photo*</label>
-                    <!-- {{Form::file('pic')}} -->
                     <input type="file" name="pic" id="pic">
-                    <!-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> -->
                 </div>
             </div>
             <div class="col-md-2"></div>

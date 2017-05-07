@@ -83,10 +83,10 @@
                         <img src="{{ URL::to('/') }}/{{ $getStudent->students_image }}" class='profile-user-img img-responsive' height='200' width='200' alt='Student profile picture'>
                     </div>
                     <div class="form-group">
-                        <h3 class="profile-username text-center">Student Name : {{ $getStudent->name }}</h3>
+                        <h2 class="profile-username text-center">Student Name : {{ $getStudent->name }}</h2>
                     </div>
                     <div class="form-group">
-                        <p class="text-muted text-center">Joining Year : {{ $getStudent->joining_year }}</p>
+                        <h3 class="text-muted text-center">Joining Year : {{ $getStudent->joining_year }}</h3>
                     </div>
                 </div>
                 
@@ -100,12 +100,12 @@
                         <p>{{ $getStudent->mothers_name }}</p>
                     </div>
                     <div class="form-group">
-                      <label for="phone_home" >Phone Home</label>
-                      <p>{{ $getStudent->phone_home }}</p>
+                      <label for="phone_home" >Student's Phone Number</label>
+                      <p>{{ $getStudent->student_phone_number }}</p>
                     </div>
                     <div class="form-group">
-                        <label for="phone_away" >Additional Phone Number</label>
-                        <p>{{ $getStudent->phone_away }}</p>  
+                        <label for="phone_away" >Guardian's Phone Number</label>
+                        <p>{{ $getStudent->guardian_phone_number }}</p>  
                     </div>
                 </div>
                 
@@ -121,6 +121,10 @@
                     <div class="form-group">
                         <label for="batch_type">Education Board</label>
                         <p>{{ $getStudent->batch_type->name }}</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="driving_license_number">Driving License Number</label>
+                        <p>{{ $getStudent->driving_license_number }}</p>
                     </div>
                 </div>
             </div>

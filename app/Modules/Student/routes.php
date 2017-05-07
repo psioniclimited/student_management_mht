@@ -34,6 +34,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     * Summary information *
     ***********************/
     Route::get('summary_student', 'App\Modules\Student\Controllers\StudentsWebController@summary_student');
+    Route::get('monthly_paryment_summary', 'App\Modules\Student\Controllers\StudentsWebController@monthly_paryment_summary');
 
     /*****************************
     * Student Detail information *

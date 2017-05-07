@@ -42,70 +42,70 @@
                 "May", "June","July", "August",
                 "September","October","November","December"];    
     let total_student = 0;
-        var table = $('#all_batches_datatable').DataTable({
-            "paging": false,
-            "lengthChange": true,
-            "searching": false,
-            "ordering": true,
-            "destroy": true,
-            "info": false,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                    'url': "{{URL::to('/get_all_students_per_batch')}}",
-                    'data': {
-                       batch_id: "{{ $batch_id }}",
-                    },
+    var table = $('#all_batches_datatable').DataTable({
+        "paging": false,
+        "lengthChange": true,
+        "searching": false,
+        "ordering": true,
+        "destroy": true,
+        "info": false,
+        "autoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+                'url': "{{URL::to('/get_all_students_per_batch')}}",
+                'data': {
+                   batch_id: "{{ $batch_id }}",
                 },
-            "columns": [
-                    {"data": "student_permanent_id"},
-                    {"data": "student_name"},
-                    {"data": "school_name"},
-                    {"data": "batch_type_name"},
-                    {"data": "student_phone_home"},
-                    {"data": "student_phone_away"},
-                    {"data": "last_paid_date"},
-                    {"data": "Link"}
-
-                ],
-            "fnCreatedRow": function ( row, data, index ) {
-                if (data.last_paid_date !== null) {
-                    let human_readable_last_paid_date = moment(data.last_paid_date);
-                    human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
-                    $(row).children()[5].innerHTML = human_readable_last_paid_date;
-                    
-                    if (!data.payment_status) {
-                        $(row).css("color", "red");
-                    }
-                }
             },
-            dom: 'Bfrtip',
-            buttons: [
-                    'copy',
-                    {
-                        extend: 'csvHtml5',
-                        title: 'Total Student : '+ '{{ $total_student }}',
-                        "lengthChange": true,
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Total Student : '+  '{{ $total_student }}',
-                        "lengthChange": true,
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Total Student : '+ '{{ $total_student }}',
-                        "lengthChange": true,
-                    },
-                    {
-                        extend: 'print',
-                        title: 'Total Student : '+ '{{ $total_student }}',
-                        "lengthChange": true,
-                    },
-                ]
-            
-            }); 
+        "columns": [
+                {"data": "student_permanent_id"},
+                {"data": "student_name"},
+                {"data": "school_name"},
+                {"data": "batch_type_name"},
+                {"data": "student_phone_number"},
+                {"data": "guardian_phone_number"},
+                {"data": "last_paid_date"},
+                {"data": "Link"}
+
+            ],
+        "fnCreatedRow": function ( row, data, index ) {
+            if (data.last_paid_date !== null) {
+                let human_readable_last_paid_date = moment(data.last_paid_date);
+                human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
+                $(row).children()[6].innerHTML = human_readable_last_paid_date;
+                
+                if (!data.payment_status) {
+                    $(row).css("color", "red");
+                }
+            }
+        },
+        dom: 'Bfrtip',
+        buttons: [
+                'copy',
+                {
+                    extend: 'csvHtml5',
+                    title: 'Total Student : '+ '{{ $total_student }}',
+                    "lengthChange": true,
+                },
+                {
+                    extend: 'excelHtml5',
+                    title: 'Total Student : '+  '{{ $total_student }}',
+                    "lengthChange": true,
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Total Student : '+ '{{ $total_student }}',
+                    "lengthChange": true,
+                },
+                {
+                    extend: 'print',
+                    title: 'Total Student : '+ '{{ $total_student }}',
+                    "lengthChange": true,
+                },
+            ]
+        
+    }); 
 	
 });
 </script>
@@ -123,10 +123,11 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Payment Dashboard
+        Batch Details
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#"><i class="fa fa-dashboard"></i> Students</a></li>
         <li><a href="#">Batch Wise Students</a></li>
         <li class="active">Batch:{{ $batch_name }}</li>
     </ol>
@@ -135,7 +136,21 @@
 <!-- Main content -->
 <section class="content">
     
-    
+    <div class="box box-primary animated fadeInDown">
+        <div class="box-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Batch Name : <strong> {{ $batch_name }}</strong></h3>
+                    <h3>Schedule : <strong> {{ $schedule }}</strong></h3>                        
+                </div>
+                <div class="col-md-6">
+                    <h3>Total Number of Students : <strong> {{ $total_student }}</strong></h3>
+                    <h3>Total Number of Paid Students : <strong> {{ $number_of_paid_students }}</strong></h3>
+                    <h3>Total Number of Unpaid Students : <strong> {{ $number_of_unpaid_students }}</strong></h3>
+                </div>
+            </div>        
+        </div>
+    </div>
 
 
 
@@ -143,20 +158,19 @@
     <!-- Teacher payment Datatable -->
     <div class="box box-warning">
         <div class="box-header">
-                <h4><strong>Batch name: {{ $batch_name }}</strong></h4>
-                <h4><strong>Total Student: {{ $total_student }}</strong></h4>      
+            <h3><strong>Student List</strong></h3>      
         </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="all_batches_datatable" class="table table-bordered table-striped">
+                <table id="all_batches_datatable" class="table table-bordered table-striped animated fadeInUp">
                     <thead>
                         <tr>
                             <th>Student Permanent ID</th>
                             <th>Student Name</th>
                             <th>School Name</th>
                             <th>Education Board</th>
-                            <th>Phone number(Home)</th>
-                            <th>Additional Phone number</th>
+                            <th>Student's Phone Number</th>
+                            <th>Guardian's Phone Number</th>
                             <th>Last Paid</th>
                             <th>Action</th>
                         </tr>

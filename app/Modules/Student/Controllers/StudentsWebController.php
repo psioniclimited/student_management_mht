@@ -93,28 +93,86 @@ class StudentsWebController extends Controller {
                     ->make(true);
     }
 
-    public function summary_student() {
+    public function summary_student(Request $request) {
+        // $students = Student::with('batch','school')->has('batch')->get();
+        // $total_students = count($students);
+        
+        // $batches = Batch::with('student')->has('student')->get();
+        // // m_returnstatus(conn, identifier)rn $batches; 
+        // $total_expected_amount = 0;
+        // for ($i=0; $i < count($batches); $i++) { 
+        //     $total_expected_amount = $total_expected_amount + $batches[$i]->price * count($batches[$i]->student);
+        // }
+        
+        // $now = new Carbon('first day of this month');
+        // $now = $now->toDateString();
+        
+        // $total_paid_amount = 0;
+        
+        // for ($i=0; $i < count($batches); $i++) {
+        //     $no_of_paid_students = 0;
+        //     $std = $batches[$i]->student;
+        //     for ($c=0; $c < count($std); $c++) { 
+        //         $sss = $std[$c];
+        //         if ($sss->pivot->last_paid_date >= $now)  {
+        //             $no_of_paid_students = $no_of_paid_students + 1;
+        //         }
+        //     }
+        //     $total_paid_amount = $total_paid_amount + ($no_of_paid_students * $batches[$i]->price);
+            
+        // }
+        
+
+        // $total_unpaid_amount = 0;
+        
+        // for ($i=0; $i < count($batches); $i++) {
+        //     $no_of_unpaid_students = 0;
+        //     $std = $batches[$i]->student;
+        //     for ($c=0; $c < count($std); $c++) { 
+        //         $sss = $std[$c];
+        //         if ($sss->pivot->last_paid_date < $now)  {
+        //             $no_of_unpaid_students = $no_of_unpaid_students + 1;
+        //         }
+        //     }
+        //     $total_unpaid_amount = $total_unpaid_amount + ($no_of_unpaid_students * $batches[$i]->price);
+            
+        // }
+        
+
+        return view('Student::students/summary_student');
+        // ->with('total_students', $total_students)
+        // ->with('total_expected_amount', $total_expected_amount)
+        // ->with('total_paid_amount', $total_paid_amount)
+        // ->with('total_unpaid_amount', $total_unpaid_amount);
+
+    }
+
+    public function monthly_paryment_summary(Request $request)
+    {
+        /* Calculating Total number of Students for current month */
         $students = Student::with('batch','school')->has('batch')->get();
         $total_students = count($students);
         
+        
+        /* Calculating Total Expected Amount current month */
         $batches = Batch::with('student')->has('student')->get();
-        // m_returnstatus(conn, identifier)rn $batches; 
         $total_expected_amount = 0;
         for ($i=0; $i < count($batches); $i++) { 
             $total_expected_amount = $total_expected_amount + $batches[$i]->price * count($batches[$i]->student);
         }
-        
+
+
+        /* For which Month the Payment Calculations are done */
         $now = new Carbon('first day of this month');
         $now = $now->toDateString();
         
+        /* Calculating Total Paid Amount for a Particular Month */
         $total_paid_amount = 0;
-        
         for ($i=0; $i < count($batches); $i++) {
             $no_of_paid_students = 0;
-            $std = $batches[$i]->student;
-            for ($c=0; $c < count($std); $c++) { 
-                $sss = $std[$c];
-                if ($sss->pivot->last_paid_date >= $now)  {
+            $student = $batches[$i]->student;
+            for ($c=0; $c < count($student); $c++) { 
+                if ($student[$c]->pivot->last_paid_date >= $now)  {
                     $no_of_paid_students = $no_of_paid_students + 1;
                 }
             }
@@ -122,15 +180,13 @@ class StudentsWebController extends Controller {
             
         }
         
-
+        /* Calculating Total Unpaid Amount for a Particular Month */
         $total_unpaid_amount = 0;
-        
         for ($i=0; $i < count($batches); $i++) {
             $no_of_unpaid_students = 0;
-            $std = $batches[$i]->student;
-            for ($c=0; $c < count($std); $c++) { 
-                $sss = $std[$c];
-                if ($sss->pivot->last_paid_date < $now)  {
+            $student = $batches[$i]->student;
+            for ($c=0; $c < count($student); $c++) { 
+                if ($student[$c]->pivot->last_paid_date < $now)  {
                     $no_of_unpaid_students = $no_of_unpaid_students + 1;
                 }
             }
@@ -138,12 +194,13 @@ class StudentsWebController extends Controller {
             
         }
         
+        return response()->json([
+            'total_students' => $total_students,
+            'total_expected_amount' => $total_expected_amount,
+            'total_paid_amount' => $total_paid_amount,
+            'total_unpaid_amount' => $total_unpaid_amount,
+        ], 200);
 
-        return view('Student::students/summary_student')
-        ->with('total_students', $total_students)
-        ->with('total_expected_amount', $total_expected_amount)
-        ->with('total_paid_amount', $total_paid_amount)
-        ->with('total_unpaid_amount', $total_unpaid_amount);
     }
 
     public function get_all_batches_and_students()  {

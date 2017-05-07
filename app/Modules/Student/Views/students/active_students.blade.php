@@ -40,7 +40,8 @@
                     {"data": "name"},
                     {"data": "school.name"},
                     {"data": "batch", "name": "batch.name"},                    
-                    {"data": "phone_home"},
+                    {"data": "student_phone_number"},
+                    {"data": "driving_license_number"},
                     {"data": "payable"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ],
@@ -54,7 +55,8 @@
 
                     let nCells = nRow.getElementsByTagName('th');
                     total_money = total_price;
-                    nCells[4].innerHTML = total_price;
+                    // nCells[4].innerHTML = total_price;
+                    $('#total_price').text(total_price + " /-");
             },
             dom: 'Bfrtip',
             buttons: [
@@ -65,7 +67,7 @@
                         "lengthChange": true,
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4 ]
+                            columns: [ 0,1,2,3,4,5 ]
                         }
                     },
                     {
@@ -74,7 +76,7 @@
                         "lengthChange": true,
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4 ]
+                            columns: [ 0, 1,2,3,4,5 ]
                         }
                     },
                     {
@@ -83,7 +85,7 @@
                         "lengthChange": true,
                         "footer": true,
                          exportOptions: {
-                             columns: [ 0, 1,2,3,4 ]
+                             columns: [ 0, 1,2,3,4,5 ]
                          }
                     },
                     {
@@ -92,7 +94,7 @@
                         "lengthChange": true,
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4 ]
+                            columns: [ 0, 1,2,3,4,5 ]
                         }
                     },
                 ]
@@ -137,7 +139,7 @@
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="#">Students</a></li>
-        <li class="active">All Students</li>
+        <li class="active">Active Students</li>
     </ol>
 </section>
 
@@ -159,7 +161,8 @@
                                 <th>Student Name</th>
                                 <th>School Name</th>
                                 <th>Batch</th>
-                                <th>Phone Home</th>
+                                <th>Student's Phone Number</th>
+                                <th>Driving License Number</th>
                                 <th>Total Payable Amount /-</th>
                                 <th>Action</th>                            
                             </tr>
@@ -169,8 +172,10 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>Total:</th> 
                             <th></th>
+                            <th></th> 
+                            <th>Total:</th>
+                            <th id="total_price"></th>
                             <th></th>
                           </tr>
                         <tbody>                            

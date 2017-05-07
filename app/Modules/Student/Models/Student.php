@@ -22,15 +22,16 @@ class Student extends Model
         'name',
         'fathers_name',
         'mothers_name',
-        'phone_home',
-        'phone_away',
+        'student_phone_number',
+        'guardian_phone_number',
         'schools_id',
         'batch_id',
         'batch_types_id',
         'students_image',
         'student_email',
         'joining_year',
-        'student_permanent_id'
+        'student_permanent_id',
+        'driving_license_number'
     ];
     
     public function school()

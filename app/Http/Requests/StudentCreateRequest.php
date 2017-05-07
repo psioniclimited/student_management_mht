@@ -27,11 +27,11 @@ class StudentCreateRequest extends Request
             'name' => 'required|min:3',
             'fathers_name' => 'required|min:3',
             'mothers_name' => 'required|min:3',
-            'phone_home' => 'required',
-            'phone_away' => 'required',
+            'student_phone_number' => 'required',
+            'guardian_phone_number' => 'required',
             'schools_id' => 'required|not_in:default',
             'batch_types_id' => 'required|not_in:default',
-            'joining_year'=> 'required'
+            'joining_year'=> 'required',
         ];
     }
 }

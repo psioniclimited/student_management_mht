@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{asset('https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css')}}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{asset('dist/css/skins/_all-skins.min.css')}}">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="{{asset('dist/css/animate.css')}}">
 
         @yield('css')
         <!-- AdminLTE Skins. Choose a skin from the css/skins

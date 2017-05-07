@@ -27,7 +27,8 @@
                     {"data": "student_permanent_id"},
                     {"data": "name"},
                     {"data": "school.name"},
-                    {"data": "phone_home"},
+                    {"data": "student_phone_number"},
+                    {"data": "driving_license_number"},
                     {"data": "student_email"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
@@ -93,7 +94,8 @@
                                 <th>Student Permanent ID</th>
                                 <th>Student Name</th>
                                 <th>School Name</th>
-                                <th>Phone Number</th>
+                                <th>Student's Phone Number</th>
+                                <th>Driving License Number</th>
                                 <th>Email</th>
                                 <th>Action</th>                            
                             </tr>

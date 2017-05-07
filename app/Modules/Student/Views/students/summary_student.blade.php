@@ -29,6 +29,13 @@
 
     $(document).ready(function () {
 
+        //Date picker for Start Date
+        $('.summary_month').datepicker({
+          format: 'dd/mm/yyyy',
+          autoclose: true
+        });
+
+
 		var table = $('#all_user_list').DataTable({
             "paging": true,
             "pageLength": 50,
@@ -47,7 +54,25 @@
                 ]
         });
 
-    
+        $("#summary_month_submit").click(function() {
+            if ( $('input[id=summary_month]').val() !== '' )  {
+                console.log('Inside IF');
+                console.log($('input[id=summary_month]').val());
+                $.get("/monthly_paryment_summary", { 
+                        summary_month: $('input[id=summary_month]').val(),
+                })
+                .done(function( data ) {
+                   console.log(data);
+                   $('#total_students').text(data.total_students);
+                   $('#total_expected_amount').text(data.total_expected_amount);
+                   $('#total_paid_amount').text(data.total_paid_amount);
+                   $('#total_unpaid_amount').text(data.total_unpaid_amount);
+                });     
+            }
+            else {
+                console.log('Outside IF');
+            }       
+        });
 });
 </script>
 
@@ -76,48 +101,88 @@
 <!-- Main content -->
 <section class="content">
     
+
     <!-- Horizontal Form -->
-    <div class="box box-danger">
+    <div class="box box-primary">
         
         <div class="box-body">
         
-            <div class="box-header">
-                <h4><strong>Total Students: {{ $total_students }}</strong></h4> 
-                <h4><strong>Total Expected Amount: {{ $total_expected_amount }} /-</strong></h4>
-                <h4><strong>Total Paid Amount: {{ $total_paid_amount }} /-</strong></h4>
-                <h4><strong>Total Unpaid Amount: {{ $total_unpaid_amount }} /-</strong></h4>     
-        	</div>
-            
+            <div class="box-header with-border">
+              <h3 class="box-title">Choose a Month and Year with any Date to Show Summary</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    
+                    <div class="col-xs-6">
+                        <label for="schools_id" > Month</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="summary_month" type="text" class="form-control summary_month" name="summary_month" autocomplete="off">
+                        </div>
+                    </div>
+                    
+                    <div class="col-xs-6">
+                        <label for="" ></label>
+                        <button type="submit" id="summary_month_submit" class="btn btn-block btn-success">Show</button>
+                    </div>
+                    
+                    
+                </div>
+            </div>
         </div>
             <!-- /.box-body -->
     </div>
     <!-- /.box-body -->
 
-
-
-
-		<div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Batch list</h3>
+    <!-- Horizontal Form -->
+    <div class="box box-info">
+        
+        <div class="box-body">
+        
+            <div class="box-header">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h2>Total Students: <strong id="total_students"></strong></h2> 
+                        <h2>Total Expected Amount: <strong id="total_expected_amount"></strong></h2>
+                    </div>
+                    <div class="col-xs-6">
+                        <h2>Total Paid Amount: <strong id="total_paid_amount"></strong></h2>
+                        <h2>Total Unpaid Amount: <strong id="total_unpaid_amount"></strong></h2> 
+                    </div>
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <table id="all_user_list" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Batch Name</th>
-                                <!-- <th>Teacher Name</th> -->
-                                <th>Total number of students</th>
-                            </tr>
-                        </thead>
-                        <tbody>                            
-                            <!-- user list -->
-                        </tbody>                        
-                    </table>
-                </div>
-                <!-- /.box-body -->
             </div>
-            <!-- /.box -->
+        </div>
+            <!-- /.box-body -->
+    </div>
+    <!-- Horizontal Form -->
+
+
+
+
+	<div class="box box-warning">
+        <div class="box-header">
+            <h3 class="box-title">Batch list</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <table id="all_user_list" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Batch Name</th>
+                        <!-- <th>Teacher Name</th> -->
+                        <th>Total number of students</th>
+                    </tr>
+                </thead>
+                <tbody>                            
+                    <!-- user list -->
+                </tbody>                        
+            </table>
+        </div>
+            <!-- /.box-body -->
+    </div>
+        <!-- /.box -->
 
 
 

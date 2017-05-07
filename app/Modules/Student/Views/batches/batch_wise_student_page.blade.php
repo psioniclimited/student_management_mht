@@ -60,12 +60,13 @@
             "columns": [
                     {"data": "name"},
                     {"data": "schedule"},
-                    {"data": "batch_type.name"},
                     {"data": "teacher_name"},
-                    {"data": "subject.name"},
                     {"data": "total_number_of_students"},
-                    {"data": "total_paid_students"},
-                    {"data": "total_unpaid_students"},
+                    {"data": "number_of_paid_students"},
+                    {"data": "number_of_unpaid_students"},
+                    {"data": "total_expected_amount"},
+                    {"data": "total_paid_amount"},
+                    {"data": "total_unpaid_amount"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ],
             
@@ -90,7 +91,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        Batches for a Subject
+        Batch Details
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -150,12 +151,13 @@
                         <tr>
                             <th>Batch Name</th>
                             <th>Schedule</th>
-                            <th>Education Board</th>
                             <th>Teacher</th>
-                            <th>Subject name</th>
                             <th>Total number of students</th>
-                            <th>Total paid students</th>
-                            <th>Total Due students</th>
+                            <th>Number of Paid students</th>
+                            <th>Number of Due students</th>
+                            <th>Total Expected Amount /-</th>
+                            <th>Total Paid Amount /-</th>
+                            <th>Total Due Amount /-</th>
                             <th>Search for all the students</th>                            
                         </tr>
                     </thead>
