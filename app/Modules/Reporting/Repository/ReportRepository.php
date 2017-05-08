@@ -25,26 +25,7 @@ class ReportRepository {
 		return $payments;
 	}
 
-	public function getMonthlyPaymentReporting($current_month, $current_year)	{
-		// $payments = InvoiceMaster::with(['student'=> function($query){
-		// 				$query->withTrashed();
-		// 			}])
-		// 			->whereYear('payment_date', '=', $current_year)
-		//             ->whereMonth('payment_date', '=', $current_month)
-		//             ->get();
-
-		$payments = InvoiceMaster::with('student')
-					->with('invoiceDetail.batch')
-					->whereHas('invoiceDetail', function($query){
-						$query->where('refund', 0);
-					})
-					->whereYear('payment_date', '=', $current_year)
-		            ->whereMonth('payment_date', '=', $current_month)
-					->get(); 
-
-		return $payments;
-	}
-
+	
 	public function getRefundReporting() {
 		$refund = Refund::with('invoiceDetail.invoiceMaster.student', 'invoiceDetail.batch')->get();
 		return $refund;

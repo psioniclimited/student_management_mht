@@ -189,72 +189,6 @@
             });
     });
     
-    $("#monthly_payment_reporting").click(function() {
-        $("#box_color").attr("class","box box-success");
-        $("#payment_title").html("<b>Current Month</b> Payment Reporting");
-        $("#alternate_data").text("Payment Date");
-        $("#invoice_info").text("Invoice ID");
-        $("#batch_info").text("Batches(Batch name, Price, Payment for)");
-        $("#phone_num").text("Phone Number");
-        $("#total_amount").text("Total Paid Amount/-");
-        var table = $('#all_user_list').DataTable({
-            "paging": false,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "destroy": true,
-            "info": false,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": "{{URL::to('/get_monthly_reporting')}}",
-            "columns": [
-                    {"data": "serial_number"},
-                    {"data": "student.student_permanent_id"},
-                    {"data": "student.name"},
-                    {"data": "student.phone_home"},                    
-                    {"data": "payment_date"},
-                    {"data": "paid_batches"},
-                    {"data": "total"},
-                ],
-            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    
-                    let total_price = 0.0;
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        total_price += parseFloat(aaData[i]['total']);
-                    }
-                    // let nCells = nRow.getElementsByTagName('th');
-                    // nCells[nCells.length-1].innerHTML = total_price;
-                    $('#total_taka').text(total_price);
-                    // nCells = total_price;
-                },
-            dom: 'Bfrtip',
-            buttons: [
-                    'copy',
-                    {
-                        extend: 'csvHtml5',
-                        title: 'MonthlyPaymentReporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'MonthlyPaymentReporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Monthly Payment Report',
-                        "footer": true
-                    },
-                    {
-                        extend: 'print',
-                        title: 'Monthly Payment Report',
-                        "footer": true
-                    }
-                ]
-            });
-    });
-
     $("#range_payment_reporting").click(function() {
         if ($('input[id=start_date]').val() && $('input[id=end_date]').val()) {
             $("#box_color").attr("class","box box-info");
@@ -639,10 +573,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="monthly_payment_reporting" class="btn btn-block btn-success"><strong>Current Month</strong> Collection</button>
-                    </div> -->
+                    
                     <div class="col-xs-6">
                         <label for="" ></label>
                         <button type="submit" id="refund_reporting" class="btn btn-block btn-primary"><strong>Refund</strong> Reporting</button>

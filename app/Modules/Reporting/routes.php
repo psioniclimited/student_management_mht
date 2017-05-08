@@ -15,8 +15,6 @@ Route::group(['middleware' => ['web','auth']], function () {
     
     Route::get('get_all_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getAllReporting');
     
-    Route::get('get_monthly_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getMonthlyReporting');
-
     Route::get('refund_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@refundReporting');
     
     Route::get('get_daily_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@getDailyReporting');

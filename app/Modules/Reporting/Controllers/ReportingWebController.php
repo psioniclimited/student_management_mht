@@ -55,24 +55,9 @@ class ReportingWebController extends Controller {
                         ->make(true);
     }
 
-    public function getMonthlyReporting(ReportRepository $report)
-    {
-        $monthlyReporting = $report->getMonthlyPaymentReporting(Carbon::now()->month, Carbon::now()->year);
-        
-        return Datatables::of($monthlyReporting)
-                        ->addColumn('paid_batches', function ($monthlyReporting) {
-                           return $monthlyReporting->invoiceDetail->map(function($invDetail) {
-                               $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
-                               return $ready_data;
-                           })->implode(', ');
-                        })
-                        ->make(true);  
-    }
-
     public function refundReporting(Request $request, ReportRepository $report)
     {
         $refundReporting = $report->getRefundReporting();
-        // return $refundReporting;
         return Datatables::of($refundReporting)->make(true);
     }
 
