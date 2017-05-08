@@ -66,7 +66,7 @@
         $( "#monthly_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
         $("#second_box_title_border").attr("class","box box-success");
-        $("#second_box_title").text("Daily Reporting");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Daily Reporting</h3>");
         /* Test Content */
         
         $("#box_color").attr("class","box box-success");
@@ -104,7 +104,7 @@
 
                     // let nCells = nRow.getElementsByTagName('th');
                     // nCells[nCells.length-1].innerHTML = total_price;
-                    $('#total_taka').text(total_price);
+                    $('#total_taka').text(total_price + ' /-');
                     // nCells = total_price;
                 },
             dom: 'Bfrtip',
@@ -143,11 +143,11 @@
         $( "#monthly_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
         $("#second_box_title_border").attr("class","box box-primary");
-        $("#second_box_title").text("Refund Reporting");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Refund Reporting</h3>");
         /* Test Content */
 
         $("#box_color").attr("class","box box-primary");
-        $("#payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
+        $("#payment_title").html("<p><b>Refund</b> Payment Reporting</p>");
         $("#alternate_data").text("Batch Name");
         $("#batch_info").text("Payment For");
         $("#invoice_info").text("Invoice ID");
@@ -181,7 +181,7 @@
 
                     // let nCells = nRow.getElementsByTagName('th');
                     // nCells[nCells.length-1].innerHTML = total_price;
-                    $('#total_taka').text(total_price);
+                    $('#total_taka').text(total_price + ' /-');
                     // nCells = total_price;
                 },
             dom: 'Bfrtip',
@@ -255,7 +255,7 @@
 
                     // var nCells = nRow.getElementsByTagName('th');
                     // nCells[nCells.length-1].innerHTML = TotalRangePrice;
-                    $('#total_taka').text(TotalRangePrice);
+                    $('#total_taka').text(TotalRangePrice + ' /-');
                 },
                 dom: 'Bfrtip',
             buttons: [
@@ -329,7 +329,7 @@
 
                     // var nCells = nRow.getElementsByTagName('th');
                     // nCells[nCells.length-1].innerHTML = TotalRangePrice;
-                    $('#total_taka').text(TotalRangePrice);
+                    $('#total_taka').text(TotalRangePrice + ' /-');
                 },
                 dom: 'Bfrtip',
             buttons: [
@@ -369,7 +369,7 @@
         $( "#monthly_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
         $("#second_box_title_border").attr("class","box box-danger");
-        $("#second_box_title").text("Due Reporting");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Due Reporting</h3>");
         /* Test Content */
 
         $("#box_color").attr("class","box box-danger");
@@ -407,7 +407,7 @@
                     }
 
                     let nCells = nRow.getElementsByTagName('th');
-                    nCells[nCells.length-1].innerHTML = TotalDuePrice;
+                    nCells[nCells.length-1].innerHTML = TotalDuePrice + ' /-';
                 },
             dom: 'Bfrtip',
             buttons: [
@@ -508,9 +508,6 @@
     });
 
     /* Test content */
-
-
-    
     $('#show_range_payment_reporting').click(function(e) {
         e.preventDefault();
         $( "#date_range_statement_div" ).show('slow');
@@ -520,7 +517,7 @@
         $( "#due_reporting_message").hide();
 
         $("#second_box_title_border").attr("class","box box-info");
-        $("#second_box_title").text("Date Range Reporting");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Date Range Reporting</h3>");
     });
 
     $('#show_monthly_statement').click(function(e) {
@@ -532,9 +529,8 @@
         $( "#due_reporting_message").hide('slow');
 
         $("#second_box_title_border").attr("class","box box-warning");
-        $("#second_box_title").text("Mothly Statement");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Mothly Statement</h3>");
     });
-
     /* Test content */
 
 
@@ -596,8 +592,8 @@
         
     </div>
     <div id="second_box_title_border" class="box box-primary">
-        <div class="box-header with-border">
-          <h3 id="second_box_title" class="box-title">Choose Reporting Option</h3>
+        <div id="second_box_title" class="box-header with-border">
+          <h3 class="box-title animated fadeInUp">Choose Reporting Option</h3>
         </div>
         
         <div class="box-body second_content_section">

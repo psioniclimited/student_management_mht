@@ -48,7 +48,7 @@
             },
         "columns": [
                 {"data": "name"},
-                {"data": "phone_home"},
+                {"data": "student_phone_number"},
                 {"data": "paid_money"}
             ],
         "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
@@ -58,7 +58,7 @@
                     }
 
                     var nCells = nRow.getElementsByTagName('th');
-                    nCells[2].innerHTML = total_price;
+                    nCells[2].innerHTML = total_price + ' /-';
                 }
     	});
 
@@ -81,7 +81,7 @@
             },
         "columns": [
                 {"data": "name"},
-                {"data": "phone_home"},
+                {"data": "student_phone_number"},
                 {"data": "price"}
             ]
     	});
@@ -136,7 +136,7 @@
                             <thead>
                                 <tr>
                                     <th>Student Name</th>
-                                    <th>Phone Number</th>
+                                    <th>Student's Phone Number</th>
                                     <th>Paid Price</th>
                                 </tr>
                             </thead>
@@ -170,7 +170,7 @@
                                 <thead>
                                     <tr>
                                         <th>Student Name</th>
-                                        <th>Phone Number</th>
+                                        <th>Student's Phone Number</th>
                                         <th>Paid Price</th>
                                     </tr>
                                 </thead>

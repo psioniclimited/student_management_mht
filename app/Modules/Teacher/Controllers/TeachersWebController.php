@@ -257,7 +257,7 @@ class TeachersWebController extends Controller {
                     ->where('batch.id', '=', $request->batch_id)
                     ->whereNull('deleted_at')
                     ->where('refund', '=', 0)
-                    ->select('students.name','students.phone_home','invoice_details.price');
+                    ->select('students.name','students.student_phone_number','invoice_details.price');
 
         
         $teacher_percentage = Batch::with('teacherDetail')->find($request->batch_id);
@@ -283,7 +283,7 @@ class TeachersWebController extends Controller {
                     ->where('batch_has_students.last_paid_date', '<', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
                     ->whereNull('deleted_at')
-                    ->select('students.name','students.phone_home');
+                    ->select('students.name','students.student_phone_number');
         
         return Datatables::of($batches)
         ->addColumn('price', function ($batches){
