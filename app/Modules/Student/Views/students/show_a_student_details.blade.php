@@ -139,12 +139,12 @@
 
     <!-- Teacher payment Datatable -->
     <div class="box box-warning">
-        <div class="box-header">
+        <div class="box-header animated fadeInUp">
                 <h4><strong>Payment History</strong></h4>
         </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="student_payment_history" class="table table-bordered table-striped">
+                <table id="student_payment_history" class="table table-bordered table-striped animated fadeInUp">
                     <thead>
                         <tr>
                             <th>Batch Name</th>

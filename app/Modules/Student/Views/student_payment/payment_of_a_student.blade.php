@@ -101,7 +101,7 @@
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
                 var payment_for_each_batch = month_diffrence * batches[i].price;
                              
-                output += "<tr role='row' class='even'>"+
+                output += "<tr role='row' class='even animated fadeInUp'>"+
                                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
                                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
                                 "<input type='hidden' name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly>"+
@@ -181,19 +181,43 @@
             });
             
             $('[class^=radio_due]').click(function(event)  {
+                console.log("radio_due Clicked");
                 let ccc = $(this).siblings()[0];
                 ccc.disabled = false;
                 
                 let ddd = $(this).parent().siblings(".discount_radio_td").children()[1];
                 $(ddd).val("");
                 ddd.disabled = true;
+
+                let unit_price_per_batch = $(this).parent().siblings("#per_batch_price")[0].innerHTML;
+                let no_of_month_per_batch = $(this).parent().siblings(".no_of_month_per_batch").children().find("option:selected").val();
+                let td_total_price_per_course = no_of_month_per_batch * unit_price_per_batch;
+                $(this).parent().siblings(".td_total_price_per_course").children().val(td_total_price_per_course);
+                sum = 0;
+                $('.totalprice').each(function(){
+                    // console.log(this.value);
+                    sum += parseFloat(this.value);
+                    $('input#totalpriceAmount').val(sum);
+                });
             });
             $('[class^=radio_discount]').click(function(event)  {
+                console.log("radio_discount Clicked");
                 let eee = $(this).siblings()[0];
                 eee.disabled = false;
                 let fff = $(this).parent().siblings(".due_radio_td").children()[1];
                 $(fff).val("");
                 fff.disabled = true;
+
+                let unit_price_per_batch = $(this).parent().siblings("#per_batch_price")[0].innerHTML;
+                let no_of_month_per_batch = $(this).parent().siblings(".no_of_month_per_batch").children().find("option:selected").val();
+                let td_total_price_per_course = no_of_month_per_batch * unit_price_per_batch;
+                $(this).parent().siblings(".td_total_price_per_course").children().val(td_total_price_per_course);
+                sum = 0;
+                $('.totalprice').each(function(){
+                    // console.log(this.value);
+                    sum += parseFloat(this.value);
+                    $('input#totalpriceAmount').val(sum);
+                });
             });
             
             $('[name^=due_or_discount_]').keyup(function(event)  {
@@ -266,7 +290,7 @@
                     "<div>Date: {{ $refDate }}<div/>"+
                     "<div>Student Name: "+$('p#student_name').text()+"<div/>"+
                     "<div>Father's Name: "+$('p#fathers_name').text()+"<div/>"+
-                    "<div>Phone Number: "+$('p#phone_home').text()+"<div/>"+
+                    "<div>Phone Number: "+$('p#student_phone_number').text()+"<div/>"+
                     "<br>";
         
 
@@ -344,7 +368,8 @@
 
 
     $("#student_info_for_payment").click(function() {
-        $("#payment_print").hide();
+        $("#payment_print").hide('slow');
+        $("#student_info_section").show('slow');
         $.get("/get_student_info_for_payment", { 
                 student_id: $('select[id=student_id]').val(),
                 student_phonenumber: $("#student_phonenumber").val()
@@ -359,8 +384,8 @@
                $('p#student_email').text(data.student_email);
                $('p#fathers_name').text(data.fathers_name);
                $('p#mothers_name').text(data.mothers_name);
-               $('p#phone_home').text(data.phone_home);
-               $('p#phone_away').text(data.phone_away);
+               $('p#student_phone_number').text(data.student_phone_number);
+               $('p#guardian_phone_number').text(data.guardian_phone_number);
                $('input#students_id').val(data.id);
                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
                getBatches(data.id);
@@ -441,7 +466,7 @@
                     .done(function( data ) {
                         console.log("student_payment");
                         console.log(data);
-                        $("#payment_print").show();
+                        $("#payment_print").show('slow');
                         let msg = '<div class="alert alert-success alert-dismissible">'+
                                     '<button type="button" id="success_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
                                     '<h4><i class="icon fa fa-check"></i> Payment Complete for <strong>'+data.name+'</strong></h4>'+
@@ -451,7 +476,7 @@
 
                        $('#success_payment_msg').click(function(e) {
                             $( ".payment_submit" ).attr( "disabled", false );
-                            $("#payment_print").hide();
+                            $("#payment_print").hide('slow');
                             let img_address = "{{ URL::to('/') }}";
                             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
                                $("#student_payment_div").css({ display: "block" });
@@ -459,8 +484,8 @@
                                $('p#student_email').text(data.student_email);
                                $('p#fathers_name').text(data.fathers_name);
                                $('p#mothers_name').text(data.mothers_name);
-                               $('p#phone_home').text(data.phone_home);
-                               $('p#phone_away').text(data.phone_away);
+                               $('p#student_phone_number').text(data.student_phone_number);
+                               $('p#guardian_phone_number').text(data.guardian_phone_number);
                                $('input#students_id').val(data.id);
                                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
                                getBatches(data.id);
@@ -551,21 +576,26 @@
 
         <!-- /.box-header -->
         <div class="box box-danger">
-            <table id="student_due_datatable" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Batch Name</th>
-                        <th>Payment Date</th>
-                        <th>Due For</th>
-                        <th>Paid Amount</th>
-                        <th>Due Amount</th>
-                        <th>Clear</th>
-                    </tr>
-                </thead>
-                <tbody>                            
-                    <!-- user list -->
-                </tbody>                        
-            </table>
+            <div class="box-body">
+                <div class="box-header">
+                  <h3 class="box-title">Due Information</h3>
+                </div>
+                <table id="student_due_datatable" class="table table-bordered table-striped animated fadeInUp">
+                    <thead>
+                        <tr>
+                            <th>Batch Name</th>
+                            <th>Payment Date</th>
+                            <th>Due For</th>
+                            <th>Paid Amount</th>
+                            <th>Due Amount</th>
+                            <th>Clear</th>
+                        </tr>
+                    </thead>
+                    <tbody>                            
+                        <!-- user list -->
+                    </tbody>                        
+                </table>
+            </div>
         </div>
         <!-- /.box-body -->
 
@@ -576,6 +606,7 @@
             <div class="box-header with-border">
               <h3 class="box-title">Student's Information</h3>
             </div>
+            <div id="student_info_section">
                 <div class="col-md-4">
                     <div id="student_pofile_image" class="form-group">
                         
@@ -604,18 +635,19 @@
                 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="phone_home" >Phone(Home) : </label>
-                        <p id="phone_home"></p>
+                        <label for="student_phone_number" >Student's Phone Number : </label>
+                        <p id="student_phone_number"></p>
                     </div>
                     <div class="form-group">
-                        <label for="phone_away" >Phone(Additional) : </label>
-                        <p id="phone_away"></p>
+                        <label for="guardian_phone_number" >Guardian's Phone Number : </label>
+                        <p id="guardian_phone_number"></p>
                     </div>
                     <div class="form-group">
                         <label for="student_email" >Email : </label>
                         <p id="student_email"></p>
                     </div>
                 </div>
+            </div>
             </div>
             <!-- /.box-body -->
     </div>
@@ -636,7 +668,7 @@
                 <input id="ref_date" type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                 <input type='hidden' id="students_id" name="students_id">
                 <input type='hidden' id="serial_number" name="serial_number">
-                <table id="all_user_list" class="table table-bordered table-striped">
+                <table id="all_user_list" class="table table-bordered table-striped animated fadeInUp">
                     <thead>
                         <tr>
                             <th>Batch Name</th>
@@ -649,7 +681,7 @@
                             <th>Discount</th>
                         </tr>
                     </thead>
-                    <tbody id="batch_table">                            
+                    <tbody id="batch_table" >                            
                     </tbody >
                 </table>
                 <div class="footer">

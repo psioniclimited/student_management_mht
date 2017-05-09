@@ -261,6 +261,23 @@ class StudentsWebController extends Controller {
 
 
 	public function addStudentProcess(\App\Http\Requests\StudentCreateRequest $request) {
+        // $bast_has_student = BatchHasStudent::where('batch_id', 1)->where('students_id', 2)->get();
+        // return $bast_has_student;
+        // $student = Student::with('batch')->find(8);
+        // $batch_start_date = Carbon::createFromFormat('d/m/Y', $student->batch[0]->start_date)->format('Y-m-d');
+        // $batch_start_date = Carbon::parse($batch_start_date);
+        // $last_paid_date = Carbon::parse($student->batch[0]->pivot->last_paid_date);
+
+        // $batch_start_date = Carbon::createFromFormat('d/m/Y', '01/07/2017')->format('Y-m-d');
+        // $batch_start_date = Carbon::parse($batch_start_date);
+        // $last_paid_date = Carbon::parse('2017-04-01');
+        // $current = Carbon::now();
+        // return $batch_start_date;
+
+
+        
+        // return $student->batch;
+        // return $student->batch[0]->pivot->last_paid_date;
 
         $last_paid_date = new Carbon('first day of last month');
         $last_paid_date = $last_paid_date->toDateString();
@@ -268,7 +285,7 @@ class StudentsWebController extends Controller {
         $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
         $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => $last_paid_date]);
-
+        
         $filename = Carbon::now();
         $filename = $filename->timestamp;
         // $filename = $request->phone_home . "_" . $filename;
@@ -294,7 +311,24 @@ class StudentsWebController extends Controller {
 
         $student->student_permanent_id = $formated_serial_number;
         $student->save();
-        
+
+        for ($i=0; $i < count($student->batch); $i++) { 
+            
+            $student = Student::with('batch')->find($student->id);
+
+            $batch_start_date = Carbon::createFromFormat('d/m/Y', $student->batch[$i]->start_date)->format('Y-m-d');
+            $batch_start_date = Carbon::parse($batch_start_date);
+            $last_paid_date = Carbon::parse($student->batch[$i]->pivot->last_paid_date);
+            
+            if ($batch_start_date->gt($last_paid_date)) {
+                $student->batch[$i]->pivot->last_paid_date = $batch_start_date->subMonth();
+                $bast_has_student = BatchHasStudent::where('batch_id', $student->batch[$i]->id)
+                                    ->where('students_id', $student->id)
+                                    ->update(['last_paid_date' => $batch_start_date->subMonth()]);;
+                error_log('messagemessagemessagemessagemessage');
+            }
+        }
+
         return redirect("all_students");
     }
 

@@ -87,21 +87,33 @@
                     extend: 'csvHtml5',
                     title: 'Total Student : '+ '{{ $total_student }}',
                     "lengthChange": true,
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                    }
                 },
                 {
                     extend: 'excelHtml5',
                     title: 'Total Student : '+  '{{ $total_student }}',
                     "lengthChange": true,
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                    }
                 },
                 {
                     extend: 'pdfHtml5',
                     title: 'Total Student : '+ '{{ $total_student }}',
                     "lengthChange": true,
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                    }
                 },
                 {
                     extend: 'print',
                     title: 'Total Student : '+ '{{ $total_student }}',
                     "lengthChange": true,
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4, 5, 6 ]
+                    }
                 },
             ]
         
@@ -136,14 +148,14 @@
 <!-- Main content -->
 <section class="content">
     
-    <div class="box box-primary animated fadeInDown">
+    <div class="box box-primary">
         <div class="box-header">
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row ">
+                <div class="col-md-6 animated fadeInLeft">
                     <h3>Batch Name : <strong> {{ $batch_name }}</strong></h3>
                     <h3>Schedule : <strong> {{ $schedule }}</strong></h3>                        
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 animated fadeInRight">
                     <h3>Total Number of Students : <strong> {{ $total_student }}</strong></h3>
                     <h3>Total Number of Paid Students : <strong> {{ $number_of_paid_students }}</strong></h3>
                     <h3>Total Number of Unpaid Students : <strong> {{ $number_of_unpaid_students }}</strong></h3>

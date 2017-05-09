@@ -323,6 +323,7 @@ class BatchWebController extends Controller {
     }
 
     public function all_students_per_batch_page($batch_id, $total_student) {
+        
         $batch = Batch::with('student')->find($batch_id);
         
         $number_of_paid_students = 0;
