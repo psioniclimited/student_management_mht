@@ -22,7 +22,7 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_students')}}",
+            "ajax": "{{URL::to('/students_get_students')}}",
             "columns": [
                     {"data": "student_permanent_id"},
                     {"data": "name"},

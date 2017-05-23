@@ -34,7 +34,7 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_active_students')}}",
+            "ajax": "{{URL::to('/students_get_active_students')}}",
             "columns": [
                     {"data": "student_permanent_id"},
                     {"data": "name"},
@@ -120,7 +120,7 @@
                    }
                });
            });
-        })
+        });
     });
 </script>
 

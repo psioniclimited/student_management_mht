@@ -29,14 +29,7 @@
 
     $(document).ready(function () {
 
-        //Date picker for Start Date
-        $('.summary_month').datepicker({
-          format: 'dd/mm/yyyy',
-          autoclose: true
-        });
-
-
-		var table = $('#all_user_list').DataTable({
+        var table = $('#all_user_list').DataTable({
             "paging": true,
             "pageLength": 50,
             "lengthChange": true,
@@ -54,25 +47,6 @@
                 ]
         });
 
-        $("#summary_month_submit").click(function() {
-            if ( $('input[id=summary_month]').val() !== '' )  {
-                console.log('Inside IF');
-                console.log($('input[id=summary_month]').val());
-                $.get("/monthly_paryment_summary", { 
-                        summary_month: $('input[id=summary_month]').val(),
-                })
-                .done(function( data ) {
-                   console.log(data);
-                   $('#total_students').text(data.total_students);
-                   $('#total_expected_amount').text(data.total_expected_amount);
-                   $('#total_paid_amount').text(data.total_paid_amount);
-                   $('#total_unpaid_amount').text(data.total_unpaid_amount);
-                });     
-            }
-            else {
-                console.log('Outside IF');
-            }       
-        });
 });
 </script>
 
@@ -107,49 +81,15 @@
         
         <div class="box-body">
         
-            <div class="box-header with-border">
-              <h3 class="box-title">Choose a Month and Year with any Date to Show Summary</h3>
-            </div>
-            <div class="box-body">
-                <div class="row">
-                    
-                    <div class="col-xs-6">
-                        <label for="schools_id" > Month</label>
-                        <div class="input-group date">
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                            <input id="summary_month" type="text" class="form-control summary_month" name="summary_month" autocomplete="off">
-                        </div>
-                    </div>
-                    
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="summary_month_submit" class="btn btn-block btn-success">Show</button>
-                    </div>
-                    
-                    
-                </div>
-            </div>
-        </div>
-            <!-- /.box-body -->
-    </div>
-    <!-- /.box-body -->
-
-    <!-- Horizontal Form -->
-    <div class="box box-info">
-        
-        <div class="box-body">
-        
             <div class="box-header">
                 <div class="row">
                     <div class="col-xs-6">
-                        <h2>Total Students: <strong id="total_students"></strong></h2> 
-                        <h2>Total Expected Amount: <strong id="total_expected_amount"></strong></h2>
+                        <h2>Total Students: <strong id="total_students">{{ $total_students }}</strong></h2> 
+                        <h2>Total Expected Amount: <strong id="total_expected_amount">{{ $total_expected_amount }}</strong></h2>
                     </div>
                     <div class="col-xs-6">
-                        <h2>Total Paid Amount: <strong id="total_paid_amount"></strong></h2>
-                        <h2>Total Unpaid Amount: <strong id="total_unpaid_amount"></strong></h2> 
+                        <h2>Total Paid Amount: <strong id="total_paid_amount">{{ $total_paid_amount }}</strong></h2>
+                        <h2>Total Unpaid Amount: <strong id="total_unpaid_amount">{{ $total_unpaid_amount }}</strong></h2> 
                     </div>
                 </div>
             </div>

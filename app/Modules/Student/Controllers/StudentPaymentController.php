@@ -79,21 +79,9 @@ class StudentPaymentController extends Controller {
         if ( $request->total > 0 ) {
             
             $invoice_master = InvoiceMaster::create($request->all());
-            $invoice_master->invoiceDetail()->createMany($request->all());
-            dd($invoice_master);
-            // $invoice_master->invoice_detail()->createMany([
-            //     [
-            //         'batch_id'=>'value',
-            //         'batch_id'=>'value',
-            //         'batch_id'=>'value',
-            //         'batch_id'=>'value',
-            //     ],
-            //     [
-
-            //     ]
-            // ]);
-
-        	for ( $i=0; $i < count($request->batch_id); $i++) {
+            // $invoice_master->invoiceDetail()->createMany($request->all());
+            
+            for ( $i=0; $i < count($request->batch_id); $i++) {
                 $last_payment_date = 0;
                 $due_or_discount_ = "due_or_discount_";
                 if($request->month[$i] != 0) {

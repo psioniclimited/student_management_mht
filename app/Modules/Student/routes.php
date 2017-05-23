@@ -14,14 +14,14 @@ Route::group(['middleware' => ['web','auth']], function () {
     /******************************************************
     * Show the information of all Students in a data table *
     *******************************************************/
-    Route::get('all_students', 'App\Modules\Student\Controllers\StudentsWebController@allStudents');
-    Route::get('get_students', 'App\Modules\Student\Controllers\StudentsWebController@getStudents');
+    Route::get('students_all_students', 'App\Modules\Student\Controllers\StudentsWebController@allStudents');
+    Route::get('students_get_students', 'App\Modules\Student\Controllers\StudentsWebController@getStudents');
 
     /**********************************************************
     * Show the information of active Students in a data table *
     ***********************************************************/
-    Route::get('active_students', 'App\Modules\Student\Controllers\StudentsWebController@activeStudents');
-    Route::get('get_active_students', 'App\Modules\Student\Controllers\StudentsWebController@getActiveStudents');
+    Route::get('students_active_students', 'App\Modules\Student\Controllers\StudentsWebController@activeStudents');
+    Route::get('students_get_active_students', 'App\Modules\Student\Controllers\StudentsWebController@getActiveStudents');
 
     
 
@@ -33,25 +33,25 @@ Route::group(['middleware' => ['web','auth']], function () {
     /**********************
     * Summary information *
     ***********************/
-    Route::get('summary_student', 'App\Modules\Student\Controllers\StudentsWebController@summary_student');
+    Route::get('students_summary_student', 'App\Modules\Student\Controllers\StudentsWebController@summary_student');
     Route::get('monthly_paryment_summary', 'App\Modules\Student\Controllers\StudentsWebController@monthly_paryment_summary');
 
     /*****************************
     * Student Detail information *
     ******************************/
-    Route::get('student/{student_id}/detail/', 'App\Modules\Student\Controllers\StudentsWebController@student_detail');
+    Route::get('students_student/{student_id}/detail/', 'App\Modules\Student\Controllers\StudentsWebController@student_detail');
 
     /**********************
     * Create a new Student *
     ***********************/   
-    Route::get('create_student', 'App\Modules\Student\Controllers\StudentsWebController@addStudent');
+    Route::get('students_create_student', 'App\Modules\Student\Controllers\StudentsWebController@addStudent');
     Route::post('create_student_process', 'App\Modules\Student\Controllers\StudentsWebController@addStudentProcess');
 
 
     /***************************
     * Edit and Update a Student *
     ****************************/    
-    Route::get('student/{student}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editStudent');
+    Route::get('students_student/{student}/edit/', 'App\Modules\Student\Controllers\StudentsWebController@editStudent');
     Route::patch('/student_update_process/{student}/', 'App\Modules\Student\Controllers\StudentsWebController@studentUpdateProcess');
 
 
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     /***********************
     * Payment of a Student *
     ************************/
-    Route::get('payment_student', 'App\Modules\Student\Controllers\StudentPaymentController@paymentStudent');
+    Route::get('students_payment_student', 'App\Modules\Student\Controllers\StudentPaymentController@paymentStudent');
     Route::get('get_all_student_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getAllStudentForPayment');
     Route::get('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getStudentInfoForPayment');
     Route::get('get_batch_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getBatchInfoForPayment');     
@@ -130,11 +130,11 @@ Route::group(['middleware' => ['web','auth']], function () {
     /*********************
     * Batch Wise Students*
     **********************/
-    Route::get('batch_wise_student_page', 'App\Modules\Student\Controllers\BatchWebController@batchWiseStudentPage');
-    Route::get('get_all_batches_for_a_subject', 'App\Modules\Student\Controllers\BatchWebController@get_all_batches_for_a_subject');
+    Route::get('students_batch_wise_student_page', 'App\Modules\Student\Controllers\BatchWebController@batchWiseStudentPage');
+    Route::get('students_get_all_batches_for_a_subject', 'App\Modules\Student\Controllers\BatchWebController@get_all_batches_for_a_subject');
     
-    Route::get('all_students_per_batch_page/{batch}/{total_student}', 'App\Modules\Student\Controllers\BatchWebController@all_students_per_batch_page');
-    Route::get('get_all_students_per_batch', 'App\Modules\Student\Controllers\BatchWebController@get_all_students_per_batch');
+    Route::get('students_all_students_per_batch_page/{batch}/{total_student}', 'App\Modules\Student\Controllers\BatchWebController@all_students_per_batch_page');
+    Route::get('students_get_all_students_per_batch', 'App\Modules\Student\Controllers\BatchWebController@get_all_students_per_batch');
 
     /******************************************************
     * Show the information of all Subjects in a data table*

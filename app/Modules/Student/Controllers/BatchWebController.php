@@ -313,7 +313,7 @@ class BatchWebController extends Controller {
             ->addColumn('Link', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                 
-                return '<a href="' . url('/all_students_per_batch_page') . '/' . $batches->id . '/'.count($batches->student) . '"' . 'class="btn btn-xs btn-info" target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                return '<a href="' . url('/students_all_students_per_batch_page') . '/' . $batches->id . '/'.count($batches->student) . '"' . 'class="btn btn-xs btn-info" target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 }
                 else {
                     return 'N/A';

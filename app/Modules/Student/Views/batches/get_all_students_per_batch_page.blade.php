@@ -53,7 +53,7 @@
         "processing": true,
         "serverSide": true,
         "ajax": {
-                'url': "{{URL::to('/get_all_students_per_batch')}}",
+                'url': "{{URL::to('/students_get_all_students_per_batch')}}",
                 'data': {
                    batch_id: "{{ $batch_id }}",
                 },
@@ -151,11 +151,11 @@
     <div class="box box-primary">
         <div class="box-header">
             <div class="row ">
-                <div class="col-md-6 animated fadeInLeft">
+                <div class="col-md-6 animated fadeIn">
                     <h3>Batch Name : <strong> {{ $batch_name }}</strong></h3>
                     <h3>Schedule : <strong> {{ $schedule }}</strong></h3>                        
                 </div>
-                <div class="col-md-6 animated fadeInRight">
+                <div class="col-md-6 animated fadeIn">
                     <h3>Total Number of Students : <strong> {{ $total_student }}</strong></h3>
                     <h3>Total Number of Paid Students : <strong> {{ $number_of_paid_students }}</strong></h3>
                     <h3>Total Number of Unpaid Students : <strong> {{ $number_of_unpaid_students }}</strong></h3>
@@ -174,7 +174,7 @@
         </div>
             <!-- /.box-header -->
             <div class="box-body">
-                <table id="all_batches_datatable" class="table table-bordered table-striped animated fadeInUp">
+                <table id="all_batches_datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Student Permanent ID</th>

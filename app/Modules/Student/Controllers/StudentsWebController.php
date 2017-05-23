@@ -45,7 +45,7 @@ class StudentsWebController extends Controller {
     return Datatables::of($students)
                     ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/student') . '/' . $students->id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>'.'&nbsp &nbsp &nbsp'.
+                        return '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>'.'&nbsp &nbsp &nbsp'.
                             '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success" target="_blank"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp';
                         }
                         else {
@@ -78,8 +78,8 @@ class StudentsWebController extends Controller {
                     })
                     ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return  '<a href="' . url('/student') . '/' . $students->id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                            '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                        return  '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+                            '<a href="' . url('/students_student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
                                 '<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>'.'&nbsp &nbsp &nbsp'.
@@ -139,16 +139,8 @@ class StudentsWebController extends Controller {
         // }
         
 
-        return view('Student::students/summary_student');
-        // ->with('total_students', $total_students)
-        // ->with('total_expected_amount', $total_expected_amount)
-        // ->with('total_paid_amount', $total_paid_amount)
-        // ->with('total_unpaid_amount', $total_unpaid_amount);
 
-    }
 
-    public function monthly_paryment_summary(Request $request)
-    {
         /* Calculating Total number of Students for current month */
         $students = Student::with('batch','school')->has('batch')->get();
         $total_students = count($students);
@@ -193,13 +185,13 @@ class StudentsWebController extends Controller {
             $total_unpaid_amount = $total_unpaid_amount + ($no_of_unpaid_students * $batches[$i]->price);
             
         }
-        
-        return response()->json([
-            'total_students' => $total_students,
-            'total_expected_amount' => $total_expected_amount,
-            'total_paid_amount' => $total_paid_amount,
-            'total_unpaid_amount' => $total_unpaid_amount,
-        ], 200);
+
+
+        return view('Student::students/summary_student')
+        ->with('total_students', $total_students)
+        ->with('total_expected_amount', $total_expected_amount)
+        ->with('total_paid_amount', $total_paid_amount)
+        ->with('total_unpaid_amount', $total_unpaid_amount);
 
     }
 
@@ -261,24 +253,6 @@ class StudentsWebController extends Controller {
 
 
 	public function addStudentProcess(\App\Http\Requests\StudentCreateRequest $request) {
-        // $bast_has_student = BatchHasStudent::where('batch_id', 1)->where('students_id', 2)->get();
-        // return $bast_has_student;
-        // $student = Student::with('batch')->find(8);
-        // $batch_start_date = Carbon::createFromFormat('d/m/Y', $student->batch[0]->start_date)->format('Y-m-d');
-        // $batch_start_date = Carbon::parse($batch_start_date);
-        // $last_paid_date = Carbon::parse($student->batch[0]->pivot->last_paid_date);
-
-        // $batch_start_date = Carbon::createFromFormat('d/m/Y', '01/07/2017')->format('Y-m-d');
-        // $batch_start_date = Carbon::parse($batch_start_date);
-        // $last_paid_date = Carbon::parse('2017-04-01');
-        // $current = Carbon::now();
-        // return $batch_start_date;
-
-
-        
-        // return $student->batch;
-        // return $student->batch[0]->pivot->last_paid_date;
-
         $last_paid_date = new Carbon('first day of last month');
         $last_paid_date = $last_paid_date->toDateString();
 
@@ -288,14 +262,13 @@ class StudentsWebController extends Controller {
         
         $filename = Carbon::now();
         $filename = $filename->timestamp;
-        // $filename = $request->phone_home . "_" . $filename;
         if ($request->file("pic") !== null) {
             $request->file('pic')->move(storage_path('app/images/student_Images'), $filename);
             $student->students_image = 'app/images/student_Images/' . $filename;
             $student->save();
         }
 
-        /* Creating Student Permanent ID */
+        /* Creating Student's Permanent ID */
         $refDate = Carbon::now();
         $formated_serial_number = 0;
         $data = Student::where('student_permanent_id', 'LIKE', ''. $refDate->year .'%')->get();
@@ -312,20 +285,18 @@ class StudentsWebController extends Controller {
         $student->student_permanent_id = $formated_serial_number;
         $student->save();
 
+        /* Checking Student's last paid date with batch start date and Updating last paid date if necessary */
         for ($i=0; $i < count($student->batch); $i++) { 
-            
             $student = Student::with('batch')->find($student->id);
-
             $batch_start_date = Carbon::createFromFormat('d/m/Y', $student->batch[$i]->start_date)->format('Y-m-d');
             $batch_start_date = Carbon::parse($batch_start_date);
             $last_paid_date = Carbon::parse($student->batch[$i]->pivot->last_paid_date);
-            
-            if ($batch_start_date->gt($last_paid_date)) {
-                $student->batch[$i]->pivot->last_paid_date = $batch_start_date->subMonth();
+            if ($batch_start_date->gt($last_paid_date )) {
+                $last_paid_date = $batch_start_date->subMonth();
+                $last_paid_date = $last_paid_date->toDateString();
                 $bast_has_student = BatchHasStudent::where('batch_id', $student->batch[$i]->id)
                                     ->where('students_id', $student->id)
-                                    ->update(['last_paid_date' => $batch_start_date->subMonth()]);;
-                error_log('messagemessagemessagemessagemessage');
+                                    ->update(['last_paid_date' => $last_paid_date]);
             }
         }
 

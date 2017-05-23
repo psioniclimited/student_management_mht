@@ -52,7 +52,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                    'url': "{{URL::to('/get_all_batches_for_a_subject')}}",
+                    'url': "{{URL::to('/students_get_all_batches_for_a_subject')}}",
                     'data': {
                        subjects_id: $('select[name=subjects_id]').val(),
                     },

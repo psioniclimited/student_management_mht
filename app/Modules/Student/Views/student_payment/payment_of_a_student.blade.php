@@ -101,7 +101,7 @@
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
                 var payment_for_each_batch = month_diffrence * batches[i].price;
                              
-                output += "<tr role='row' class='even animated fadeInUp'>"+
+                output += "<tr role='row' class='even'>"+
                                 "<input type='hidden' name=batch_id[] value='"+batches[i].id+"'>"+
                                 "<input type='hidden' name=subjects_id[] value='"+batches[i].subjects_id+"'>"+
                                 "<input type='hidden' name=last_paid_date[] value='"+batches[i].pivot.last_paid_date+"' readonly>"+
@@ -580,7 +580,7 @@
                 <div class="box-header">
                   <h3 class="box-title">Due Information</h3>
                 </div>
-                <table id="student_due_datatable" class="table table-bordered table-striped animated fadeInUp">
+                <table id="student_due_datatable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Batch Name</th>
@@ -668,7 +668,7 @@
                 <input id="ref_date" type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                 <input type='hidden' id="students_id" name="students_id">
                 <input type='hidden' id="serial_number" name="serial_number">
-                <table id="all_user_list" class="table table-bordered table-striped animated fadeInUp">
+                <table id="all_user_list" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Batch Name</th>
