@@ -64,6 +64,7 @@
         $( "#refund_reporting_message").hide('slow');
         $( "#due_reporting_message").hide('slow');
         $( "#monthly_statement_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
         $("#second_box_title_border").attr("class","box box-success");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Daily Reporting</h3>");
@@ -142,6 +143,7 @@
         $( "#due_reporting_message").hide('slow');
         $( "#monthly_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
         $("#second_box_title_border").attr("class","box box-primary");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Refund Reporting</h3>");
         /* Test Content */
@@ -367,6 +369,7 @@
         $( "#refund_reporting_message").hide('slow');
         $( "#due_reporting_message").show('slow');
         $( "#monthly_statement_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
         $("#second_box_title_border").attr("class","box box-danger");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Due Reporting</h3>");
@@ -438,71 +441,74 @@
 
     });
 
-    $("#due_statement").click(function() {
+    $("#monthly_due_statement").click(function() {
         if ($('input[id=due_statement_date]').val()) {
+            console.log($('input[id=due_statement_date]').val());
             $("#box_color").attr("class","box box-danger");
             $("#payment_title").html("<p>Due Payment Statement for <b>"+$('input[id=due_statement_date]').val()+"</b></p>");
             $("#alternate_data").text("Payment Date");
             $("#phone_num").text("Phone Number");
             $("#total_amount").text("Total Amount/-");
             var table = $('#all_user_list').DataTable({
-                "paging": false,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "destroy": true,
-                "info": false,
-                "autoWidth": false,
-                "processing": true,
-                "serverSide": true, 
-                "ajax": {
-                    'url': "{{URL::to('/due_statement')}}",
+            "paging": false,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                    'url': "{{ URL::to('/monthly_due_statement') }}",
                     'data': {
                        due_statement_date: $('input[id=due_statement_date]').val() 
-                    },
                 },
-                "columns": [
-                        {"data": "student.name"},
-                        {"data": "student.phone_home"},
-                        {"data": "due_batches"},                    
-                        {"data": "payment_date"},
-                        {"data": "total"},
-                    ],
-                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+            },
+            "columns": [
+                    {"data": "id"},
+                    {"data": "student_permanent_id"},
+                    {"data": "name"},
+                    {"data": "student_phone_number"},                    
+                    {"data": "guardian_phone_number"},
+                    {"data": "due_batches"},
+                    {"data": "TotalDuePrice"},
+                ],
+            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     
-                    let TotalRangePrice = parseFloat(0);
+                    let TotalDuePrice = parseFloat(0);
                     for ( let i=0 ; i<aaData.length ; i++ ) {
-                        TotalRangePrice += parseFloat(aaData[i]['total']);
+                        TotalDuePrice += parseFloat(aaData[i]['TotalDuePrice']);
                     }
 
-                    // var nCells = nRow.getElementsByTagName('th');
-                    // nCells[nCells.length-1].innerHTML = TotalRangePrice;
-                    $('#total_taka').text(TotalRangePrice);
+                    let nCells = nRow.getElementsByTagName('th');
+                    nCells[nCells.length-1].innerHTML = TotalDuePrice + ' /-';
                 },
-                dom: 'Bfrtip',
+            dom: 'Bfrtip',
             buttons: [
                     'copy',
                     {
                         extend: 'csvHtml5',
-                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        title: 'DuePaymentReporting',
                         "footer": true
                     },
                     {
                         extend: 'excelHtml5',
-                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        title: 'DuePaymentReporting',
                         "footer": true
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        title: 'Due Payment Report',
                         "footer": true
                     },
                     {
                         extend: 'print',
-                        title: 'Due Statement for '+$('input[id=statement_date]').val(),
+                        title: 'Due Payment Report',
                         "footer": true
                     }
                 ]
+
             });
         }
     });
@@ -512,6 +518,7 @@
         e.preventDefault();
         $( "#date_range_statement_div" ).show('slow');
         $( "#monthly_statement_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
         $( "#daily_reporting_message").hide();
         $( "#refund_reporting_message").hide();
         $( "#due_reporting_message").hide();
@@ -524,12 +531,26 @@
         e.preventDefault();
         $( "#monthly_statement_div" ).show('slow');
         $( "#date_range_statement_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
         $( "#daily_reporting_message").hide('slow');
         $( "#refund_reporting_message").hide('slow');
         $( "#due_reporting_message").hide('slow');
 
         $("#second_box_title_border").attr("class","box box-warning");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Mothly Statement</h3>");
+    });
+
+    $('#show_monthly_due_statement').click(function(e) {
+        e.preventDefault();
+        $( "#monthly_due_statement_div" ).show('slow');
+        $( "#monthly_statement_div" ).hide('slow');
+        $( "#date_range_statement_div" ).hide('slow');
+        $( "#daily_reporting_message").hide('slow');
+        $( "#refund_reporting_message").hide('slow');
+        $( "#due_reporting_message").hide('slow');
+
+        $("#second_box_title_border").attr("class","box box-danger");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Mothly Due Statement</h3>");
     });
     /* Test content */
 
@@ -571,20 +592,23 @@
         
         <div class="box-body">
             <div class="row">
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-success"><strong>Daily</strong> Collection</button>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <button type="submit" id="refund_reporting" class="btn btn-block btn-primary"><strong>Refund</strong> Reporting</button>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <button  id="show_range_payment_reporting" class="btn btn-block btn-info"><strong>Show Date Range</strong>  Collection</button>
                 </div>
-                <div class="col-xs-2">
+                <div class="col-md-2">
                     <button  id="show_monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
+                </div>
+                <div class="col-md-2">
+                    <button  id="show_monthly_due_statement" class="btn btn-block btn-danger"><strong>Monthly Due </strong> Statement</button>
                 </div>
 
            </div>  
@@ -602,25 +626,6 @@
             <h3 id="daily_reporting_message"   style="display: none;">Showing Daily Payment Reporting</h3>
             <h3 id="refund_reporting_message"   style="display: none;">Showing Refund Payment Reporting</h3>
             <h3 id="due_reporting_message"   style="display: none;">Showing Due Payment Reporting</h3>
-
-
-            <div id="monthly_statement_div" class="row" style="display: none;">
-                <div class="col-xs-6">
-                    <div class="form-group">
-                        <label for="statement_date">Month (For Monthly Payment Statement)</label>
-                        <div class="input-group date">
-                            <div class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                            </div>
-                            <input id="statement_date" type="text" class="form-control ref_date" name="statement_date" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-6">
-                    <label for="" ></label>
-                    <button type="submit" id="monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
-                </div>
-            </div>
 
             <div id="date_range_statement_div" class="row" style="display: none;">
                 <div class="col-xs-6">
@@ -650,6 +655,41 @@
                     <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show Date Range</strong>  Collection</button>
                 </div>
 
+            </div>
+            <div id="monthly_statement_div" class="row" style="display: none;">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="statement_date">Month (For Monthly Payment Statement)</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="statement_date" type="text" class="form-control ref_date" name="statement_date" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <label for="" ></label>
+                    <button type="submit" id="monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
+                </div>
+            </div>
+
+            <div id="monthly_due_statement_div" class="row" style="display: none;">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="due_statement_date">Month (For Monthly Due Statement)</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="due_statement_date" type="text" class="form-control ref_date" name="due_statement_date" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <label for="" ></label>
+                    <button type="submit" id="monthly_due_statement" class="btn btn-block btn-danger    "><strong>Monthly Due </strong> Statement</button>
+                </div>
             </div>
         </div>
         

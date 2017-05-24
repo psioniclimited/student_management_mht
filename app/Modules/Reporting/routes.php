@@ -25,6 +25,6 @@ Route::group(['middleware' => ['web','auth']], function () {
 
     Route::get('monthly_statement', 'App\Modules\Reporting\Controllers\ReportingWebController@monthlyStatement');
 
-    Route::get('due_statement', 'App\Modules\Reporting\Controllers\ReportingWebController@dueStatement');
+    Route::get('monthly_due_statement', 'App\Modules\Reporting\Controllers\ReportingWebController@monthlyDueStatement');
 
 });

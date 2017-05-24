@@ -91,31 +91,33 @@ class ReportRepository {
         return $monthlyStatement;
 	}
 
-	public function getmonthlyDueStatement($due_statement_month, $due_statement_year)	{
+	public function getmonthlyDueStatement($due_statement_date)	{
 		// $dueStatement = Student::with('batch')->get();
-		$monthlyDueStatement = Student::with(['batch' => function ($query) use( $due_statement_month, $due_statement_year)  {
-			    			$query->whereMonth('last_paid_date', '=', $due_statement_month)
-			    				  ->whereYear('last_paid_date', '=', $due_statement_year);
-						}])->get();
 		
-		// $dueStatement = DB::table('students')
-  //           ->leftJoin('batch_has_students', 'batch_has_students.students_id', '=', 'students.id')
-  //           ->leftJoin('batch', 'batch.id', '=', 'batch_has_students.students_id')
-  //           ->whereNull('deleted_at')
-  //           ->whereMonth('last_paid_date', "03")
-  //           ->whereYear('last_paid_date', "2017")
-  //           ->select('*');
-        // return Datatables::of($data)
-        //                 ->addColumn('Link', function ($data) {
-        //                                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-        //                                 return '<button id="'. $data->invoice_details_id .'" class="btn btn-xs btn-danger temp_due"><i class="glyphicon glyphicon-edit"></i> Clear</button>';
-        //                                 }
-        //                                 else {
-        //                                     return 'N/A';
-        //                                 }
-        //                             })
-        //                 ->make(true);
-		return $monthlyDueStatement;
+		// $monthlyDueStatement = Student::with(['batch' => function ($query) use( $due_statement_month, $due_statement_year)  {
+		// 	    			$query->whereMonth('last_paid_date', '=', $due_statement_month)
+		// 	    				  ->whereYear('last_paid_date', '=', $due_statement_year);
+		// 				}])->get();
+
+		// return $monthlyDueStatement;
+
+		$payments = Student::with(['batch' => function ($query) use( $due_statement_date )  {
+    		
+    		$query->where('last_paid_date', '=', $due_statement_date);
+		
+		}])->get();
+
+		$payments = $payments->map(function($student){
+			            			if (count($student->batch) > 0 ) {
+						                return $student;
+						            }
+						        })
+						        ->reject(function ($student) {
+						            return empty($student);
+						        });
+		
+		return $payments;
+
 	}
 
 }

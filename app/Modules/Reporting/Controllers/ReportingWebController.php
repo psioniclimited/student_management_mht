@@ -76,6 +76,13 @@ class ReportingWebController extends Controller {
                     })->make(true);
     }
 
+    public function monthlyStatement(Request $request, ReportRepository $report)
+    {
+        $statementDate = Carbon::createFromFormat('d/m/Y', $request->statement_date);
+        $monthlyStatement = $report->getmonthlyPaymentStatement($statementDate->month, $statementDate->year);
+        return Datatables::of($monthlyStatement)->make(true);
+    }
+
     public function getDueReporting(ReportRepository $report)
     {
         $first_day_of_current_month = new Carbon('first day of this month');
@@ -107,19 +114,39 @@ class ReportingWebController extends Controller {
         ->make(true);
     }
 
-    public function monthlyStatement(Request $request, ReportRepository $report)
+    public function monthlyDueStatement(Request $request, ReportRepository $report)
     {
-        $statementDate = Carbon::createFromFormat('d/m/Y', $request->statement_date);
-        $monthlyStatement = $report->getmonthlyPaymentStatement($statementDate->month, $statementDate->year);
-        return Datatables::of($monthlyStatement)->make(true);
-    }
+        error_log("Monthly Due Statement" . $request->due_statement_date);
+        
+        
+        $due_statement_date = Carbon::createFromFormat('d/m/Y', $request->due_statement_date);
+        $due_statement_date->day = 01;
+        $due_statement_date = $due_statement_date->subMonth();
+        $due_statement_date = $due_statement_date->toDateString();
+        // dd($due_statement_date);
+        $monthlyDueStatement = $report->getmonthlyDueStatement($due_statement_date);
+        return Datatables::of($monthlyDueStatement)
+        ->addColumn('TotalDuePrice', function ($dueReporting) {
+            $batches = $dueReporting->batch;
+            $total_due = 0;
+            foreach ($batches as $batch) {
 
-    public function dueStatement(Request $request, ReportRepository $report)
-    {
-        $dueStatementDate = Carbon::createFromFormat('d/m/Y', $request->due_statement_date);
-        dd($dueStatementDate);
-        $dueStatement = $report->getmonthlyDueStatement($dueStatementDate->month, $dueStatementDate->year);
-        return Datatables::of($dueStatement)->make(true);
+               $last_paid_date = Carbon::parse($batch->pivot->last_paid_date); 
+               $now = Carbon::now();
+               
+               $diff_in_months = $now->diffInMonths($last_paid_date);
+               $amount = $diff_in_months * $batch->price;
+               $total_due = $total_due + $amount;
+            }
+            return $total_due;
+        })
+        ->addColumn('due_batches', function ($allReporting) {
+           return $allReporting->batch->map(function($bat) {
+               $ready_data = "(" . $bat->name . ", ".$bat->price. ", ". $bat->pivot->last_paid_date . ")";
+               return $ready_data;
+           })->implode(', ');
+        })
+        ->make(true);
     }
 
 }
