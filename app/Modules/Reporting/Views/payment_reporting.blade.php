@@ -593,22 +593,22 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-2">
-                    <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-success"><strong>Daily</strong> Collection</button>
+                    <button type="submit" id="daily_payment_reporting" class="btn btn-block bg-green margin"><strong>Daily</strong> Collection</button>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
+                    <button type="submit" id="due_payment_reporting" class="btn btn-block bg-red margin"><strong>Due</strong> Reporting</button>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" id="refund_reporting" class="btn btn-block btn-primary"><strong>Refund</strong> Reporting</button>
+                    <button type="submit" id="refund_reporting" class="btn btn-block bg-light-blue color-palette margin"><strong>Refund</strong> Reporting</button>
                 </div>
                 <div class="col-md-2">
-                    <button  id="show_range_payment_reporting" class="btn btn-block btn-info"><strong>Show Date Range</strong>  Collection</button>
+                    <button  id="show_range_payment_reporting" class="btn btn-block bg-aqua margin"><strong>Show Date Range</strong>  Collection</button>
                 </div>
                 <div class="col-md-2">
-                    <button  id="show_monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
+                    <button  id="show_monthly_statement" class="btn btn-block bg-yellow margin"><strong>Monthly Payment </strong> Statement</button>
                 </div>
                 <div class="col-md-2">
-                    <button  id="show_monthly_due_statement" class="btn btn-block btn-danger"><strong>Monthly Due </strong> Statement</button>
+                    <button  id="show_monthly_due_statement" class="btn btn-block bg-red margin"><strong>Monthly Due </strong> Statement</button>
                 </div>
 
            </div>  
@@ -688,7 +688,7 @@
                 </div>
                 <div class="col-xs-6">
                     <label for="" ></label>
-                    <button type="submit" id="monthly_due_statement" class="btn btn-block btn-danger    "><strong>Monthly Due </strong> Statement</button>
+                    <button type="submit" id="monthly_due_statement" class="btn btn-block btn-danger"><strong>Monthly Due </strong> Statement</button>
                 </div>
             </div>
         </div>

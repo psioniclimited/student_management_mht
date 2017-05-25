@@ -51,7 +51,6 @@ $(document).ready(function () {
             schools_id: {valueNotEquals: "default"},
             grades_id: {valueNotEquals: "default"},
             batch_types_id: {valueNotEquals: "default"},
-            joining_year: {required: true}
         },
         messages: {
             name: {required: "Enter Student Name"},
@@ -62,7 +61,6 @@ $(document).ready(function () {
             schools_id: {valueNotEquals: "Select a School"},
             grades_id: {valueNotEquals: "Select a Grade"},
             batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
-            joining_year: {required: "Enter Joining Year"}
         }
     });
 
@@ -251,11 +249,6 @@ $(document).ready(function () {
                             @endforeach
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="joining_year">Joining Year*</label>
-                    <input type="number" min="0" class="form-control" id="joining_year" name="joining_year" placeholder="Enter Joining Year">
-                </div>
-                
                 
                 <!-- checkbox -->
                 <div class="form-group">

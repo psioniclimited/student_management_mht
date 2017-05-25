@@ -86,7 +86,7 @@
                         <h2 class="profile-username text-center">Student Name : {{ $getStudent->name }}</h2>
                     </div>
                     <div class="form-group">
-                        <h3 class="text-muted text-center">Joining Year : {{ $getStudent->joining_year }}</h3>
+                        <h3 class="text-muted text-center">Permanent ID : {{ $getStudent->student_permanent_id }}</h3>
                     </div>
                 </div>
                 

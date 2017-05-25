@@ -12,6 +12,7 @@
 <script src="{{asset('plugins/jvectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
 <!-- ChartJS 1.0.1 -->
 <script src="{{asset('plugins/chartjs/Chart.min.js')}}"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js" /> -->
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <!-- <script src="{{asset('dist/js/pages/dashboard2.js')}}"></script> -->
 <!-- DataTables -->
@@ -36,7 +37,7 @@ $(document).ready(function () {
         "paging": true,
         "pageLength": 50,
         "lengthChange": true,
-        "searching": true,
+        "searching": false,
         "ordering": true,
         "info": false,
         "autoWidth": false,
@@ -44,11 +45,39 @@ $(document).ready(function () {
         "serverSide": true,
         "ajax": "{{URL::to('/get_all_batches_and_students')}}",
         "columns": [
-                {"data": "name"},
-                // {"data": "teacher_name"},
-                {"data": "total_number_of_students"},
+                    {"data": "name"},
+                    {"data": "schedule"},
+                    {"data": "total_number_of_students"},
+                    {"data": "number_of_paid_students"},
+                    {"data": "number_of_unpaid_students"},
+                    {"data": "total_expected_amount"},
+                    {"data": "total_paid_amount"},
+                    {"data": "total_unpaid_amount"},
+                    {"data": "Link", name: 'link', orderable: false, searchable: false}
             ]
     });
+    
+
+    // Chart Testing
+    // var ctx = document.getElementById('myChart').getContext('2d');
+    // var chart = new Chart(ctx, {
+    //     // The type of chart we want to create
+    //     type: 'bar',
+
+    //     // The data for our dataset
+    //     data: {
+    //         labels: ["January", "February", "March", "April", "May", "June", "July"],
+    //         datasets: [{
+    //             label: "My First dataset",
+    //             backgroundColor: 'rgb(255, 99, 132)',
+    //             borderColor: 'rgb(255, 99, 132)',
+    //             data: [0, 10, 5, 2, 20, 30, 45],
+    //         }]
+    //     },
+
+    //     // Configuration options go here
+    //     options: {}
+    // });
 
 });
 </script>
@@ -86,7 +115,7 @@ $(document).ready(function () {
         <!-- /.col -->
         <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="info-box">
-            <span class="info-box-icon bg-purple color-palette "><i class="ion ion-cash"></i></span>
+            <span class="info-box-icon bg-yellow"><i class="ion ion-cash"></i></span>
 
             <div class="info-box-content">
               <span class="info-box-text">Total Expected Amount</span>
@@ -144,8 +173,14 @@ $(document).ready(function () {
                 <thead>
                     <tr>
                         <th>Batch Name</th>
-                        <!-- <th>Teacher Name</th> -->
+                        <th>Schedule</th>
                         <th>Total number of students</th>
+                        <th>Number of Paid students</th>
+                        <th>Number of Due students</th>
+                        <th>Total Expected Amount /-</th>
+                        <th>Total Paid Amount /-</th>
+                        <th>Total Due Amount /-</th>
+                        <th>Search for all the students</th> 
                     </tr>
                 </thead>
                 <tbody>                            
@@ -155,7 +190,22 @@ $(document).ready(function () {
         </div>
             <!-- /.box-body -->
     </div><!-- /.box -->
-      
+
+    <!-- Chart Testing -->
+<!--     <div class="box box-danger">
+        <div class="box-header">
+            <h3 class="box-title">Due</h3>
+        </div>
+        
+        <div class="box-body">
+
+          <canvas id="myChart"></canvas>
+            
+        </div>
+            
+    </div> -->
+
+   
 
     </section>
     <!-- /.content -->

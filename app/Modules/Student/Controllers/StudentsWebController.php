@@ -45,8 +45,8 @@ class StudentsWebController extends Controller {
     return Datatables::of($students)
                     ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>'.'&nbsp &nbsp &nbsp'.
-                            '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success" target="_blank"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp';
+                        return '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>'.'&nbsp &nbsp &nbsp'.
+                            '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn bg-green margin" target="_blank"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp';
                         }
                         else {
                             return 'N/A';
@@ -78,13 +78,13 @@ class StudentsWebController extends Controller {
                     })
                     ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return  '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                            '<a href="' . url('/students_student') . '/' . $students->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                                '<a class="btn btn-xs btn-danger" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        return  '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+                            '<a href="' . url('/students_student') . '/' . $students->id . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                                '<a class="btn bg-red margin" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>'.'&nbsp &nbsp &nbsp'.
-                                '<a href="' . url('/student') . '/' . $students->id . '/invoice_detail_page/' . '"' . 'class="btn btn-xs btn-warning"><i class="glyphicon glyphicon-edit"></i> Invoice Update</a>'.'&nbsp &nbsp &nbsp'.
-                                '<a href="' . url('/student') . '/' . $students->id . '/last_paid_update_page/' . '"' . 'class="btn btn-xs btn-primary"><i class="glyphicon glyphicon-edit"></i> Last Payment Date Update</a>';
+                                '<a href="' . url('/student') . '/' . $students->id . '/invoice_detail_page/' . '"' . 'class="btn bg-navy margin"><i class="glyphicon glyphicon-edit"></i> Invoice Update</a>'.'&nbsp &nbsp &nbsp'.
+                                '<a href="' . url('/student') . '/' . $students->id . '/last_paid_update_page/' . '"' . 'class="btn bg-maroon margin"><i class="glyphicon glyphicon-edit"></i> Last Payment Date Update</a>';
                         }
                         else {
                             return 'N/A';
@@ -196,21 +196,11 @@ class StudentsWebController extends Controller {
     }
 
     public function get_all_batches_and_students()  {
-        $batches = Batch::with('student','teacherDetail')->has('student')->get();
-        // return $batches;
-        // dd($batches);
+
+        // $batches = Batch::with('student','teacherDetail')->has('student')->get();
+        $batches = Batch::with('batchType', 'subject', 'grade','student')->has('student')->get();
+        
         return Datatables::of($batches)
-            // ->addColumn('teacher_name', function ($batches) {
-            //     if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-            //     return $batches->teacherDetail[0];
-            //     $teacher_name =  TeacherDetail::with('user')->find($batches->teacher_details_users_id->id);
-            //     return $teacher_name->user->name;
-                
-            //     }
-            //     else {
-            //         return 'N/A';
-            //     }
-            // })
             ->addColumn('total_number_of_students', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                     return count($batches->student);
@@ -219,15 +209,114 @@ class StudentsWebController extends Controller {
                     return 'N/A';
                 }
             })
-            ->addColumn('total_expected_price', function ($batches) {
+            ->addColumn('total_expected_amount', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    return count($batches->student);
+                    return count($batches->student) * $batches->price;
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->addColumn('number_of_paid_students', function ($batches) {
+                
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                    
+                    $std =  $batches->student;
+                    $no_of_paid_students = 0;
+                    $now = new Carbon('first day of this month');
+                    $now = $now->toDateString();
+                    $std = $batches->student;
+                    for ($i=0; $i < count($std); $i++) { 
+                        $sss = $std[$i];
+                        if ($sss->pivot->last_paid_date >= $now)  {
+                            $no_of_paid_students = $no_of_paid_students + 1;
+                        }
+                    }
+                    return $no_of_paid_students;
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->addColumn('total_paid_amount', function ($batches) {
+                
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                    
+                    $std =  $batches->student;
+                    $no_of_paid_students = 0;
+                    $now = new Carbon('first day of this month');
+                    $now = $now->toDateString();
+                    $std = $batches->student;
+                    for ($i=0; $i < count($std); $i++) { 
+                        $sss = $std[$i];
+                        if ($sss->pivot->last_paid_date >= $now)  {
+                            $no_of_paid_students = $no_of_paid_students + 1;
+                        }
+                    }
+                    return $no_of_paid_students * $batches->price;
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->addColumn('number_of_unpaid_students', function ($batches) {
+                
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                    
+                    $std =  $batches->student;
+                    $no_of_unpaid_students = 0;
+                    $now = new Carbon('first day of this month');
+                    $now = $now->toDateString();
+                    error_log($now);
+                    $std = $batches->student;
+                    for ($i=0; $i < count($std); $i++) { 
+                        $sss = $std[$i];
+                        if ($sss->pivot->last_paid_date < $now)  {
+                            $no_of_unpaid_students = $no_of_unpaid_students + 1;
+                        }
+                    }
+                    return $no_of_unpaid_students;
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->addColumn('total_unpaid_amount', function ($batches) {
+                
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                    
+                    $std =  $batches->student;
+                    $no_of_unpaid_students = 0;
+                    $now = new Carbon('first day of this month');
+                    $now = $now->toDateString();
+                    error_log($now);
+                    $std = $batches->student;
+                    for ($i=0; $i < count($std); $i++) { 
+                        $sss = $std[$i];
+                        if ($sss->pivot->last_paid_date < $now)  {
+                            $no_of_unpaid_students = $no_of_unpaid_students + 1;
+                        }
+                    }
+                    return $no_of_unpaid_students * $batches->price;
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+            ->addColumn('Link', function ($batches) {
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                
+                return '<a href="' . url('/students_all_students_per_batch_page') . '/' . $batches->id . '/'.count($batches->student) . '"' . 'class="btn bg-purple margin" target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 }
                 else {
                     return 'N/A';
                 }
             })
             ->make(true);
+
+
+
+
     }
 
 
@@ -294,13 +383,14 @@ class StudentsWebController extends Controller {
             if ($batch_start_date->gt($last_paid_date )) {
                 $last_paid_date = $batch_start_date->subMonth();
                 $last_paid_date = $last_paid_date->toDateString();
+                error_log(" ============================= " . $last_paid_date);
                 $bast_has_student = BatchHasStudent::where('batch_id', $student->batch[$i]->id)
                                     ->where('students_id', $student->id)
                                     ->update(['last_paid_date' => $last_paid_date]);
             }
         }
 
-        return redirect("all_students");
+        return back();
     }
 
 
@@ -379,7 +469,7 @@ class StudentsWebController extends Controller {
         }
 
         
-    	return redirect('all_students');
+    	return back();
     }
 
 

@@ -148,7 +148,7 @@
 <!-- Main content -->
 <section class="content">
     
-    <div class="box box-primary">
+    <div class="box box-warning">
         <div class="box-header">
             <div class="row ">
                 <div class="col-md-6 animated fadeIn">
@@ -168,7 +168,7 @@
 
 
     <!-- Teacher payment Datatable -->
-    <div class="box box-warning">
+    <div class="box box-primary">
         <div class="box-header">
             <h3><strong>Student List</strong></h3>      
         </div>

@@ -14,7 +14,6 @@ use Carbon\Carbon;
 class DashboardController extends Controller {
 
     public function index() {        
-        
         if (Auth::check()) {
 			/* Calculating Total number of Students for current month */
 	        $students = Student::with('batch','school')->has('batch')->get();

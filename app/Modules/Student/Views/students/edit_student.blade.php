@@ -316,12 +316,6 @@ $(document).ready(function () {
                 </div>
 
                 <div class="form-group">
-                    <label for="joining_year">Joining Year*</label>
-                    <input type="number" min="0" class="form-control" id="joining_year" name="joining_year" value="{{ $getStudent->joining_year }}">
-                </div>
-                
-
-                <div class="form-group">
                     <label for="subjects_id">Choose Subject*</label>
                     @if( ! $getStudent->subject->isEmpty() )
                     @foreach($Subjects as $subject)

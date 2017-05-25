@@ -11,7 +11,7 @@ use App\Modules\Student\Models\BatchType;
 use App\Modules\Student\Models\Grade;
 use App\Modules\Student\Models\Subject;
 use App\Modules\Teacher\Models\TeacherDetail;
-
+use App\Modules\Student\Models\BatchHasStudent;
 
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -54,9 +54,9 @@ class BatchWebController extends Controller {
                 //         '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
                 //         <i class="glyphicon glyphicon-trash"></i> Delete
                 //         </a>';
-                return '<a class="btn btn-xs btn-warning" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_edit">
+                return '<a class="btn bg-yellow margin" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_edit">
                         <i class="glyphicon glyphicon-trash"></i> Edit </a>' .'&nbsp &nbsp &nbsp'.
-                        '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        '<a class="btn bg-red margin" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
                         <i class="glyphicon glyphicon-trash"></i> Delete
                         </a>';
 
@@ -185,6 +185,7 @@ class BatchWebController extends Controller {
     * Delete a Batch *
     ******************/
     public function deleteBatch(Request $request, $id) {
+        BatchHasStudent::where('batch_id', $id)->delete();
         Batch::where('id', $id)->delete();
         return back();
     }
@@ -196,6 +197,7 @@ class BatchWebController extends Controller {
     }
 
     public function get_all_batches_for_a_subject(Request $request)  {
+        
         $batches = Batch::with('batchType', 'subject', 'grade','teacherDetail','student')->where('subjects_id',$request->subjects_id)->get();
         
         return Datatables::of($batches)
@@ -313,7 +315,7 @@ class BatchWebController extends Controller {
             ->addColumn('Link', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                 
-                return '<a href="' . url('/students_all_students_per_batch_page') . '/' . $batches->id . '/'.count($batches->student) . '"' . 'class="btn btn-xs btn-info" target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                return '<a href="' . url('/students_all_students_per_batch_page') . '/' . $batches->id . '/'.count($batches->student) . '"' . 'class="btn bg-purple margin" target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 }
                 else {
                     return 'N/A';
@@ -380,7 +382,7 @@ class BatchWebController extends Controller {
             })
         ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return  '<a href="' . url('/student') . '/' . $students->student_id . '/detail/' . '"' . 'class="btn btn-xs btn-info" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                        return  '<a href="' . url('/students_student') . '/' . $students->student_id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                         }
                         else {
                             return 'N/A';
