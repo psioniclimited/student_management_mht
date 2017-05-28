@@ -34,8 +34,23 @@
             <li {!! Request::is('*students_active_students*') ? ' class="active"' : null !!}><a href="{{url('students_active_students')}}"><i class="fa fa-circle-o"></i> Active Students</a></li>
             <li {!! Request::is('*students_batch_wise_student_page*') ? ' class="active"' : null !!}><a href="{{url('students_batch_wise_student_page')}}"><i class="fa fa-circle-o"></i> Batch wise Students</a></li>
             <li {!! Request::is('students_create_student') ? ' class="active"' : null !!}><a href="{{url('students_create_student')}}"><i class="fa fa-circle-o"></i>Add New Student</a></li>
-            <li {!! Request::is('students_payment_student') ? ' class="active"' : null !!}><a href="{{url('students_payment_student')}}"><i class="fa fa-circle-o"></i> Payment</a></li>
-            <li {!! Request::is('*students_summary_student*') ? ' class="active"' : null !!}><a href="{{url('students_summary_student')}}"><i class="fa fa-circle-o"></i> Summary</a></li>
+            <li {!! Request::is('students_payment_*') ? ' class="active"' : null !!}>
+                <a href="#">
+                    <i class="fa fa-circle-o"></i> Payment Section
+                </a>
+                <ul class="treeview-menu">
+                    <li {!! Request::is('students_payment_student') ? ' class="active"' : null !!}>
+                        <a href="{{url('students_payment_student')}}">
+                            <i class="fa fa-circle-o"></i> Batch Payment
+                        </a>
+                    </li>
+                    <li {!! Request::is('students_payment_student') ? ' class="active"' : null !!}>
+                        <a href="{{url('students_payment_student')}}">
+                            <i class="fa fa-circle-o"></i> Other Payment
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </li>
     <li {!! Request::is('*teacher*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
