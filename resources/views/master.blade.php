@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css')}}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{asset('https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css')}}">
     <!-- Theme style -->
@@ -22,6 +24,9 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
     folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{asset('dist/css/AdminLTE.min.css')}}">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
         
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

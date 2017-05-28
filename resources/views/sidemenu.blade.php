@@ -39,13 +39,13 @@
                     <i class="fa fa-circle-o"></i> Payment Section
                 </a>
                 <ul class="treeview-menu">
-                    <li {!! Request::is('students_payment_student') ? ' class="active"' : null !!}>
-                        <a href="{{url('students_payment_student')}}">
+                    <li {!! Request::is('students_payment_batch_student') ? ' class="active"' : null !!}>
+                        <a href="{{url('students_payment_batch_student')}}">
                             <i class="fa fa-circle-o"></i> Batch Payment
                         </a>
                     </li>
-                    <li {!! Request::is('students_payment_student') ? ' class="active"' : null !!}>
-                        <a href="{{url('students_payment_student')}}">
+                    <li {!! Request::is('students_payment_other') ? ' class="active"' : null !!}>
+                        <a href="{{url('students_payment_other')}}">
                             <i class="fa fa-circle-o"></i> Other Payment
                         </a>
                     </li>

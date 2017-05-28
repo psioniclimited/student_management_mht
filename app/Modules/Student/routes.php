@@ -63,7 +63,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     /***********************
     * Payment of a Student *
     ************************/
-    Route::get('students_payment_student', 'App\Modules\Student\Controllers\StudentPaymentController@paymentStudent');
+    Route::get('students_payment_batch_student', 'App\Modules\Student\Controllers\StudentPaymentController@batchPaymentStudent');
     Route::get('get_all_student_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getAllStudentForPayment');
     Route::get('get_student_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getStudentInfoForPayment');
     Route::get('get_batch_info_for_payment', 'App\Modules\Student\Controllers\StudentPaymentController@getBatchInfoForPayment');     
@@ -73,6 +73,9 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('due_payment_student', 'App\Modules\Student\Controllers\StudentPaymentController@due_payment_student');
     Route::post('clear_due_payment', 'App\Modules\Student\Controllers\StudentPaymentController@clear_due_payment');
     Route::get('get_student_payment_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_payment_history');
+
+    Route::get('students_payment_other', 'App\Modules\Student\Controllers\StudentPaymentController@otherPayment');
+    Route::get('students_admission_info', 'App\Modules\Student\Controllers\StudentPaymentController@students_admission_info');
 
     /**************************************
     * Invoice History Update of a Student *

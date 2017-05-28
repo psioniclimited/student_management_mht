@@ -38,7 +38,7 @@ class StudentPaymentController extends Controller {
 	/***********************
     * Payment of a Student *
     ************************/
-    public function paymentStudent() {
+    public function batchPaymentStudent() {
 
         $getStudent = Student::all();
 
@@ -46,7 +46,7 @@ class StudentPaymentController extends Controller {
         $refDate = $refDate->toDateString();
 		$refDate = Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
 
-        return view('Student::student_payment/payment_of_a_student',compact('getStudent','refDate'));
+        return view('Student::student_payment/batch_payment_of_a_student',compact('getStudent','refDate'));
     }
 
     public function getAllStudentForPayment(Request $request) {
@@ -403,6 +403,23 @@ class StudentPaymentController extends Controller {
         $get_student_payment_history = Student::with('batch')->find($request->student_id);
         $get_student_payment_history = $get_student_payment_history->batch;
         return Datatables::of($get_student_payment_history)->make(true);
+    }
+
+    public function otherPayment() {
+
+        $getStudent = Student::all();
+
+        $refDate = Carbon::now();
+        $refDate = $refDate->toDateString();
+        $refDate = Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
+
+        return view('Student::student_payment/other_payment',compact('getStudent','refDate'));
+    }
+
+    public function students_admission_info(Request $request)
+    {
+        $getStudent = Student::with('school')->find($request->student_id);
+        return response()->json($getStudent);
     }
 
 }
