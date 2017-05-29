@@ -42,7 +42,8 @@
       autoclose: true
     });
 
-    $("#payment_print").hide();
+    $("#admission_payment_print").hide();
+    $("#other_payment_print").hide();
 
     $('#student_id').select2({
         allowClear: true,
@@ -278,15 +279,15 @@
     }
 
 
-    // function print_money_receipt() {
-    $('#payment_print').click(function() {
+    
+    $('#admission_payment_print').click(function() {
         $.get('/get_invoice_id',function(serial_number) {
             console.log(serial_number);
             invoice_serial_number = serial_number;
             $('#serial_number').val(serial_number);
             console.log('Print Option invoice_serial_number: '+invoice_serial_number);
-        // });        
-        var top = "<div>Money Receipt no: "+invoice_serial_number+"<div/>"+
+        
+        let top = "<div>Money Receipt no: "+invoice_serial_number+"<div/>"+
                     "<div>Date: {{ $refDate }}<div/>"+
                     "<div>Student Name: "+$('p#student_name').text()+"<div/>"+
                     "<div>Father's Name: "+$('p#fathers_name').text()+"<div/>"+
@@ -294,57 +295,26 @@
                     "<br>";
         
 
-        var header =    "<table class='table table-bordered table-striped'>"+
-                            "<thead>"+
-                                "<tr>"+
-                                    "<th>Batch Name</th>"+
-                                    "<th>Payment From</th>"+
-                                    "<th>Unit Price /=</th>"+
-                                    "<th>no of month</th>"+
-                                    "<th>Total Price Per Course /= </th>"+
-                                "</tr>"+
-                            "</thead>"+
-                        "<tbody>";                         
-                        
-
-
+        let payment_output ="<table class='table table-bordered table-striped'>"+
+	                        "<thead>"+
+	                            "<tr>"+
+	                                "<th>Payment Type</th>"+
+	                                "<th>Description</th>"+
+	                                "<th>Amount</th>"+
+	                            "</tr>"+
+	                        "</thead>" +                        
         
-        // var date_of_payment = $('.ref_date').attr('value');
-        let date_of_payment = "{{ $refDate }}";
-        var payment_data = $('#student_payment').serializeArray();
-        console.log(payment_data);
-        var payment_data_count = 0;
-        var payment_output = "";
-
-        for (var count = 0; count < batch_length; count++) {
-            var human_readable_last_paid_date = moment(payment_data[6+payment_data_count].value);
-                human_readable_last_paid_date = moment(human_readable_last_paid_date).add(1, 'M');
-                human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
-            payment_output += "<tr role='row' class='even'>"+
-                                "<td>"+payment_data[8+payment_data_count].value+"</td>"+
-                                "<td>"+human_readable_last_paid_date+"</td>"+
-                                "<td>"+payment_data[7+payment_data_count].value+"</td>"+
-                                "<td>"+payment_data[9+payment_data_count].value+"</td>"+
-                                "<td>"+payment_data[10+payment_data_count].value+"</td>"+
-                            "</tr>";                
-
-
-            if (payment_data[11 + payment_data_count].value == "due" || payment_data[11+payment_data_count].value == "discount") {
-                payment_data_count += 1;
-                console.log("payment_data_count" + payment_data_count);
-            }
-
-            payment_data_count += 8;
-        }
-
-            payment_output += "<tr role='row' class='even'>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td>Total Price</td>"+
-                                "<td>"+payment_data[ payment_data.length - 1 ].value+"</td>"+
-                            "</tr></tbody ></table>";                
-        var final_output = top + header + payment_output;
+        					 "<tbody>" +
+        						"<tr role='row' class='even'>"+
+        							"<td> Admission Fee </td>"+
+                                	"<td>"+ $('#admission_dsecription').val()+"</td>"+
+                                	"<td>"+$('#admission_fee').val()+"</td>"+
+                            	"</tr>"+
+								"</tbody >"+
+							"</table>";
+                     
+        
+        let final_output = top + payment_output;
         
         $(final_output).print({
             globalStyles: true,
@@ -361,52 +331,25 @@
             doctype: '<!doctype html>'
         });
 
-        }); // $.get('/get_invoice_id',function(serial_number){
-    }); // End of Print Function
+        }); 
+    }); 
     
-    // }
+    
 
 
- //    $("#student_info_for_payment").click(function() {
- //        $("#payment_print").hide('slow');
- //        $("#student_info_section").show('slow');
- //        $.get("/get_student_info_for_payment", { 
- //                student_id: $('select[id=student_id]').val(),
- //                student_phonenumber: $("#student_phonenumber").val()
- //        })
- //        .done(function( data ) {
- //            console.log(data);
- //            let img_address = "{{ URL::to('/') }}";
- //            if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null) && !jQuery.isEmptyObject(data)) {
- //               $("#student_payment_div").css({ display: "block" });
- //               $('p#student_name').text(data.name);
- //               $('p#school_name').text(data.school.name);
- //               $('p#student_email').text(data.student_email);
- //               $('p#fathers_name').text(data.fathers_name);
- //               $('p#mothers_name').text(data.mothers_name);
- //               $('p#student_phone_number').text(data.student_phone_number);
- //               $('p#guardian_phone_number').text(data.guardian_phone_number);
- //               $('input#students_id').val(data.id);
- //               $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
- //               getBatches(data.id);
- //            }
-            
-           
- //        });
-	// });
-    $("#student_info_for_payment").click(function() {
-        $("#payment_print").hide('slow');
+
+    $("#show_student_info").click(function() {
+        
+        $("#admission_payment_print").hide('slow');
         $("#student_info_section").show('slow');
-        $.get("/students_admission_info", { 
+        
+        $.get("/get_student_info_for_payment", { 
                 student_id: $('select[id=student_id]').val(),
-                student_phonenumber: $("#student_phonenumber").val()
         })
         .done(function( data ) {
-        	console.log("Admission...........");
-            console.log(data);
-            let img_address = "{{ URL::to('/') }}";
+        	let img_address = "{{ URL::to('/') }}";
             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null) && !jQuery.isEmptyObject(data)) {
-               $("#student_payment_div").css({ display: "block" });
+               // $("#student_payment_div").css({ display: "block" });
                $('p#student_name').text(data.name);
                $('p#school_name').text(data.school.name);
                $('p#student_email').text(data.student_email);
@@ -416,56 +359,64 @@
                $('p#guardian_phone_number').text(data.guardian_phone_number);
                $('input#students_id').val(data.id);
                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
-               getBatches(data.id);
             }
+            $(".payment_section").hide('slow');
+        });
+	});
+
+	$('#admission_payment_info').click(function() {
+		$("#admission_payment_print").hide('slow');
+        $(".admission_payment_section").show('slow');
+        $.get("/admission_payment_info", { 
+                student_id: $('select[id=student_id]').val(),
+        })
+        .done(function( data ) {
+        	console.log("Admission Payment Status");
+            console.log(data);
             
-           
         });
 
-    });
+	});
+
+	$('#other_payment_info').click(function() {
+		$("#payment_print").hide('slow');
+        $(".other_payment_section").show('slow');
+
+	});
 
 
-
-
-    
-    
-    
-
-    $("#student_payment").submit(function(e) {
+	$("#admission_payment_form").submit(function(e) {
         e.preventDefault();
-        // $(':button[class="payment_submit"]').prop('disabled', true);
-        var url = "/student_payment"; // the script where you handle the form input.
-        if (parseFloat($('#totalpriceAmount').val()) > 0) {
-            $( ".payment_submit" ).attr( "disabled", true );
+        var url = "/student_admission_payment_process"; 
+        if (parseFloat($('#admission_fee').val()) > 0) {
+            $( ".admission_payment_submit" ).attr( "disabled", true );
             $.get('/get_payment_invoice_id',function(serial_number) {
                 invoice_serial_number = serial_number;
                 $('#serial_number').val(serial_number);
-                // console.log(invoice_serial_number);
-            // });
             $.ajax({
                 type: "POST",
                 url: url,
-                data: $("#student_payment").serialize(), // serializes the form's elements.
+                data: $("#admission_payment_form").serialize(), // serializes the form's elements.
                 success: function(reply_data) {
+                	console.log('reply_data'); 
                     console.log(reply_data); 
                     $.get("/get_student_info_for_payment", {
                             student_id: $('select[id=student_id]').val(),
-                            student_phonenumber: $("#student_phonenumber").val() 
                     })
                     .done(function( data ) {
-                        console.log("student_payment");
+                        console.log("admission_payment_form");
                         console.log(data);
-                        $("#payment_print").show('slow');
+                        $("#admission_payment_print").show('slow');
                         let msg = '<div class="alert alert-success alert-dismissible">'+
                                     '<button type="button" id="success_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
-                                    '<h4><i class="icon fa fa-check"></i> Payment Complete for <strong>'+data.name+'</strong></h4>'+
+                                    '<h4><i class="icon fa fa-check"></i> Admission Payment Complete for <strong>'+data.name+'</strong></h4>'+
                                     '</div>';
                            
                        $('#payment_success_msg').html(msg);
 
                        $('#success_payment_msg').click(function(e) {
-                            $( ".payment_submit" ).attr( "disabled", false );
-                            $("#payment_print").hide('slow');
+                            $( ".admission_payment_submit" ).attr( "disabled", false );
+                            $("#admission_payment_print").hide('slow');
                             let img_address = "{{ URL::to('/') }}";
                             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
                                $("#student_payment_div").css({ display: "block" });
@@ -477,18 +428,18 @@
                                $('p#guardian_phone_number').text(data.guardian_phone_number);
                                $('input#students_id').val(data.id);
                                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
-                               getBatches(data.id);
+                               
+                               /*************************** 
+                               Admission Done for this Student message will be called here 
+                               ****************************/
                             }
                             e.preventDefault();
                         });
-                        
-                       
                     });
                 }
             });
-           }); // $.get('/get_invoice_id',function(serial_number){
+           }); 
         }
-        // print_money_receipt();
     });
     
 });
@@ -543,16 +494,16 @@
 	                    <select class="form-control select2" name="student_id" id="student_id"></select>
                 	</div>
                     <div class="col-xs-3">
-                        <label for="student_phonenumber" >Phone Number*</label>
-                        <input type="text" class="form-control" name="student_phonenumber" id="student_phonenumber">
-                    </div>
+	                    <label for="" ></label>
+	                    <button type="submit" id="show_student_info" class="btn btn-block bg-blue btn-lg">Show Student Info</button>
+	                </div>
 	                <div class="col-xs-3">
 	                    <label for="" ></label>
-	                    <button type="submit" id="student_info_for_payment" class="btn btn-block bg-navy btn-lg">Show Info for Admission Payment</button>
+	                    <button type="submit" id="admission_payment_info" class="btn btn-block bg-navy btn-lg">Admission Payment</button>
 	                </div>
                     <div class="col-xs-3">
                         <label for="" ></label>
-                        <button type="submit" id="student_due_payment" class="btn btn-block bg-teal btn-lg">Show Info for Other Payment</button>
+                        <button type="submit" id="other_payment_info" class="btn btn-block bg-teal btn-lg">Other Payment</button>
                     </div>
                     
                     
@@ -566,82 +517,118 @@
 
     <!-- Admission Payment Info -->
     <div class="box box-info">
-        <div class="box-body">
+            <div class="box-body">
             <div class="box-header with-border">
-            	<h3 class="box-title">Student's Admission Information</h3>
+              <h3 class="box-title">Student's Information</h3>
             </div>
-            <div id="student_info_section" style="display: none; padding: 0 1%">
-            	<div class="row" style="padding-top: 1%">
-	            	<div class="col-md-4">
-	                    <div class="form-group">
-	                        <label for="name" >Student Name : </label>
-	                        <p id="student_name"></p>
-	                    </div>
-	                    <div class="form-group">
-	                        <label for="fathers_name" >Father's Name : </label>
-	                        <p id="fathers_name"></p>
-	                    </div>
-	                    <div class="form-group">
-	                        <label for="mothers_name" >Mother's Name : </label>
-	                        <p id="mothers_name"></p>
-	                    </div>
-	                    
-	                </div>
-	                
-	                <div class="col-md-4">
-	                    <div class="form-group">
-	                        <label for="student_phone_number" >Student's Phone Number : </label>
-	                        <p id="student_phone_number"></p>
-	                    </div>
-	                    <div class="form-group">
-	                        <label for="guardian_phone_number" >Guardian's Phone Number : </label>
-	                        <p id="guardian_phone_number"></p>
-	                    </div>
-	                    <div class="form-group">
-	                        <label for="student_email" >Email : </label>
-	                        <p id="student_email"></p>
-	                    </div>
-	                </div>
-	                <div class="col-md-4">
-	                    <div class="form-group">
-	                        <label for="school_name" >School Name : </label>
-	                        <p id="school_name"></p>
-	                    </div>
-	                    <div class="form-group">
-	                        <label for="school_name" >Amount : </label>
-	                        <input type="number" class="form-control" name="admission_payment" id="admission_payment">
-	                    </div>
-	                </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                    	<label for=""></label>
-                        <button id="" type="button" class="btn btn-block bg-purple btn-lg">Print</button>
+            <div id="student_info_section" style="display: none">
+                <div class="col-md-4">
+                    <div id="student_pofile_image" class="form-group">
+                        
                     </div>
-                    <div class="col-md-6">
-                    	<label for="" ></label>
-                        <button type="submit" class="btn btn-block bg-green btn-lg payment_submit">Payment</button>
+                    
+                    <div class="form-group">
+                        <label for="school_name" >School Name : </label>
+                        <p id="school_name"></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="name" >Student Name : </label>
+                        <p id="student_name"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="fathers_name" >Father's Name : </label>
+                        <p id="fathers_name"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="mothers_name" >Mother's Name : </label>
+                        <p id="mothers_name"></p>
+                    </div>
+                    
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="student_phone_number" >Student's Phone Number : </label>
+                        <p id="student_phone_number"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="guardian_phone_number" >Guardian's Phone Number : </label>
+                        <p id="guardian_phone_number"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="student_email" >Email : </label>
+                        <p id="student_email"></p>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- /.box-body -->
+            </div>
+            <!-- /.box-body -->
     </div>
     <!-- /.box -->
 
 
 
 
-	<!-- Horizontal Form -->
-    <div class="box box-warning">
+	<!-- Admission Payment Section -->
+    <div class="box box-warning admission_payment_section" style="display: none">
             <div class="box-header">
                 <h4>
-                    Payment 
+                    Admission Payment Section
                 </h4>
                 <div id="payment_success_msg"></div>            
             </div>
             
-            <div id="student_payment_div" class="box-body" style="display: none;">
+            <div id="student_payment_div" class="box-body" >
+                {!! Form::open(array('id' => 'admission_payment_form', 'class' => 'form-horizontal')) !!}
+                <input id="ref_date" type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
+                <input type='hidden' id="students_id" name="students_id">
+                <input type='hidden' id="serial_number" name="serial_number">
+                <table id="all_user_list" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;">Payment Type</th>
+                            <th style="text-align: center;">Description</th>
+                            <th style="text-align: center;">Amount /=</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody id="batch_table">
+                    	<tr>
+                            <td style="text-align: center;">Admission Fee</th>
+                            <td><input id="admission_dsecription" class="form-control" type="text" name="description" placeholder="Description"></td>
+                            <td><input id="admission_fee" class="form-control" type="number" name="admission_fee" placeholder="Amount"></td>
+                        </tr>                          
+                    </tbody >
+                </table>
+                <div class="footer">
+                    <label for="" ></label>
+                    <div class="row">
+                    <div class="col-md-6">
+                        <button id="admission_payment_print" type="button" class="btn btn-block bg-purple btn-lg">Print</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-block bg-green btn-lg admission_payment_submit">Payment</button>
+                    </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+    </div>
+    
+
+
+	<!-- Other Payment Section -->
+<!--     <div class="box box-warning other_payment_section" style="display: none">
+            <div class="box-header">
+                <h4>
+                    Other Payment Section
+                </h4>
+                <div id="payment_success_msg"></div>            
+            </div>
+            
+            <div id="student_payment_div" class="box-body" >
                 {!! Form::open(array('id' => 'student_payment', 'class' => 'form-horizontal')) !!}
                 <input id="ref_date" type='hidden' class="form-control ref_date" name="payment_date" value="{{ $refDate }}">
                 <input type='hidden' id="students_id" name="students_id">
@@ -649,14 +636,14 @@
                 <table id="all_user_list" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Batch Name</th>
-                            <th>Payment From</th>
-                            <th>Unit Price /=</th>
-                            <th>no of months</th>
-                            <th>Total Price Per Course /= </th>
-                            <th>Regular</th>
-                            <th>Due</th>
-                            <th>Discount</th>
+                            <th style="text-align: center;">Payment Type</th>
+                            <th style="text-align: center;">Description</th>
+                            <th style="text-align: center;">Amount /=</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align: center;">Others</th>
+                            <th><input class="form-control" type="text" name="description" style="width: 100%;"></th>
+                            <th><input class="form-control" type="number" name="other_fee" style="width: 100%;"></th>
                         </tr>
                     </thead>
                     <tbody id="batch_table" >                            
@@ -675,9 +662,9 @@
                 </div>
                 {!! Form::close() !!}
             </div>
-            <!-- /.box-body -->
-    </div>
-    <!-- /.box -->
+    </div> -->
+
+
 
 
 </section>

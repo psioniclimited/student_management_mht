@@ -75,7 +75,8 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('get_student_payment_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_payment_history');
 
     Route::get('students_payment_other', 'App\Modules\Student\Controllers\StudentPaymentController@otherPayment');
-    Route::get('students_admission_info', 'App\Modules\Student\Controllers\StudentPaymentController@students_admission_info');
+    Route::get('admission_payment_info', 'App\Modules\Student\Controllers\StudentPaymentController@admission_payment_info');
+    Route::post('student_admission_payment_process', 'App\Modules\Student\Controllers\StudentPaymentController@student_admission_payment_process');
 
     /**************************************
     * Invoice History Update of a Student *

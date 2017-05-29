@@ -413,13 +413,19 @@ class StudentPaymentController extends Controller {
         $refDate = $refDate->toDateString();
         $refDate = Carbon::createFromFormat('Y-m-d', $refDate)->format('d/m/Y');
 
-        return view('Student::student_payment/other_payment',compact('getStudent','refDate'));
+        return view('Student::student_payment/other_payment',compact('refDate'));
     }
 
-    public function students_admission_info(Request $request)
+    public function admission_payment_info(Request $request)
     {
-        $getStudent = Student::with('school')->find($request->student_id);
-        return response()->json($getStudent);
+        $admission_status = Student::find($request->student_id);
+        
+        return response()->json($admission_status);
+    }
+
+    public function student_admission_payment_process(Request $request)
+    {
+        return $request->all();
     }
 
 }
