@@ -40,9 +40,9 @@ class TeachersWebController extends Controller {
     return Datatables::of($teachers)
     				->addColumn('Link', function ($teachers) {
     					if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/teacher') . '/' . $teachers->id . '/show/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a href="' . url('/teacher') . '/' . Crypt::encrypt($teachers->id) . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                        		'<a class="btn btn-xs btn-danger" id="'. $teachers->users_id .'" data-toggle="modal" data-target="#confirm_delete">
+                        return '<a href="' . url('/teacher') . '/' . $teachers->id . '/show/' . '"' . 'class="btn bg-purple margin"><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
+                        		'<a href="' . url('/teacher') . '/' . Crypt::encrypt($teachers->id) . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                        		'<a class="btn bg-red margin" id="'. $teachers->users_id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
                         }

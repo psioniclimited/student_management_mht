@@ -427,5 +427,9 @@ class StudentPaymentController extends Controller {
     {
         return $request->all();
     }
+    public function student_other_payment_process(Request $request)
+    {
+        return $request->all();
+    }
 
 }

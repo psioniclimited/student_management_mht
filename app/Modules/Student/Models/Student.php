@@ -64,4 +64,9 @@ class Student extends Model
     {
         return $this->hasmany('App\Modules\Student\Models\InvoiceMaster', 'students_id');
     }
+
+    public function other_payment_master()
+    {
+        return $this->hasmany('App\Modules\Student\Models\OtherPaymentMaster', 'students_id');
+    }
 }
