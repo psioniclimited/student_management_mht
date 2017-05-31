@@ -22,9 +22,9 @@ class OtherPaymentType extends Model
         'description'
     ];
 
-    public function other_payment_detail()
+    public function other_payment_master()
     {
-        return $this->hasmany('App\Modules\Student\Models\OtherPaymentDetail', 'other_payment_type_id');
+        return $this->hasmany('App\Modules\Student\Models\OtherPaymentMaster', 'other_payment_type_id');
     }
 
 }

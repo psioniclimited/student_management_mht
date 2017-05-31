@@ -9,6 +9,11 @@ use App\Modules\Student\Models\BatchHasStudent;
 use App\Modules\Student\Models\InvoiceMaster;
 use App\Modules\Student\Models\InvoiceDetail;
 use App\Modules\Student\Models\Refund;
+use App\Modules\Student\Models\OtherPaymentMaster;
+use App\Modules\Student\Models\OtherPaymentDetail;
+use App\Modules\Student\Models\OtherPaymentType;
+
+
 use DB;
 
 class ReportRepository {
@@ -19,6 +24,14 @@ class ReportRepository {
 					->whereHas('invoiceDetail', function($query){
 						$query->where('refund', 0);
 					})
+					->where('payment_date', $date)
+					->get();
+		
+		return $payments;
+	}
+
+	public function getDailyOtherPaymentReportingByDate($date)	{
+		$payments = OtherPaymentMaster::with('student', 'other_payment_type')
 					->where('payment_date', $date)
 					->get();
 		
@@ -89,6 +102,13 @@ class ReportRepository {
             return empty($invoicedetail->invoiceMaster->student);
         });
         return $monthlyStatement;
+	}
+
+	public function getmonthlyOtherPaymentStatement($statement_month, $statement_year)	{
+		$monthlyOtherPaymentStatement = OtherPaymentMaster::with('student', 'other_payment_type')->whereYear('payment_from', '=', $statement_year)
+									->whereMonth('payment_from', '=', $statement_month)
+            						->get();
+        return $monthlyOtherPaymentStatement;
 	}
 
 	public function getmonthlyDueStatement($due_statement_date)	{

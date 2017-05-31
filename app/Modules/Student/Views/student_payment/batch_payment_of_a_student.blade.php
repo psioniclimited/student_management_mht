@@ -280,7 +280,7 @@
 
     // function print_money_receipt() {
     $('#payment_print').click(function() {
-        $.get('/get_invoice_id',function(serial_number) {
+        $.get('/get_invoice_id_for_print',function(serial_number) {
             console.log(serial_number);
             invoice_serial_number = serial_number;
             $('#serial_number').val(serial_number);

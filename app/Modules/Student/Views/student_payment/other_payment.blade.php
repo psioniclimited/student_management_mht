@@ -82,7 +82,7 @@
     *******************************/
     $("#show_student_info").click(function() {
         
-        $("#admission_payment_print").hide('slow');
+        // $("#admission_payment_print").hide('slow');
         $("#student_info_section").show('slow');
         
         $.get("/get_student_info_for_payment", { 
@@ -102,6 +102,24 @@
                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
                $('input#students_id').val(data.id);
                $('input#students_id_for_other_payment').val(data.id);
+
+
+                /**************************************************************** 
+                * Showing Admission Payment Table if admission fee is not paid. *
+                * Otherwise Showing a Admission Paid Completion message.        *
+                *****************************************************************/
+                if (data.admitted_status == 1) {
+                    $("#student_admission_payment_table").hide('slow');
+                    $("#student_admission_payment_message").show('slow');
+                    $( ".admission_payment_section" ).attr( "class", 'box box-success admission_payment_section');
+                }
+                else {
+                    $("#student_admission_payment_message").hide('slow');
+                    $("#student_admission_payment_table").show('slow');
+                    $( ".admission_payment_section" ).attr( "class", 'box box-danger admission_payment_section');
+                }               
+
+
             }
             $(".payment_section").hide('slow');
         });
@@ -111,28 +129,31 @@
     * Showing Admission Payment Table if admission fee is not paid. *
     * Otherwise Showing a Admission Paid Completion message.        *
     *****************************************************************/
-    $('#admission_payment_info').click(function() {
-		$.get("/admission_payment_info", { 
-                student_id: $('select[id=student_id]').val(),
-        })
-        .done(function( data ) {
-            if (data.admitted_status == 1) {
-                $("#student_admission_payment_table").hide('slow');
-                $("#student_admission_payment_message").show('slow');
-            }
-            else {
-                $("#student_admission_payment_message").hide('slow');
-                $("#student_admission_payment_table").show('slow');
-            }
+ //    $('#admission_payment_info').click(function() {
+	// 	$.get("/admission_payment_info", { 
+ //                student_id: $('select[id=student_id]').val(),
+ //        })
+ //        .done(function( data ) {
+ //            if (data.admitted_status == 1) {
+ //                $("#student_admission_payment_table").hide('slow');
+ //                $("#student_admission_payment_message").show('slow');
+ //            }
+ //            else {
+ //                $("#student_admission_payment_message").hide('slow');
+ //                $("#student_admission_payment_table").show('slow');
+ //            }
             
-        });
+ //        });
 
-	});
+	// });
     /****************************** 
     * Showing Other Payment Table * 
     *******************************/
 	$('#other_payment_info').click(function() {
-		$("#student_other_payment_table").show('slow');
+        if ($('select[id=student_id]').val() != null) {
+            $("#student_other_payment_table").show('slow');
+        }
+		
     });
 
 
@@ -144,22 +165,25 @@
         var url = "/student_admission_payment_process"; 
         if (parseFloat($('#admission_fee').val()) > 0) {
             $( ".admission_payment_submit" ).attr( "disabled", true );
-            $.get('/get_payment_invoice_id',function(serial_number) {
-                invoice_serial_number = serial_number;
-                $('#serial_number').val(serial_number);
+            $.get('/get_other_payment_invoice_id', { 
+                payment_type: "A-" 
+            })
+            .done(function( serial_number ) {
+            invoice_serial_number = serial_number;
+            $('#serial_number').val(serial_number);
             $.ajax({
                 type: "POST",
                 url: url,
                 data: $("#admission_payment_form").serialize(), // serializes the form's elements.
                 success: function(reply_data) {
-                	console.log('reply_data'); 
+                	console.log('reply_data Admission'); 
                     console.log(reply_data); 
                     $.get("/get_student_info_for_payment", {
                             student_id: $('select[id=student_id]').val(),
                     })
                     .done(function( data ) {
-                        console.log("admission_payment_form");
-                        console.log(data);
+                        // console.log("admission_payment_form");
+                        // console.log(data);
                         $("#admission_payment_print").show('slow');
                         let msg = '<div class="alert alert-success alert-dismissible">'+
                                     '<button type="button" id="success_admission_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
@@ -173,7 +197,7 @@
                             $("#admission_payment_print").hide('slow');
                             let img_address = "{{ URL::to('/') }}";
                             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
-                               $("#student_admission_payment_table").css({ display: "block" });
+                               // $("#student_admission_payment_table").css({ display: "block" });
                                $('p#student_name').text(data.name);
                                $('p#student_email').text(data.student_email);
                                $('p#fathers_name').text(data.fathers_name);
@@ -182,7 +206,9 @@
                                $('p#guardian_phone_number').text(data.guardian_phone_number);
                                $('input#students_id').val(data.id);
                                $("#student_pofile_image").html("<img src='"+img_address+"/"+data.students_image+"' class='img-fluid' height='100' width='100' alt='Student profile picture'>");
+                               
                                $("#admission_payment_form")[0].reset();
+                               $( ".admission_payment_section" ).attr( "class", 'box box-success admission_payment_section');
                                
                                $("#student_admission_payment_table").hide('slow');
                                $("#student_admission_payment_message").show('slow');
@@ -204,22 +230,25 @@
         var url = "/student_other_payment_process"; 
         if (parseFloat($('#other_fee').val()) > 0) {
             $( ".other_payment_submit" ).attr( "disabled", true );
-            $.get('/get_payment_invoice_id',function(serial_number) {
-                invoice_serial_number = serial_number;
-                $('#serial_number_for_other_payment').val(serial_number);
+            $.get('/get_other_payment_invoice_id', { 
+                payment_type: "O-" 
+            })
+            .done(function( serial_number ) {
+            invoice_serial_number = serial_number;
+            $('#serial_number_for_other_payment').val(serial_number);
             $.ajax({
                 type: "POST",
                 url: url,
                 data: $("#other_payment_form").serialize(), // serializes the form's elements.
                 success: function(reply_data) {
-                    console.log('reply_data'); 
+                    console.log('reply_data Other'); 
                     console.log(reply_data); 
                     $.get("/get_student_info_for_payment", {
                             student_id: $('select[id=student_id]').val(),
                     })
                     .done(function( data ) {
-                        console.log("other_payment_form");
-                        console.log(data);
+                        // console.log("other_payment_form");
+                        // console.log(data);
                         $("#other_payment_print").show('slow');
                         let msg = '<div class="alert alert-success alert-dismissible">'+
                                     '<button type="button" id="success_othre_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
@@ -233,7 +262,7 @@
                             $("#other_payment_print").hide('slow');
                             let img_address = "{{ URL::to('/') }}";
                             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null)) {
-                               $("#student_admission_payment_table").css({ display: "block" });
+                               // $("#student_admission_payment_table").css({ display: "block" });
                                $('p#student_name').text(data.name);
                                $('p#student_email').text(data.student_email);
                                $('p#fathers_name').text(data.fathers_name);
@@ -259,7 +288,7 @@
     * Admission Payment Print * 
     ***************************/
     $('#admission_payment_print').click(function() {
-        $.get('/get_invoice_id',function(serial_number) {
+        $.get('/get_other_invoice_id_for_print',function(serial_number) {
             console.log(serial_number);
             invoice_serial_number = serial_number;
             $('#serial_number').val(serial_number);
@@ -316,7 +345,7 @@
     * Other Payment Print * 
     ***********************/
     $('#other_payment_print').click(function() {
-        $.get('/get_invoice_id',function(serial_number) {
+        $.get('/get_other_invoice_id_for_print',function(serial_number) {
             console.log(serial_number);
             invoice_serial_number = serial_number;
             $('#serial_number_for_other_payment').val(serial_number);
@@ -416,21 +445,21 @@
             @endif
             <div id="search_student_div" class="box-body">
                 <div class="row">
-	                <div class="col-xs-3">
+	                <div class="col-xs-4">
 	                    <label for="batch_id" >Student*</label>
 	                    <select class="form-control select2" name="student_id" id="student_id"></select>
                 	</div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-4">
 	                    <label for="" ></label>
-	                    <button type="submit" id="show_student_info" class="btn btn-block bg-blue btn-lg">Show Student Info</button>
+	                    <button type="submit" id="show_student_info" class="btn btn-block bg-navy btn-lg">Show Student Info & Admission Status</button>
 	                </div>
-	                <div class="col-xs-3">
+	                <!-- <div class="col-xs-4">
 	                    <label for="" ></label>
 	                    <button type="submit" id="admission_payment_info" class="btn btn-block bg-navy btn-lg">Admission Payment</button>
-	                </div>
-                    <div class="col-xs-3">
+	                </div> -->
+                    <div class="col-xs-4">
                         <label for="" ></label>
-                        <button type="submit" id="other_payment_info" class="btn btn-block bg-teal btn-lg">Other Payment</button>
+                        <button type="submit" id="other_payment_info" class="btn btn-block bg-teal btn-lg">Buy Other Equipment</button>
                     </div>
                     
                     

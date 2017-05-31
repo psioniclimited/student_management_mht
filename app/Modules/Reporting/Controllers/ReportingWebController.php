@@ -149,4 +149,27 @@ class ReportingWebController extends Controller {
         ->make(true);
     }
 
+    public function otherPaymentReporting()
+    {
+      return view('Reporting::other_payment_reporting');
+    }
+
+    public function getDailyOtherReporting(ReportRepository $report)
+    {
+        $today = Carbon::today();
+        $today = $today->toDateString();
+        $dailyOtherPaymentReporting = $report->getDailyOtherPaymentReportingByDate($today);
+        
+        return Datatables::of($dailyOtherPaymentReporting)->make(true);
+    }
+
+    public function monthlyOtherStatement(Request $request, ReportRepository $report)
+    {
+        $statementDate = Carbon::createFromFormat('d/m/Y', $request->statement_date);
+        $monthlyOtherPaymentStatement = $report->getmonthlyOtherPaymentStatement($statementDate->month, $statementDate->year);
+        return Datatables::of($monthlyOtherPaymentStatement)->make(true);
+    }
+
+
+
 }

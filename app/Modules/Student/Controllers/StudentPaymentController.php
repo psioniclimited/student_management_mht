@@ -19,6 +19,9 @@ use App\Modules\Student\Models\BatchHasStudent;
 use App\Modules\Student\Models\InvoiceMaster;
 use App\Modules\Student\Models\InvoiceDetail;
 use App\Modules\Student\Models\Refund;
+use App\Modules\Student\Models\OtherPaymentMaster;
+use App\Modules\Student\Models\OtherPaymentDetail;
+use App\Modules\Student\Models\OtherPaymentType;
 
 use App\Modules\Student\Helper\StudentHelper;
 
@@ -234,6 +237,49 @@ class StudentPaymentController extends Controller {
         }
     }
 
+
+    public function getOtherInvoiceIdforPrint()  {
+        $refDate = Carbon::now();
+
+        $data = OtherPaymentMaster::whereYear('payment_date', '=', $refDate->year)
+                                ->whereMonth('payment_date', '=', $refDate->month)
+                                ->get();
+                                // ->sortByDesc("serial_number");
+
+
+        
+        if (count($data) == 0) {
+            return 1;
+        }
+        else {
+            error_log($data[count($data)-1]->serial_number);
+            return $data[count($data)-1]->serial_number;
+        }
+    }
+    
+    public function get_other_payment_invoice_id(Request $request)  {
+        
+        $refDate = Carbon::now();
+        $data = OtherPaymentMaster::whereYear('payment_date', '=', $refDate->year)
+                                ->whereMonth('payment_date', '=', $refDate->month)
+                                ->get();
+
+        if (count($data) == 0) {
+            $formated_serial_number = $request->payment_type . "" . $refDate->year. "" . sprintf('%02d', $refDate->month)."".sprintf('%02d', $refDate->day). "" .sprintf('%04d', 1);
+            return $formated_serial_number;
+        }
+        else {
+            $get_full_serial_no = $data[count($data)-1]->serial_number;
+            $get_last_four_no = substr($get_full_serial_no, -4);
+            $set_last_four_no = $get_last_four_no  + 1;
+            $formated_serial_number = $request->payment_type . "" . $refDate->year."". sprintf('%02d', $refDate->month)."".sprintf('%02d', $refDate->day)."".sprintf('%04d', $set_last_four_no);
+            return $formated_serial_number;
+            // return $data[count($data)-1]->serial_number + 1;
+        }
+    }
+
+
+
     public function invoiceDetailPage($id)
     {
         $student_details = Student::find($id);
@@ -425,10 +471,37 @@ class StudentPaymentController extends Controller {
 
     public function student_admission_payment_process(Request $request)
     {
+        $payment_type = OtherPaymentType::where('description', 'admission')->first();
+        
+        $other_payment_master = new OtherPaymentMaster();
+        $other_payment_master->payment_date = $request->payment_date;
+        $other_payment_master->price = $request->admission_fee;
+        $other_payment_master->serial_number = $request->serial_number;
+        $other_payment_master->students_id = $request->students_id;
+        $other_payment_master->other_payment_type_id = $payment_type->id;
+        $other_payment_master->note = $request->description;
+        $other_payment_master->save();
+
+        $student = Student::find($request->students_id);
+        $student->admitted_status = 1;
+        $student->save();
+        
         return $request->all();
     }
+
     public function student_other_payment_process(Request $request)
     {
+        $payment_type = OtherPaymentType::where('description', 'other')->first();
+
+        $other_payment_master = new OtherPaymentMaster();
+        $other_payment_master->payment_date = $request->payment_date;
+        $other_payment_master->price = $request->other_fee;
+        $other_payment_master->serial_number = $request->serial_number;
+        $other_payment_master->students_id = $request->students_id;
+        $other_payment_master->other_payment_type_id = $payment_type->id;
+        $other_payment_master->note = $request->other_dsecription;
+        $other_payment_master->save();
+        
         return $request->all();
     }
 

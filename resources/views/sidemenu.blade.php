@@ -115,7 +115,8 @@
             </span>
         </a>
         <ul class="treeview-menu">
-            <li {!! Request::is('*payment_reporting*') ? ' class="active"' : null !!}><a href="{{url('payment_reporting')}}"><i class="fa fa-circle-o"></i> Payment Reporting </a></li>
+            <li {!! Request::is('payment_reporting') ? ' class="active"' : null !!}><a href="{{url('payment_reporting')}}"><i class="fa fa-circle-o"></i> Batch Payment Reporting </a></li>
+            <li {!! Request::is('other_payment_reporting') ? ' class="active"' : null !!}><a href="{{url('other_payment_reporting')}}"><i class="fa fa-circle-o"></i> Other's Payment Reporting </a></li>
         </ul>
     </li>
     <li {!! Request::is('*roles*') || Request::is('*permissions*') ? ' class="active treeview"' : ' class="treeview"' !!} class="treeview">
