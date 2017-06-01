@@ -342,8 +342,12 @@ class StudentsWebController extends Controller {
 
 
 	public function addStudentProcess(\App\Http\Requests\StudentCreateRequest $request) {
-        $last_paid_date = new Carbon('first day of last month');
-        $last_paid_date = $last_paid_date->toDateString();
+
+        return $request->all();
+
+        // $last_paid_date = new Carbon('first day of last month');
+        $last_paid_date = Carbon::createFromFormat('d/m/Y', $request->class_start_date)->format('Y-m-d');
+        // $last_paid_date = $last_paid_date->toDateString();
 
         $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
@@ -389,6 +393,7 @@ class StudentsWebController extends Controller {
                                     ->update(['last_paid_date' => $last_paid_date]);
             }
         }
+
 
         return back();
     }

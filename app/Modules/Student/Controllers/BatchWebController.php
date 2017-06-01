@@ -119,29 +119,19 @@ class BatchWebController extends Controller {
     * Select2 helper Function *
     ***************************/
     public function getAllBatch(Request $request) {
-        // $query_batch = "
-        // SELECT  batch_days_has_batch_times.id, 
-        // concat(batch_days.name, ' ', batch_times.time) AS text
-        // FROM batch_days_has_batch_times
-        // JOIN batch_days ON batch_days_id = batch_days.id
-        // JOIN batch_times ON batch_times_id = batch_times.id
-        // ";
-        // $batch_information = DB::select($query_batch);
         
-        error_log('BatchType ID');
-        error_log($request->input('batchType_id'));
-        error_log('Subject ID');
-        error_log($request->input('subject_id'));
-        error_log('Grade ID');
-        error_log($request->input('grades_id'));
-
         // $batch_information = Batch::where('batch_types_id',$request->input('batchType_id'))
         //                             ->where('grades_id', $request->input('grades_id'))
         //                             ->where('subjects_id', $request->input('subject_id'))
         //                             ->get(['id', 'name as text']);
-        $batch_information = Batch::where('subjects_id', $request->input('subject_id'))->get(['id', 'name as text']);
-
         
+        // $batch_information = Batch::where('subjects_id', $request->input('subject_id'))
+        //                             ->get(['id', 'CONCAT(name, " ", start_date) as text']);
+        
+        $batch_information = Batch::where('subjects_id', $request->input('subject_id'))
+                                    ->selectRaw('id, CONCAT(name, " => ", start_date) as text')
+                                    ->get();
+
         return response()->json($batch_information);
     }
 

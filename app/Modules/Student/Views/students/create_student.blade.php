@@ -3,9 +3,13 @@
 @section('css')
 <link rel="stylesheet" href="{{asset('plugins/tooltipster/tooltipster.css')}}">
 <link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
+<!-- bootstrap datepicker -->
+<link rel="stylesheet" href="{{asset('../../plugins/datepicker/datepicker3.css')}}">
 @endsection
 
 @section('scripts')
+<!-- bootstrap datepicker -->
+<script src="{{asset('../../plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <script src="{{asset('plugins/validation/dist/jquery.validate.js')}}"></script>
 <script src="{{asset('plugins/tooltipster/tooltipster.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
@@ -23,6 +27,12 @@ $(document).ready(function () {
         trigger: 'custom', // default is 'hover' which is no good here
         onlyOne: false, // allow multiple tips to be open at a time
         position: 'right'  // display the tips to the right of the element
+    });
+
+    //Date picker for Start Date
+    $('.ref_date').datepicker({
+      format: 'dd/mm/yyyy',
+      autoclose: true
     });
 
     // initialize validate plugin on the form
@@ -50,6 +60,7 @@ $(document).ready(function () {
             guardian_phone_number: {required: true},
             schools_id: {valueNotEquals: "default"},
             grades_id: {valueNotEquals: "default"},
+            class_start_date: {required: true},
             batch_types_id: {valueNotEquals: "default"},
         },
         messages: {
@@ -60,6 +71,7 @@ $(document).ready(function () {
             guardian_phone_number: {required: "Enter Guardian's Phone Number"},
             schools_id: {valueNotEquals: "Select a School"},
             grades_id: {valueNotEquals: "Select a Grade"},
+            class_start_date: {required: "Choose a month from which the student wants to start the class"},
             batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
         }
     });
@@ -68,21 +80,25 @@ $(document).ready(function () {
         $('.sub_checkbox').attr('checked',false);
         $('.batchSelection').hide();
         $('.select2').val('');
+        // $('.class_start_selection').hide();
     });
 
     $('#grades_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
         $('.batchSelection').hide();
         $('.select2').val('');
+        // $('.class_start_selection').hide();
     });
 
     $(".sub_checkbox").change(function() {
 
+        $("#class_start_date" + this.value).val('');
         if(this.checked) {
            // console.log(this.value);
            // console.log($( this ).siblings());
            $( this ).parent().siblings(".form-group").show();
-            
+           $( this ).parent().siblings(".class_start_selection").show();
+
             // var batchType = $('#batch_types_id').find(":selected").val();
             // var grade = $('#grades_id').find(":selected").val();
             // console.log("batchType "+batchType);
@@ -130,6 +146,7 @@ $(document).ready(function () {
         else{
             // $("#box_color").attr("class","box box-success");
             $( this ).parent().siblings(".form-group").hide();
+            $( this ).parent().siblings(".class_start_selection").hide();
         }
     });
 
@@ -249,6 +266,16 @@ $(document).ready(function () {
                             @endforeach
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="start_date">Choose from which month to Start</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input id="class_start_date" type="text" class="form-control ref_date" name="class_start_date" autocomplete="off">
+                    </div>
+                </div>
                 
                 <!-- checkbox -->
                 <div class="form-group">
@@ -261,6 +288,12 @@ $(document).ready(function () {
                         </label>
                         <div class="form-group batchSelection" style="display:none;">
                             <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                        </div>
+                        <div class="input-group date class_start_selection" style="display:none;">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="{{ 'class_start_date' . $subject->id }}" type="text" class="form-control ref_date" name="class_start_date[]" autocomplete="off">
                         </div>
                     </div>
                     @endforeach
