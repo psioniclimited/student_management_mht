@@ -382,6 +382,7 @@
         $("#invoice_info").text("Student ID");
         $("#phone_num").text("Student's Phone Number");
         $("#total_amount").text("Total Due Amount/-");
+        
         var table = $('#all_user_list').DataTable({
             "paging": false,
             "lengthChange": false,

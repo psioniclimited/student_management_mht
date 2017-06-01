@@ -30,7 +30,7 @@ class ReportRepository {
 		return $payments;
 	}
 
-	public function getDailyOtherPaymentReportingByDate($date)	{
+	public function getOtherDailyPaymentReportingByDate($date)	{
 		$payments = OtherPaymentMaster::with('student', 'other_payment_type')
 					->where('payment_date', $date)
 					->get();
@@ -54,17 +54,16 @@ class ReportRepository {
 					})
 					->whereBetween('payment_date', [$startDate, $endDate])
 					->get();
-		// $payments = InvoiceMaster::with(['student'=> function($query){
-		// 				$query->withTrashed();
-		// 			}])
-		// 			->with(['invoiceDetail' => function($query){
-		// 				$query->where('refund', 0);
-		// 			}, 'invoiceDetail.batch'])
-		// 			->whereBetween('payment_date', [$startDate, $endDate])
-		// 			->get();
-		
 		return $payments;
 	}
+
+	public function getOtherRangePaymentReportingByDate($startDate, $endDate)	{
+		$payments = OtherPaymentMaster::with('student', 'other_payment_type')
+					->whereBetween('payment_date', [$startDate, $endDate])
+					->get();
+		return $payments;
+	}
+
 
 	public function getDueByDate($date)	{
 		
@@ -105,8 +104,8 @@ class ReportRepository {
 	}
 
 	public function getmonthlyOtherPaymentStatement($statement_month, $statement_year)	{
-		$monthlyOtherPaymentStatement = OtherPaymentMaster::with('student', 'other_payment_type')->whereYear('payment_from', '=', $statement_year)
-									->whereMonth('payment_from', '=', $statement_month)
+		$monthlyOtherPaymentStatement = OtherPaymentMaster::with('student', 'other_payment_type')->whereYear('payment_date', '=', $statement_year)
+									->whereMonth('payment_date', '=', $statement_month)
             						->get();
         return $monthlyOtherPaymentStatement;
 	}

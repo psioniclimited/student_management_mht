@@ -154,21 +154,42 @@ class ReportingWebController extends Controller {
       return view('Reporting::other_payment_reporting');
     }
 
-    public function getDailyOtherReporting(ReportRepository $report)
+    public function getOtherDailyReporting(ReportRepository $report)
     {
         $today = Carbon::today();
         $today = $today->toDateString();
-        $dailyOtherPaymentReporting = $report->getDailyOtherPaymentReportingByDate($today);
+        
+        $dailyOtherPaymentReporting = $report->getOtherDailyPaymentReportingByDate($today);
         
         return Datatables::of($dailyOtherPaymentReporting)->make(true);
     }
 
-    public function monthlyOtherStatement(Request $request, ReportRepository $report)
+    public function getOtherPaymentDateRange(Request $request, ReportRepository $report)
+    {   
+        $startDate = Carbon::createFromFormat('d/m/Y', $request->start_date)->toDateString();
+        $endDate = Carbon::createFromFormat('d/m/Y', $request->end_date)->toDateString();
+        
+        $dateRangeReporting = $report->getOtherRangePaymentReportingByDate($startDate, $endDate);
+        
+        return Datatables::of($dateRangeReporting)->make(true);
+    }
+
+    public function getMonthlyOtherStatement(Request $request, ReportRepository $report)
     {
         $statementDate = Carbon::createFromFormat('d/m/Y', $request->statement_date);
+        
         $monthlyOtherPaymentStatement = $report->getmonthlyOtherPaymentStatement($statementDate->month, $statementDate->year);
+        
         return Datatables::of($monthlyOtherPaymentStatement)->make(true);
     }
+
+    public function getOtherDueReporting()
+    {
+        $not_admitted_students = Student::with('school')->where('admitted_status', 0)->get();
+        return Datatables::of($not_admitted_students)->make(true);
+    }
+
+
 
 
 
