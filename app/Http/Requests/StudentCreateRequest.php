@@ -30,7 +30,6 @@ class StudentCreateRequest extends Request
             'student_phone_number' => 'required',
             'guardian_phone_number' => 'required',
             'schools_id' => 'required|not_in:default',
-            'class_start_date' => 'required',
             'batch_types_id' => 'required|not_in:default',
         ];
     }

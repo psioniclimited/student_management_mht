@@ -60,7 +60,6 @@ $(document).ready(function () {
             guardian_phone_number: {required: true},
             schools_id: {valueNotEquals: "default"},
             grades_id: {valueNotEquals: "default"},
-            class_start_date: {required: true},
             batch_types_id: {valueNotEquals: "default"},
         },
         messages: {
@@ -71,7 +70,6 @@ $(document).ready(function () {
             guardian_phone_number: {required: "Enter Guardian's Phone Number"},
             schools_id: {valueNotEquals: "Select a School"},
             grades_id: {valueNotEquals: "Select a Grade"},
-            class_start_date: {required: "Choose a month from which the student wants to start the class"},
             batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
         }
     });
@@ -267,7 +265,7 @@ $(document).ready(function () {
                     </select>
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="start_date">Choose from which month to Start</label>
                     <div class="input-group date">
                         <div class="input-group-addon">
@@ -275,7 +273,7 @@ $(document).ready(function () {
                         </div>
                         <input id="class_start_date" type="text" class="form-control ref_date" name="class_start_date" autocomplete="off">
                     </div>
-                </div>
+                </div> -->
                 
                 <!-- checkbox -->
                 <div class="form-group">

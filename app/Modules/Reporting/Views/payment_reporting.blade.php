@@ -223,7 +223,7 @@
             $("#phone_num").text("Phone Number");
             $("#total_amount").text("Total Paid Amount/-");
             var table = $('#all_user_list').DataTable({
-                "paging": false,
+                "paging": true,
                 "lengthChange": false,
                 "searching": true,
                 "ordering": true,
