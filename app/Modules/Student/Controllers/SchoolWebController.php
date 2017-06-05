@@ -31,8 +31,8 @@ class SchoolWebController extends Controller {
     return Datatables::of($schools)
                     ->addColumn('Link', function ($schools) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/school') . '/' . $schools->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                                '<a class="btn btn-xs btn-danger" id="'. $schools->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        return '<a href="' . url('/school') . '/' . $schools->id . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                                '<a class="btn bg-red margin" id="'. $schools->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
                         }

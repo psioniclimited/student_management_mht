@@ -224,7 +224,7 @@ class TeachersWebController extends Controller {
                 
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                 
-                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$get_current_date_month_year.'/'.$batches->name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn btn-xs btn-info"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$get_current_date_month_year.'/'.$batches->name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn bg-purple margin"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
                 }
                 else {
                     return 'N/A';
@@ -253,7 +253,7 @@ class TeachersWebController extends Controller {
                     ->leftJoin('invoice_masters', 'students.id', '=', 'invoice_masters.students_id')
                     ->leftJoin('invoice_details', 'invoice_details.invoice_masters_id', '=', 'invoice_masters.id')
                     ->leftJoin('batch', 'invoice_details.batch_id', '=', 'batch.id')
-                    ->where('invoice_details.payment_from', '=', $get_date_month_year)
+                    ->where('invoice_details.payment_from', '>=', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
                     ->whereNull('deleted_at')
                     ->where('refund', '=', 0)

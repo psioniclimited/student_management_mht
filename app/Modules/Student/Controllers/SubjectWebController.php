@@ -29,8 +29,8 @@ class SubjectWebController extends Controller {
     return Datatables::of($subjects)
                     ->addColumn('Link', function ($subjects) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return '<a href="' . url('/subject') . '/' . $subjects->id . '/edit/' . '"' . 'class="btn btn-xs btn-success"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                                '<a class="btn btn-xs btn-danger" id="'. $subjects->id .'" data-toggle="modal" data-target="#confirm_delete">
+                        return '<a href="' . url('/subject') . '/' . $subjects->id . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
+                                '<a class="btn bg-red margin" id="'. $subjects->id .'" data-toggle="modal" data-target="#confirm_delete">
                                 <i class="glyphicon glyphicon-trash"></i> Delete
                                 </a>';
                         }
