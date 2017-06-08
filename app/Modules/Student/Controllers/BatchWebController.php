@@ -318,15 +318,19 @@ class BatchWebController extends Controller {
         
         $batch = Batch::with('student')->find($batch_id);
         
-        $number_of_paid_students = 0;
+        $number_of_inactive_paid_students = 0;
+        $number_of_active_paid_students = 0;
         $number_of_unpaid_students = 0;
         $current_date = new Carbon('first day of this month');
         $current_date = Carbon::parse($current_date->toDateString());        
         
         foreach ($batch->student as $key => $student) {
             $last_paid_date = Carbon::parse($student->pivot->last_paid_date);
-            if ($last_paid_date->gte($current_date)) {
-                $number_of_paid_students++;
+            if ($last_paid_date->eq($current_date)) {
+                $number_of_active_paid_students++;
+            }
+            elseif ($last_paid_date->gt($current_date)) {
+                $number_of_inactive_paid_students++;
             }
             else {
                 $number_of_unpaid_students++;
@@ -337,19 +341,65 @@ class BatchWebController extends Controller {
                 ->with('batch_id', $batch_id)
                 ->with('batch_name', $batch->name)
                 ->with('schedule', $batch->schedule)
-                ->with('number_of_paid_students', $number_of_paid_students)
+                ->with('number_of_inactive_paid_students', $number_of_inactive_paid_students)
+                ->with('number_of_active_paid_students', $number_of_active_paid_students)
                 ->with('number_of_unpaid_students', $number_of_unpaid_students)
                 ->with('total_student', $total_student);
     }
 
-    public function get_all_students_per_batch(Request $request) {
+
+    public function students_get_all_inactive_students_per_batch(Request $request) {
         
+        $current_date = new Carbon('first day of this month');
         $students = DB::table('batch')
                     ->leftJoin('batch_has_students', 'batch_has_students.batch_id', '=', 'batch.id')
                     ->leftJoin('students', 'students.id', '=', 'batch_has_students.students_id')
                     ->leftJoin('batch_types', 'batch_types.id', '=', 'students.batch_types_id')
                     ->leftJoin('schools', 'schools.id', '=', 'students.schools_id')
                     ->where('batch.id', '=', $request->batch_id)
+                    ->where('last_paid_date', '>', $current_date)
+                    ->whereNull('deleted_at')
+                    ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
+        
+        return Datatables::of($students)
+        ->addColumn('payment_status', function ($students) {
+                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                    
+                    $current_date = new Carbon('first day of this month');
+                    $current_date = Carbon::parse($current_date->toDateString());
+                    
+                    $last_paid_date = Carbon::parse($students->last_paid_date);
+                    
+                    $difference_in_month = $last_paid_date->gte($current_date);
+                    
+                    return $difference_in_month;
+                }
+                else {
+                    return 'N/A';
+                }
+            })
+        ->addColumn('Link', function ($students) {
+                        if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                        return  '<a href="' . url('/students_student') . '/' . $students->student_id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+                        }
+                        else {
+                            return 'N/A';
+                        }
+                    })
+        ->make(true);
+    }
+
+
+    public function students_get_all_active_students_per_batch(Request $request) {
+        
+        $current_date = new Carbon('first day of this month');
+        $students = DB::table('batch')
+                    ->leftJoin('batch_has_students', 'batch_has_students.batch_id', '=', 'batch.id')
+                    ->leftJoin('students', 'students.id', '=', 'batch_has_students.students_id')
+                    ->leftJoin('batch_types', 'batch_types.id', '=', 'students.batch_types_id')
+                    ->leftJoin('schools', 'schools.id', '=', 'students.schools_id')
+                    ->where('batch.id', '=', $request->batch_id)
+                    ->where('last_paid_date', '<=', $current_date)
                     ->whereNull('deleted_at')
                     ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
         

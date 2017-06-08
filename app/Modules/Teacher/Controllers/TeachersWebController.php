@@ -153,7 +153,30 @@ class TeachersWebController extends Controller {
         $get_current_date_month_year = $get_current_date_month_year->toDateString();
         
 
-        $batches = Batch::with('batchType', 'grade','student')->where('teacher_details_users_id', $request->teacher_user_id)->get();
+        // $batches = Batch::with('batchType', 'grade','student')->where('teacher_details_users_id', $request->teacher_user_id)->get();
+        $batches = TeacherDetail::with('batch.invoiceDetail')
+                                    ->where('id', $request->teacher_user_id)
+                                    // ->where('batch.invoice_detail.payment_from', $get_current_date_month_year)
+                                    ->get();
+        // $batches = DB::table('teacher_details')
+        //             ->leftJoin('batch', 'teacher_details.id', '=', 'batch.teacher_details_id')
+        //             ->leftJoin('invoice_details', 'batch.id', '=', 'invoice_details.batch_id')
+        //             ->select('');
+        return $batches->batch; 
+
+        $batches = $batches->batch;                         
+
+        return Datatables::of($batches)
+                ->addColumn('total_number_of_students', function ($batches) {
+                    if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                        return "AAAAAAAAAAAAAa";
+                    }
+                    else {
+                        return 'N/A';
+                    }
+                })
+                ->make(true);
+        
 
         return Datatables::of($batches)
             ->addColumn('teacher_payment_per_batch', function ($batches) use($get_current_date_month_year,$request)    {
@@ -253,11 +276,13 @@ class TeachersWebController extends Controller {
                     ->leftJoin('invoice_masters', 'students.id', '=', 'invoice_masters.students_id')
                     ->leftJoin('invoice_details', 'invoice_details.invoice_masters_id', '=', 'invoice_masters.id')
                     ->leftJoin('batch', 'invoice_details.batch_id', '=', 'batch.id')
-                    ->where('invoice_details.payment_from', '>=', $get_date_month_year)
+                    ->where('invoice_details.payment_from', '=', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
                     ->whereNull('deleted_at')
                     ->where('refund', '=', 0)
-                    ->select('students.name','students.student_phone_number','invoice_details.price');
+                    ->select('students.name','students.student_phone_number','invoice_details.price',
+                            'invoice_details.invoice_masters_id', 'invoice_details.payment_from', 
+                            'invoice_details.batch_id');
 
         
         $teacher_percentage = Batch::with('teacherDetail')->find($request->batch_id);

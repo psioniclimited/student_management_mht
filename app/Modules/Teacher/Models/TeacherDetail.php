@@ -33,7 +33,7 @@ class TeacherDetail extends Model
 
     public function batch()
     {
-        return $this->hasmany('App\Modules\Student\Models\Batch');
+        return $this->hasmany('App\Modules\Student\Models\Batch', 'teacher_details_id');
     }
 
 }

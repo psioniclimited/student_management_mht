@@ -74,6 +74,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('due_payment_student', 'App\Modules\Student\Controllers\StudentPaymentController@due_payment_student');
     Route::post('clear_due_payment', 'App\Modules\Student\Controllers\StudentPaymentController@clear_due_payment');
     Route::get('get_student_payment_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_payment_history');
+    Route::get('get_student_transaction_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_transaction_history');
 
     Route::get('students_payment_other', 'App\Modules\Student\Controllers\StudentPaymentController@otherPayment');
     Route::get('admission_payment_info', 'App\Modules\Student\Controllers\StudentPaymentController@admission_payment_info');
@@ -140,7 +141,9 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('students_get_all_batches_for_a_subject', 'App\Modules\Student\Controllers\BatchWebController@get_all_batches_for_a_subject');
     
     Route::get('students_all_students_per_batch_page/{batch}/{total_student}', 'App\Modules\Student\Controllers\BatchWebController@all_students_per_batch_page');
-    Route::get('students_get_all_students_per_batch', 'App\Modules\Student\Controllers\BatchWebController@get_all_students_per_batch');
+    Route::get('students_get_all_inactive_students_per_batch', 'App\Modules\Student\Controllers\BatchWebController@students_get_all_inactive_students_per_batch');
+    Route::get('students_get_all_active_students_per_batch', 'App\Modules\Student\Controllers\BatchWebController@students_get_all_active_students_per_batch');
+
 
     /******************************************************
     * Show the information of all Subjects in a data table*

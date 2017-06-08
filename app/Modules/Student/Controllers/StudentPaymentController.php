@@ -289,9 +289,15 @@ class StudentPaymentController extends Controller {
     public function getAllInvoiceDetailsForAStudent(Request $request) {
         
         $student_id = $request->student_id;
-        $invoice_details = InvoiceDetail::with('invoiceMaster')->whereHas('invoiceMaster', function($query) use ($student_id){
-            $query->where('students_id', $student_id);
-        })->where('refund',false)->with('batch')->orderBy('payment_to', 'DESC')->get()->unique('batch_id');
+        $invoice_details = InvoiceDetail::with('invoiceMaster')
+                                        ->whereHas('invoiceMaster', function($query) use ($student_id){
+                                            $query->where('students_id', $student_id);
+                                        })
+                                        ->where('refund',false)
+                                        ->with('batch')
+                                        ->orderBy('payment_to', 'DESC')
+                                        ->get()
+                                        ->unique('batch_id');
         
         return Datatables::of($invoice_details)
                         ->addColumn('Link', function ($invoice_details) use ($student_id) {
@@ -385,7 +391,9 @@ class StudentPaymentController extends Controller {
         }
         else {
             
-            $invoice_details->delete();
+            // $invoice_details->delete();
+            $invoice_details->refund = true;
+            $invoice_details->save();
             
             $refDate = Carbon::createFromFormat('Y-m-d', $invoice_details->payment_to);
             $last_payment_date = $refDate->subMonths(1);
@@ -444,11 +452,42 @@ class StudentPaymentController extends Controller {
                                                     ->update(['last_paid_date' => $last_paid_date]);
     }
 
-    public function get_student_payment_history(Request $request)
+    public function get_student_payment_history(Request $request)                   
     {
         $get_student_payment_history = Student::with('batch')->find($request->student_id);
         $get_student_payment_history = $get_student_payment_history->batch;
         return Datatables::of($get_student_payment_history)->make(true);
+    }
+
+    public function get_student_transaction_history(Request $request)
+    {
+        $student_id = $request->student_id;
+
+        $get_student_transaction_history = InvoiceDetail::with('invoiceMaster')
+                                        ->whereHas('invoiceMaster', function($query) use ($student_id){
+                                            $query->where('students_id', $student_id);
+                                        })
+                                        ->with('batch')
+                                        ->orderBy('payment_to', 'DESC')
+                                        ->get();
+                                        
+        
+        return Datatables::of($get_student_transaction_history)->make(true);
+        
+        // $get_student_transaction_history = InvoiceMaster::with('student')
+        //                                                 ->with('invoiceDetail.batch')
+        //                                                 ->where('students_id', $student_id)
+        //                                                 ->get();
+
+        // return Datatables::of($get_student_transaction_history)
+        //                 ->addColumn('paid_batches', function ($get_student_transaction_history) {
+        //                    return $get_student_transaction_history->invoiceDetail->map(function($invDetail) {
+        //                        $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
+        //                        return $ready_data;
+        //                    })->implode(', ');
+        //                 })
+        //                 ->make(true);
+
     }
 
     public function otherPayment() {
