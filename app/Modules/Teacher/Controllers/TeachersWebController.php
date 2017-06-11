@@ -154,20 +154,25 @@ class TeachersWebController extends Controller {
         
         $teacher_id = $request->teacher_user_id;
 
-        $sql = "
-        SELECT batch.id, batch.name, COUNT(DISTINCT(students.id)) as total_no_of_students, COUNT(DISTINCT(invoice_details.id)) as no_of_paid_students, 
+        
+
+        $teacher_payment = DB::select('
+            SELECT batch.id, batch.name, COUNT(DISTINCT(students.id)) as total_no_of_students, COUNT(DISTINCT(invoice_details.id)) as no_of_paid_students, 
             (COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) as no_of_unpaid_students,
             (COUNT(DISTINCT(invoice_details.id)) * batch.price) as price,
-            (COUNT(DISTINCT(invoice_details.id)) * batch.price * 77 / 100 ) as calculated_price
+            (COUNT(DISTINCT(invoice_details.id)) * batch.price * ? / 100 ) as calculated_price
             FROM batch
             JOIN invoice_details ON invoice_details.batch_id = batch.id
             JOIN teacher_details ON batch.teacher_details_id = teacher_details.id
             JOIN batch_has_students ON batch.id = batch_has_students.batch_id
             JOIN students ON batch_has_students.students_id = students.id
-            WHERE students.deleted_at IS NULL AND invoice_details.payment_from = '2017-06-01'
+            WHERE students.deleted_at IS NULL 
+            AND invoice_details.payment_from = ?
+            AND teacher_details.id = ?
             GROUP BY batch.id
-        ";
 
+            ', [77, '2017-06-01', 2]);
+        return $teacher_payment;
         // $batches = Batch::with('batchType', 'grade','student')->where('teacher_details_users_id', $request->teacher_user_id)->get();
         // $batches = TeacherDetail::with('batch.invoiceDetail')
         //                             ->where('id', $request->teacher_user_id)
