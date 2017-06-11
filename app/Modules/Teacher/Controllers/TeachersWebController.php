@@ -147,22 +147,67 @@ class TeachersWebController extends Controller {
 
     
     public function getAllBatchForTeacherPayment(Request $request) {
+        // return $request->all();
+        $get_payment_date_month_year = \Carbon\Carbon::createFromFormat('d/m/Y', $request->ref_date);
+        $get_payment_date_month_year->day = 01;
+        $get_payment_date_month_year = $get_payment_date_month_year->toDateString();
         
-        $get_current_date_month_year = \Carbon\Carbon::createFromFormat('d/m/Y', $request->ref_date);
-        $get_current_date_month_year->day = 01;
-        $get_current_date_month_year = $get_current_date_month_year->toDateString();
-        
+        $teacher_id = $request->teacher_user_id;
+
+        $sql = "
+        SELECT batch.id, batch.name, COUNT(DISTINCT(students.id)) as total_no_of_students, COUNT(DISTINCT(invoice_details.id)) as no_of_paid_students, 
+            (COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) as no_of_unpaid_students,
+            (COUNT(DISTINCT(invoice_details.id)) * batch.price) as price,
+            (COUNT(DISTINCT(invoice_details.id)) * batch.price * 77 / 100 ) as calculated_price
+            FROM batch
+            JOIN invoice_details ON invoice_details.batch_id = batch.id
+            JOIN teacher_details ON batch.teacher_details_id = teacher_details.id
+            JOIN batch_has_students ON batch.id = batch_has_students.batch_id
+            JOIN students ON batch_has_students.students_id = students.id
+            WHERE students.deleted_at IS NULL AND invoice_details.payment_from = '2017-06-01'
+            GROUP BY batch.id
+        ";
 
         // $batches = Batch::with('batchType', 'grade','student')->where('teacher_details_users_id', $request->teacher_user_id)->get();
-        $batches = TeacherDetail::with('batch.invoiceDetail')
-                                    ->where('id', $request->teacher_user_id)
-                                    // ->where('batch.invoice_detail.payment_from', $get_current_date_month_year)
-                                    ->get();
-        // $batches = DB::table('teacher_details')
-        //             ->leftJoin('batch', 'teacher_details.id', '=', 'batch.teacher_details_id')
-        //             ->leftJoin('invoice_details', 'batch.id', '=', 'invoice_details.batch_id')
-        //             ->select('');
-        return $batches->batch; 
+        // $batches = TeacherDetail::with('batch.invoiceDetail')
+        //                             ->where('id', $request->teacher_user_id)
+        //                             // ->where('batch.invoice_detail.payment_from', $get_current_date_month_year)
+        //                             ->where('payment_from', $get_payment_date_month_year)
+        //                             ->get();
+
+        // $invoice_details = InvoiceDetail::with('batch.teacherDetail')
+        //                     ->with(['teacherDetail'=> function($query) use ($teacher_id){
+        //                         $query->where('id', $teacher_id);
+        //                     }])
+        //                     ->where('payment_from', $get_payment_date_month_year)
+        //                     ->get();
+
+        // $invoice_details = TeacherDetail::with('batch')
+        //                     ->with(['invoiceDetail'=> function($query) use ($get_payment_date_month_year){
+        //                         $query->where('payment_from', $get_payment_date_month_year);
+        //                     }])
+        //                     ->where('id', $teacher_id)
+        //                     ->get();                    
+        
+        // App\Post::find(1)->comments()->where('title', 'foo')->first();
+
+        $teacher_has_batch = TeacherDetail::find($request->teacher_user_id)->batch()->lists('id');
+
+        $invoice_details_for_teacher = InvoiceDetail::with('batch.student')->whereIn('batch_id', $teacher_has_batch)
+                                        ->where('payment_from', $get_payment_date_month_year)->get();
+
+        return response()->json($invoice_details_for_teacher);
+        dd($teacher_has_batch);
+
+
+        $invoice_details = Batch::with(['teacherDetail' => function($query) use ($teacher_id){
+                                        $query->where('id', $teacher_id);
+                                    }])
+                                    ->with('invoiceDetail', function($query) use ($get_payment_date_month_year){
+                                        $query->where('payment_from', $get_payment_date_month_year);
+                                    })->get();
+
+        return $invoice_details; 
 
         $batches = $batches->batch;                         
 

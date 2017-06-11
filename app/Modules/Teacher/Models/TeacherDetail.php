@@ -36,4 +36,9 @@ class TeacherDetail extends Model
         return $this->hasmany('App\Modules\Student\Models\Batch', 'teacher_details_id');
     }
 
+    public function invoiceDetail()
+    {
+        return $this->hasManyThrough('App\Modules\Student\Models\InvoiceDetail', 'App\Modules\Student\Models\Batch', 'teacher_details_id', 'batch_id');
+    }
+
 }
