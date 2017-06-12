@@ -80,6 +80,8 @@
         }
     });
 
+
+
     $("#all_batch_for_teacher_payment").click(function() {
         console.log($('input[id=ref_date]').val());
         var table = $('#teacher_payment_datatable').DataTable({
@@ -100,25 +102,25 @@
                     },
                 },
             "columns": [
-                    {"data": "name"},
-                    {"data": "schedule"},
-                    {"data": "total_number_of_students"},
-                    {"data": "total_paid_students"},
-                    {"data": "total_unpaid_students"},
-                    {"data": "teacher_payment_per_batch"},
+                    {"data": "batch_name"},
+                    {"data": "batch_schedule"},
+                    {"data": "total_no_students"},
+                    {"data": "no_of_paid_students"},
+                    {"data": "no_of_unpaid_students"},
+                    {"data": "calculated_price"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     
                     var total_price = 0;
                     for ( var i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['teacher_payment_per_batch']);
-                        total_price += aaData[i]['teacher_payment_per_batch'];
+                        console.log(aaData[i]['calculated_price']);
+                        total_price += aaData[i]['calculated_price'];
                     }
 
                     var nCells = nRow.getElementsByTagName('th');
                     total_money = total_price;
-                    nCells[5].innerHTML = total_price;
+                    nCells[6].innerHTML = total_price;
             },
             dom: 'Bfrtip',
             buttons: [
@@ -256,6 +258,7 @@
                     </thead>
                     <tfoot>
                       <tr>
+                      <th></th>
                       <th></th>
                       <th></th>
                       <th></th>

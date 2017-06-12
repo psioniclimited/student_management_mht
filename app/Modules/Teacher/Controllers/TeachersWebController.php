@@ -152,161 +152,44 @@ class TeachersWebController extends Controller {
         $get_payment_date_month_year->day = 01;
         $get_payment_date_month_year = $get_payment_date_month_year->toDateString();
         
-        $teacher_id = $request->teacher_user_id;
-
         
+        $teacher_details = TeacherDetail::where('users_id', $request->teacher_user_id)->first();
+        $teacher_id = $teacher_details->id;
+        $teacher_percentage = $teacher_details->teacher_percentage;
 
-        $teacher_payment = DB::select('
-            SELECT batch.id, batch.name, COUNT(DISTINCT(students.id)) as total_no_of_students, COUNT(DISTINCT(invoice_details.id)) as no_of_paid_students, 
-            (COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) as no_of_unpaid_students,
-            (COUNT(DISTINCT(invoice_details.id)) * batch.price) as price,
-            (COUNT(DISTINCT(invoice_details.id)) * batch.price * ? / 100 ) as calculated_price
-            FROM batch
-            JOIN invoice_details ON invoice_details.batch_id = batch.id
-            JOIN teacher_details ON batch.teacher_details_id = teacher_details.id
-            JOIN batch_has_students ON batch.id = batch_has_students.batch_id
-            JOIN students ON batch_has_students.students_id = students.id
-            WHERE students.deleted_at IS NULL 
-            AND invoice_details.payment_from = ?
-            AND teacher_details.id = ?
-            GROUP BY batch.id
-
-            ', [77, '2017-06-01', 2]);
-        return $teacher_payment;
-        // $batches = Batch::with('batchType', 'grade','student')->where('teacher_details_users_id', $request->teacher_user_id)->get();
-        // $batches = TeacherDetail::with('batch.invoiceDetail')
-        //                             ->where('id', $request->teacher_user_id)
-        //                             // ->where('batch.invoice_detail.payment_from', $get_current_date_month_year)
-        //                             ->where('payment_from', $get_payment_date_month_year)
-        //                             ->get();
-
-        // $invoice_details = InvoiceDetail::with('batch.teacherDetail')
-        //                     ->with(['teacherDetail'=> function($query) use ($teacher_id){
-        //                         $query->where('id', $teacher_id);
-        //                     }])
-        //                     ->where('payment_from', $get_payment_date_month_year)
-        //                     ->get();
-
-        // $invoice_details = TeacherDetail::with('batch')
-        //                     ->with(['invoiceDetail'=> function($query) use ($get_payment_date_month_year){
-        //                         $query->where('payment_from', $get_payment_date_month_year);
-        //                     }])
-        //                     ->where('id', $teacher_id)
-        //                     ->get();                    
+        $teacher_payment_per_batch = DB::table('batch')
+                    ->leftJoin('invoice_details', 'invoice_details.batch_id', '=', 'batch.id')
+                    ->leftJoin('teacher_details', 'batch.teacher_details_id', '=', 'teacher_details.id')
+                    ->leftJoin('batch_has_students', 'batch.id', '=', 'batch_has_students.batch_id')
+                    ->leftJoin('students', 'batch_has_students.students_id', '=', 'students.id')
+                    ->where('students.deleted_at', '=', NULL)
+                    ->where('invoice_details.payment_from', '=', $get_payment_date_month_year)
+                    ->where('teacher_details.id', '=', $teacher_id)
+                    ->groupBy('batch.id')
+                    ->select('batch.id as batch_id', 
+                        'batch.name as batch_name',
+                        'batch.schedule as batch_schedule',
+                        DB::raw("COUNT(DISTINCT(students.id)) as total_no_students"),
+                        DB::raw("COUNT(DISTINCT(invoice_details.id)) as no_of_paid_students"),
+                        DB::raw("(COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) as no_of_unpaid_students"), 
+                        DB::raw("(COUNT(DISTINCT(invoice_details.id)) * batch.price) as price"),
+                        DB::raw("(COUNT(DISTINCT(invoice_details.id)) * batch.price * " . $teacher_percentage . " / 100 ) as calculated_price"));
+        // return $teacher_payment_per_batch;
+        return Datatables::of($teacher_payment_per_batch)
+        ->addColumn('Link', function ($invoice_details) use($get_payment_date_month_year) {
         
-        // App\Post::find(1)->comments()->where('title', 'foo')->first();
-
-        $teacher_has_batch = TeacherDetail::find($request->teacher_user_id)->batch()->lists('id');
-
-        $invoice_details_for_teacher = InvoiceDetail::with('batch.student')->whereIn('batch_id', $teacher_has_batch)
-                                        ->where('payment_from', $get_payment_date_month_year)->get();
-
-        return response()->json($invoice_details_for_teacher);
-        dd($teacher_has_batch);
-
-
-        $invoice_details = Batch::with(['teacherDetail' => function($query) use ($teacher_id){
-                                        $query->where('id', $teacher_id);
-                                    }])
-                                    ->with('invoiceDetail', function($query) use ($get_payment_date_month_year){
-                                        $query->where('payment_from', $get_payment_date_month_year);
-                                    })->get();
-
-        return $invoice_details; 
-
-        $batches = $batches->batch;                         
-
-        return Datatables::of($batches)
-                ->addColumn('total_number_of_students', function ($batches) {
-                    if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        return "AAAAAAAAAAAAAa";
-                    }
-                    else {
-                        return 'N/A';
-                    }
-                })
-                ->make(true);
-        
-
-        return Datatables::of($batches)
-            ->addColumn('teacher_payment_per_batch', function ($batches) use($get_current_date_month_year,$request)    {
-                
-                $price_per_batch = InvoiceDetail::where('batch_id', $batches->id)
-                                    ->where('refund', 0)
-                                    ->where('payment_to', $get_current_date_month_year)
-                                    ->sum('price');
-                
-                $teacherPercentage = TeacherDetail::select('teacher_percentage')->where('users_id',$request->teacher_user_id)->first();
-                
-                $price_per_batch = $price_per_batch * ( ($teacherPercentage->teacher_percentage)  / 100);
-                if($price_per_batch==null) {
-                    return 0;
-                }
-                return $price_per_batch;
-
-            })
-            ->addColumn('total_number_of_students', function ($batches) {
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    return count($batches->student);
-                }
-                else {
-                    return 'N/A';
-                }
-            })
-            ->addColumn('total_paid_students', function ($batches) use($get_current_date_month_year) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                    $std =  $batches->student;
-                    $no_of_paid_students = 0;
-                    $std = $batches->student;
-                    for ($i=0; $i < count($std); $i++) { 
-                        $sss = $std[$i];
-                        if ($sss->pivot->last_paid_date >= $get_current_date_month_year)  {
-                            error_log('message');
-                            error_log($sss->pivot->last_paid_date);
-                            $no_of_paid_students = $no_of_paid_students + 1;
-                        }
-                    }
-                    return $no_of_paid_students;
-                }
-                else {
-                    return 'N/A';
-                }
-            })
-            ->addColumn('total_unpaid_students', function ($batches) use($get_current_date_month_year) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                    $std =  $batches->student;
-                    $no_of_paid_students = 0;
-                    $std = $batches->student;
-                    for ($i=0; $i < count($std); $i++) { 
-                        $sss = $std[$i];
-                        if ($sss->pivot->last_paid_date < $get_current_date_month_year)  {
-                            $no_of_paid_students = $no_of_paid_students + 1;
-                        }
-                    }
-                    return $no_of_paid_students;
-                }
-                else {
-                    return 'N/A';
-                }
-            })
-            ->addColumn('Link', function ($batches) use($get_current_date_month_year) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                
-                return '<a id="batch_'. $batches->id .'"" href="' . url('/batch') . '/' . $batches->id .'/'.$get_current_date_month_year.'/'.$batches->name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn bg-purple margin"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
-                }
-                else {
-                    return 'N/A';
-                }
-            })
-            ->make(true);
+            if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+            
+            return '<a id="batch_'. $invoice_details->batch_id .'"" href="' . url('/batch') . '/' . $invoice_details->batch_id .'/'.$get_payment_date_month_year.'/'.$invoice_details->batch_name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn bg-purple margin"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
+            }
+            else {
+                return 'N/A';
+            }
+        })
+        ->make(true);
     }
 
-    public function allStudentForTeacherPayment($id,$date,$batchName)
+    public function allStudentForTeacherPayment($id, $date, $batchName)
     {
         return view('Teacher::teacher_payment_for_a_single_batch')
         ->with('batchID', $id)

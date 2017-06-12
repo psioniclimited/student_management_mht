@@ -238,11 +238,11 @@ class StudentsWebController extends Controller {
 
 
 	public function addStudentProcess(\App\Http\Requests\StudentCreateRequest $request) {
-
+        
         $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
         $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => "2017-01-01"]);
-
+        
         $filename = Carbon::now();
         $filename = $filename->timestamp;
         if ($request->file("pic") !== null) {
@@ -269,12 +269,12 @@ class StudentsWebController extends Controller {
         $student->save();
 
         /* Checking Student's last paid date with batch start date and Updating last paid date if necessary */
-        $collection = collect($request->class_start_date);
+        $collection = collect($request->joining_date);
         $class_start_date = $collection->reject(function ($value, $key) {
             return $value == "";
         })
         ->flatten();
-
+        
         for ($i=0; $i < count($student->batch); $i++) { 
 
             $student = Student::with('batch')->find($student->id);
@@ -282,14 +282,16 @@ class StudentsWebController extends Controller {
             $last_paid_date = Carbon::createFromFormat('d/m/Y', $class_start_date[$i])->format('Y-m-d');
             $last_paid_date = Carbon::parse($last_paid_date);
             $last_paid_date->day = 01;
+            $joining_date = $last_paid_date->toDateString();
             $last_paid_date = $last_paid_date->subMonth();
-
+            
             $bast_has_student = BatchHasStudent::where('batch_id', $student->batch[$i]->id)
                                     ->where('students_id', $student->id)
-                                    ->update(['last_paid_date' => $last_paid_date]);
-
+                                    ->update([
+                                        'last_paid_date' => $last_paid_date, 
+                                        'joining_date' => $joining_date
+                                    ]);
         }
-        
         return back();
     }
 

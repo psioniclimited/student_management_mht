@@ -291,7 +291,7 @@ $(document).ready(function () {
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>
-                            <input id="{{ 'class_start_date' . $subject->id }}" type="text" class="form-control ref_date" name="class_start_date[]" autocomplete="off">
+                            <input id="{{ 'class_start_date' . $subject->id }}" type="text" class="form-control ref_date" name="joining_date[]" autocomplete="off">
                         </div>
                     </div>
                     @endforeach
