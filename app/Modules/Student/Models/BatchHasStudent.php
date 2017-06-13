@@ -19,7 +19,8 @@ class BatchHasStudent extends Model
     protected $fillable = [
         'batch_id',
         'students_id',
-        'last_paid_date'
+        'last_paid_date',
+        'joining_date'
     ];
 
     // public function setLastPaidDateAttribute($value) {

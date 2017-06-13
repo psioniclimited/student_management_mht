@@ -3,9 +3,12 @@
 @section('css')
 <link rel="stylesheet" href="{{asset('plugins/tooltipster/tooltipster.css')}}">
 <link rel="stylesheet" href="{{asset('plugins/select2/select2.min.css')}}">
+<!-- bootstrap datepicker -->
+<link rel="stylesheet" href="{{asset('../../plugins/datepicker/datepicker3.css')}}">
 @endsection
 
 @section('scripts')
+<script src="{{asset('../../plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <script src="{{asset('plugins/validation/dist/jquery.validate.js')}}"></script>
 <script src="{{asset('plugins/tooltipster/tooltipster.js')}}"></script>
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
@@ -18,6 +21,12 @@ $(document).ready(function () {
         trigger: 'custom', // default is 'hover' which is no good here
         onlyOne: false, // allow multiple tips to be open at a time
         position: 'right'  // display the tips to the right of the element
+    });
+
+    //Date picker for Start Date
+    $('.ref_date').datepicker({
+      format: 'dd/mm/yyyy',
+      autoclose: true
     });
 
     // initialize validate plugin on the form
@@ -120,7 +129,15 @@ $(document).ready(function () {
     });
 
     
-
+    $.get("/get_batch_joining_date_for_edit", {
+            student_id: "{{ $getStudent->id }}" 
+    })
+    .done(function( batch ) {
+        console.log('get_batch_joining_date_for_edit');
+        for (var i = 0; i < batch.length; i++) {
+            console.log(batch[i].id + " - " + batch[i].subjects_id + " - " + batch[i].pivot.joining_date);
+        }
+    });
 
 
 
@@ -138,10 +155,13 @@ $(document).ready(function () {
 
     $(".sub_checkbox").change(function() {
 
+
+        $("#class_start_date" + this.value).val('');
         if(this.checked) {
            // console.log(this.value);
            // console.log($( this ).siblings());
            $( this ).parent().siblings(".form-group").show();
+           $( this ).parent().siblings(".class_start_selection").show();
             
             var batchType = $('#batch_types_id').find(":selected").val();
             var grade = $('#grades_id').find(":selected").val();
@@ -323,13 +343,19 @@ $(document).ready(function () {
 
                         @foreach($getStudent->subject as $selected_subject)
                             @if($selected_subject->id === $subject->id)
-                              <label>
+                                <label>
                                     <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}" checked>
                                   {{ $subject->name }}
-                              </label>
-                              <div class="form-group batchSelection">
+                                </label>
+                                <div class="form-group batchSelection">
                                     <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
-                              </div>
+                                </div>
+                                <div class="input-group date class_start_selection">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="{{ 'class_start_date' . $subject->id }}" type="text" class="form-control ref_date" name="joining_date[]" autocomplete="off">
+                                </div>
                               @break
                             <!-- @elseif($selected_subject === end($getStudent->subject)) -->
                             @elseif($getStudent->subject->last()->id == $selected_subject->id)
@@ -340,12 +366,18 @@ $(document).ready(function () {
                                 <div class="form-group batchSelection" style="display:none;">
                                     <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
                                 </div>
+                                <div class="input-group date class_start_selection" style="display:none;">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input id="{{ 'class_start_date' . $subject->id }}" type="text" class="form-control ref_date" name="joining_date[]" autocomplete="off">
+                                </div>
                             @endif
                         @endforeach
                     </div>
                     @endforeach
                     @else
-                        @foreach ($Subjects as $subject)
+                    @foreach ($Subjects as $subject)
                     <div class="checkbox">
                         <label>
                           <input class="sub_checkbox" type="checkbox" name="subject[]" value="{{ $subject->id }}">
@@ -353,6 +385,12 @@ $(document).ready(function () {
                         </label>
                         <div class="form-group batchSelection" style="display:none;">
                             <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
+                        </div>
+                        <div class="input-group date class_start_selection" >
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="{{ 'class_start_date' . $subject->id }}" type="text" class="form-control ref_date" name="joining_date[]" autocomplete="off">
                         </div>
                     </div>
                     @endforeach

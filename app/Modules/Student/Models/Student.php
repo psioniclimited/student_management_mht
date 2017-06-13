@@ -29,7 +29,6 @@ class Student extends Model
         'batch_types_id',
         'students_image',
         'student_email',
-        'joining_year',
         'student_permanent_id',
         'driving_license_number'
     ];
@@ -52,7 +51,7 @@ class Student extends Model
 
     public function batch()
     {
-        return $this->belongsToMany('App\Modules\Student\Models\Batch', 'batch_has_students', 'students_id', 'batch_id')->withPivot('last_paid_date');
+        return $this->belongsToMany('App\Modules\Student\Models\Batch', 'batch_has_students', 'students_id', 'batch_id')->withPivot('last_paid_date', 'joining_date');
     }
 
     public function subject()

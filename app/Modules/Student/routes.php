@@ -112,6 +112,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     ***************************/       
     Route::get('getallbatch', 'App\Modules\Student\Controllers\BatchWebController@getAllBatch');
     Route::get('get_student_batch_for_edit', 'App\Modules\Student\Controllers\StudentsWebController@StudentBatchForEdit');
+    Route::get('get_batch_joining_date_for_edit', 'App\Modules\Student\Controllers\StudentsWebController@get_batch_joining_date_for_edit');
 
 
     /**************************

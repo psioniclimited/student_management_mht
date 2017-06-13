@@ -326,6 +326,12 @@ class StudentsWebController extends Controller {
         return response()->json($studentBatch);
     }
 
+    public function get_batch_joining_date_for_edit(Request $request)
+    {
+        $getJoiningDate = Student::with('batch')->find($request->student_id);
+        return response()->json($getJoiningDate->batch);
+    }
+
     public function studentUpdateProcess(\App\Http\Requests\StudentCreateRequest $request, $id) {
     	
         $student = Student::find($id);

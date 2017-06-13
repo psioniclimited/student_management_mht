@@ -188,11 +188,14 @@ class BatchWebController extends Controller {
 
     public function get_all_batches_for_a_subject(Request $request)  {
         
-        $batches = Batch::with('batchType', 'subject', 'grade','teacherDetail','student')->where('subjects_id',$request->subjects_id)->get();
+        $batches = Batch::with('batchType', 'subject', 'grade','teacherDetail','student')
+                            ->where('subjects_id',$request->subjects_id)
+                            ->get();
         
         return Datatables::of($batches)
             ->addColumn('teacher_name', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
+                    
                 $teacher_name =  TeacherDetail::with('user')->find($batches->teacherDetail->id);
                     return $teacher_name->user->name;
                 }
