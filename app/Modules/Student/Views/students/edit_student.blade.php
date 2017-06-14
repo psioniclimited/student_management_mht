@@ -136,6 +136,8 @@ $(document).ready(function () {
         console.log('get_batch_joining_date_for_edit');
         for (var i = 0; i < batch.length; i++) {
             console.log(batch[i].id + " - " + batch[i].subjects_id + " - " + batch[i].pivot.joining_date);
+            let class_start_date_id = '#class_start_date' + batch[i].subjects_id;
+            $(class_start_date_id).val(batch[i].pivot.joining_date);
         }
     });
 
@@ -161,7 +163,7 @@ $(document).ready(function () {
            // console.log(this.value);
            // console.log($( this ).siblings());
            $( this ).parent().siblings(".form-group").show();
-           $( this ).parent().siblings(".class_start_selection").show();
+           $( this ).parent().siblings(".class_start_selection").show('slow');
             
             var batchType = $('#batch_types_id').find(":selected").val();
             var grade = $('#grades_id').find(":selected").val();
@@ -210,9 +212,10 @@ $(document).ready(function () {
         }
         else{
             // $("#box_color").attr("class","box box-success");
-            $( this ).parent().siblings(".form-group").hide();
+            $( this ).parent().siblings(".form-group").hide('slow');
             var subject_id = "#subject" + this.value;
             $(subject_id).val('');
+            $( this ).parent().siblings(".class_start_selection").hide('slow');
         }
     });
 

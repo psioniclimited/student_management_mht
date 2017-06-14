@@ -241,7 +241,9 @@ class StudentsWebController extends Controller {
         
         $student = Student::create($request->all());
 		$student->subject()->attach($request->input('subject'));
-        $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => "2017-01-01"]);
+        // $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => "2017-01-01"]);
+        $student->batch()->attach($request->input('batch_name'));
+
         
         $filename = Carbon::now();
         $filename = $filename->timestamp;
@@ -328,12 +330,17 @@ class StudentsWebController extends Controller {
 
     public function get_batch_joining_date_for_edit(Request $request)
     {
-        $getJoiningDate = Student::with('batch')->find($request->student_id);
-        return response()->json($getJoiningDate->batch);
+        $get_student_with_batches = Student::with('batch')->find($request->student_id);
+        $get_batches_only = $get_student_with_batches->batch;
+        for ($i=0; $i < count($get_batches_only); $i++) { 
+            $get_batches_only[$i]->pivot->joining_date = Carbon::createFromFormat('Y-m-d', $get_batches_only[$i]->pivot->joining_date)
+                                                        ->format('d/m/Y');;
+        }
+        return response()->json($get_batches_only);
     }
 
     public function studentUpdateProcess(\App\Http\Requests\StudentCreateRequest $request, $id) {
-    	
+    	// return $request->all();
         $student = Student::find($id);
     	
         if( !$student->update( $request->all()) )
@@ -345,14 +352,42 @@ class StudentsWebController extends Controller {
         	$student->subject()->sync($request->input('subject'));
             $student->batch()->sync($request->input('batch_name'));
 
-            $last_paid_date = new Carbon('first day of last month');
-            $last_paid_date = $last_paid_date->toDateString();
+            /* Updating the Joining Date */
+            $collection = collect($request->joining_date);
+            $class_start_date = $collection->reject(function ($value, $key) {
+                return $value == "";
+            })
+            ->flatten();
+            
+            for ($i=0; $i < count($student->batch); $i++) { 
 
-            BatchHasStudent::where('students_id', $id)
-                            ->where('last_paid_date', null)
-                            ->update(['last_paid_date' => $last_paid_date]);
+                $student = Student::with('batch')->find($student->id);
 
-            // Batch::student()->updateExistingPivot($id, ['last_paid_date' => $last_paid_date]);
+                if ($student->batch[$i]->pivot->last_paid_date == NULL) {
+                    $last_paid_date = Carbon::createFromFormat('d/m/Y', $class_start_date[$i])->format('Y-m-d');
+                    $last_paid_date = Carbon::parse($last_paid_date);
+                    $last_paid_date->day = 01;
+                    $joining_date = $last_paid_date->toDateString();
+                    $last_paid_date = $last_paid_date->subMonth();
+                    $bast_has_student = BatchHasStudent::where('batch_id', $student->batch[$i]->id)
+                                        ->where('students_id', $student->id)
+                                        ->update([
+                                            'last_paid_date' => $last_paid_date,
+                                            'joining_date' => $joining_date
+                                        ]);
+                }
+                else {
+                    $last_paid_date = Carbon::createFromFormat('d/m/Y', $class_start_date[$i])->format('Y-m-d');
+                    $last_paid_date = Carbon::parse($last_paid_date);
+                    $last_paid_date->day = 01;
+                    $joining_date = $last_paid_date->toDateString();
+                    $bast_has_student = BatchHasStudent::where('batch_id', $student->batch[$i]->id)
+                                        ->where('students_id', $student->id)
+                                        ->update([
+                                            'joining_date' => $joining_date
+                                        ]);
+                }
+            }
         }
         else {
             $batch_has_student = BatchHasStudent::where('students_id', $id);
