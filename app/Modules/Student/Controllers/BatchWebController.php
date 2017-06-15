@@ -360,7 +360,7 @@ class BatchWebController extends Controller {
                     ->leftJoin('batch_types', 'batch_types.id', '=', 'students.batch_types_id')
                     ->leftJoin('schools', 'schools.id', '=', 'students.schools_id')
                     ->where('batch.id', '=', $request->batch_id)
-                    ->where('last_paid_date', '>', $current_date)
+                    ->where('joining_date', '>', $current_date)
                     ->whereNull('deleted_at')
                     ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
         
