@@ -389,7 +389,7 @@ $(document).ready(function () {
                         <div class="form-group batchSelection" style="display:none;">
                             <select class="form-control select2" name="batch_name[]" id="{{ 'subject' . $subject->id }}" ></select>
                         </div>
-                        <div class="input-group date class_start_selection" >
+                        <div class="input-group date class_start_selection" style="display:none;">
                             <div class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </div>

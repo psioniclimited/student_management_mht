@@ -203,49 +203,49 @@ $(document).ready(function () {
             <div class="col-md-1"></div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="name">Fullname*</label>
+                    <label for="name">Fullname</label>
                     <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student name">
                 </div>
                 
                 <div class="form-group">
-                    <label for="student_email" >Email*</label>
+                    <label for="student_email" >Email</label>
                     <input type="email" class="form-control" id="student_email" name="student_email" size="35" placeholder="Enter email">
                 </div>
                 
                 <div class="form-group">
-                    <label for="fathers_name">Father's name*</label>
+                    <label for="fathers_name">Father's name</label>
                     <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name">
                 </div>
                 
                 <div class="form-group">
-                    <label for="mothers_name">Mother's name*</label>
+                    <label for="mothers_name">Mother's name</label>
                     <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name">
                 </div>
 
                 <div class="form-group">
-                    <label for="student_phone_number">Student's Phone Number*</label>
+                    <label for="student_phone_number">Student's Phone Number</label>
                     <input type="text" class="form-control" id="student_phone_number" name="student_phone_number" placeholder="Enter Student's Phone number">
                 </div>
 
                 <div class="form-group">
-                    <label for="guardian_phone_number">Guardian's Phone Number*</label>
+                    <label for="guardian_phone_number">Guardian's Phone Number</label>
                     <input type="text" class="form-control" id="guardian_phone_number" name="guardian_phone_number" placeholder="Enter Guardian's Phone number">
                 </div>
 
                 <div class="form-group">
-                    <label for="driving_license_number" >Driving License Number*</label>
+                    <label for="driving_license_number" >Driving License Number</label>
                     <input type="text" class="form-control" id="driving_license_number" name="driving_license_number" size="255" placeholder="Enter Driving License Number">
                 </div>
                 
                 <div class="form-group">
-                    <label for="pic" >Upload Photo*</label>
+                    <label for="pic" >Upload Photo</label>
                     <input type="file" name="pic" id="pic">
                 </div>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="schools_id" >School*</label>
+                    <label for="schools_id" >School</label>
                     <select class="form-control" name="schools_id">
                             <option value="default">Choose...</option>
                             @foreach ($Schools as $school)
@@ -256,7 +256,7 @@ $(document).ready(function () {
 
                 
                 <div class="form-group">
-                    <label for="batch_types_id" >Education Board*</label>
+                    <label for="batch_types_id" >Education Board</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
                             <option value="default">Choose...</option>
                             @foreach ($batchTypes as $batchType)
@@ -277,7 +277,7 @@ $(document).ready(function () {
                 
                 <!-- checkbox -->
                 <div class="form-group">
-                    <label for="subjects_id">Choose Subject*</label>
+                    <label for="subjects_id">Choose Subject</label>
                     @foreach ($Subjects as $subject)
                     <div class="checkbox">
                         <label>

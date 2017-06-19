@@ -32,6 +32,7 @@ class AddNewBatchRequest extends Request
             'schedule' => 'required',
             'start_date' => 'required|date_format:d/m/Y',
             'end_date' => 'required|date_format:d/m/Y',
+            'expected_students' => 'required',
         ];
     }
 }

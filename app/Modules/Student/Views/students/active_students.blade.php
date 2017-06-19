@@ -38,9 +38,9 @@
             "columns": [
                     {"data": "student_permanent_id"},
                     {"data": "name"},
-                    {"data": "school.name"},
-                    {"data": "batch", "name": "batch.name"},                    
                     {"data": "student_phone_number"},
+                    {"data": "guardian_phone_number"},
+                    {"data": "batch", "name": "batch.name"},    
                     {"data": "driving_license_number"},
                     {"data": "payable"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
@@ -159,10 +159,10 @@
                             <tr>
                                 <th>Student Permanent ID</th>
                                 <th>Student Name</th>
-                                <th>School Name</th>
-                                <th>Batch</th>
                                 <th>Student's Phone Number</th>
-                                <th>Driving License Number</th>
+                                <th>Guardian's Phone Number</th>
+                                <th>Batch</th>
+                                <th>Car Registration Number</th>
                                 <th>Total Payable Amount /-</th>
                                 <th>Action</th>                            
                             </tr>

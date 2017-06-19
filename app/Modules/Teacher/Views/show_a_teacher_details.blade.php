@@ -38,14 +38,13 @@
                     {"data": "schedule"},
                     {"data": "name"},
                     {"data": "price"},
-                    {"data": "batch_type.name"},                    
-                    {"data": "grade.name"},
+                    {"data": "expected_students"},
+                    {"data": "total_students"},
                     {"data": "start_date"},
                     {"data": "end_date"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ]
-        });
-
+        });                  
 
 
 
@@ -99,6 +98,7 @@
                    $("option#edit_grades_id").attr("value",data.grades_id);
                    $('option#edit_subject_id').text(data.subject.name);
                    $("option#edit_subject_id").attr("value",data.subjects_id);
+                   $("input#expected_students_edit").attr("value",data.expected_students);
                    //table.ajax.reload(null, false);
                    // $('#confirm_edit').modal('toggle');
                }
@@ -338,14 +338,18 @@
                 </div>
                 </div>
                 <div class="row">
-                <div class="col-md-6"></div>
-                <div class="col-md-6"> 
-                <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
-                <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
-                <div class="col-md-12">
-                    <label for="" ></label>
-                    <button type="submit" class="btn btn-block btn-success">Add Batch</button>
+                <div class="col-md-3">
+                    <label for="expected_students" >Expected Students*</label>
+                    <input type="number" min="1" class="form-control" name="expected_students" id="expected_students" value="1">
                 </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-6"> 
+                  <input type="hidden" name="teacher_details_id" value="{{ $getTeacher->id }}">
+                  <input type="hidden" name="teacher_details_users_id" value="{{ $getTeacher->user->id }}">
+                  <div class="col-md-12">
+                      <label for="" ></label>
+                      <button type="submit" class="btn btn-block btn-success">Add Batch</button>
+                  </div>
                 {!! Form::close() !!}
               </div>
               </div>
@@ -373,8 +377,8 @@
                                 <th>Schedule</th>
                                 <th>Batch Name</th>
                                 <th>Price Tk/=</th>
-                                <th>Education Board</th>
-                                <th>Grade</th>
+                                <th>Expected Students</th>
+                                <th>Total Number of Students</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
                                 <th>Action</th>                            
@@ -484,6 +488,13 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label for="expected_students" >Expected Students*</label>
+                        <input type="number" min="1" class="form-control" name="expected_students" id="expected_students_edit">
+                      </div>
+                      <div class="col-md-6"></div>
                     </div>
                </div>
                <div class="modal-footer">

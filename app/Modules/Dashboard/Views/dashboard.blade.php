@@ -2,6 +2,11 @@
 @section('css')
 <!-- jvectormap -->
 <link rel="stylesheet" href="{{asset('plugins/jvectormap/jquery-jvectormap-1.2.2.css')}}">
+<style type="text/css">
+  .my_class {
+    color: Red;
+  }
+</style>
 @endsection
 
 @section('scripts')
@@ -54,7 +59,10 @@ $(document).ready(function () {
                     {"data": "total_paid_amount"},
                     {"data": "total_unpaid_amount"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
-            ]
+            ],
+        "aoColumnDefs": [
+                    { "sClass": "my_class", "aTargets": [ 7 ] }
+        ]
     });
     
 
@@ -174,7 +182,7 @@ $(document).ready(function () {
                     <tr>
                         <th>Batch Name</th>
                         <th>Schedule</th>
-                        <th>Total number of students</th>
+                        <th>Total number of Active students</th>
                         <th>Number of Paid students</th>
                         <th>Number of Due students</th>
                         <th>Total Expected Amount /-</th>

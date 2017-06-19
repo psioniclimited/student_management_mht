@@ -30,30 +30,20 @@ class BatchWebController extends Controller {
     }
 
     public function getBatches($teacherDetailID) {
-    $batches = Batch::with('batchType', 'grade')->where('teacher_details_id', $teacherDetailID)->get();
-    // $batch_id = 9;
-    
-    // $query_batch = "SELECT batch.id, concat(batch_days.name, ' ', batch_times.time) as schedule
-    //     FROM batch_has_days_and_times
-    //     JOIN batch ON batch_has_days_and_times.batch_id = batch.id
-    //     JOIN batch_days_has_batch_times ON batch_has_days_and_times.batch_days_has_batch_times_id
-    //     JOIN batch_days ON batch_has_days_and_times.batch_days_has_batch_times_batch_days_id = batch_days.id
-    //     JOIN batch_times ON batch_has_days_and_times.batch_days_has_batch_times_batch_times_id = batch_times.id
-    //     WHERE batch_has_days_and_times.batch_id = 8
-    //     GROUP BY batch.id, concat(batch_days.name, ' ', batch_times.time)";
-
-    //     $batch_times = DB::select($query_batch);
-
-        // foreach ($batch_times as $batch_time) {
-        //     $this->schedule = $this->schedule . $batch_time->schedule . " - ";
-        // }
+        
+        $batches = Batch::with('batchType', 'grade', 'student')->where('teacher_details_id', $teacherDetailID)->get();
+        
         return Datatables::of($batches)
+            ->addColumn('total_students', function ($batches) {
+                return count($batches->student);
+            })
             ->addColumn('Link', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
                 // return '<a href="' . url('/batch') . '/' . $batches->id . '/edit/' . '"' . 'class="btn btn-xs btn-info"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
                 //         '<a class="btn btn-xs btn-danger" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
                 //         <i class="glyphicon glyphicon-trash"></i> Delete
                 //         </a>';
+                
                 return '<a class="btn bg-yellow margin" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_edit">
                         <i class="glyphicon glyphicon-trash"></i> Edit </a>' .'&nbsp &nbsp &nbsp'.
                         '<a class="btn bg-red margin" id="'. $batches->id .'" data-toggle="modal" data-target="#confirm_delete">
@@ -87,7 +77,7 @@ class BatchWebController extends Controller {
     }
 
     public function addNewBatchProcess(\App\Http\Requests\AddNewBatchRequest $request) {
-        
+        // return $request->all();
         if($request->batch_number == null) {
             $batch_number = 1;
         }

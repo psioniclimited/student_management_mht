@@ -26,7 +26,8 @@ class Batch extends Model
         'start_date',
         'end_date',
         'schedule',
-        'subjects_id'
+        'subjects_id',
+        'expected_students'
     ];
     
     public function student()
