@@ -294,6 +294,59 @@ class StudentPaymentController extends Controller {
                         ->make(true);
     }
 
+    public function refundPayment($invoice_detail_id, $student_id) {
+        
+        $invoice_details = InvoiceDetail::find($invoice_detail_id);
+        
+        $current_date = new Carbon('first day of this month');
+        $current_date = $current_date->toDateString();
+        
+        if ($current_date == $invoice_details->payment_to) {
+            
+            $invoice_details->refund = true;
+            $invoice_details->save();
+            
+            $refund = new Refund();
+            $refund->refund_from = $invoice_details->payment_to;
+            $refund->amount = $invoice_details->price;
+            $refund->invoice_details_id = $invoice_details->id;
+            $refund->save();
+
+            $last_payment_date = new Carbon('first day of last month');
+            $batch_has_student = BatchHasStudent::where('batch_id', $invoice_details->batch_id)
+                                                    ->where('students_id', $student_id)
+                                                    ->update(['last_paid_date' => $last_payment_date->toDateString()]);
+            return back();
+        }
+        elseif ( $current_date > $invoice_details->payment_to ) {
+            $invoice_details->refund = true;
+            $invoice_details->save();
+
+            $refund = new Refund();
+            $refund->refund_from = $current_date;
+            $refund->amount = $invoice_details->price;
+            $refund->invoice_details_id = $invoice_details->id;
+            $refund->save();
+
+            $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
+                                                    ->where('students_id', $student_id)
+                                                    ->update(['last_paid_date' => $current_date]);
+            return back();
+        }
+        else {
+            $invoice_details->refund = true;
+            $invoice_details->save();
+            
+            $refDate = Carbon::createFromFormat('Y-m-d', $invoice_details->payment_to);
+            $last_payment_date = $refDate->subMonths(1);
+            $last_payment_date = $last_payment_date->toDateString();
+            $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
+                                                    ->where('students_id', $student_id)
+                                                    ->update(['last_paid_date' => $last_payment_date]);
+            return back();
+        }
+    }
+
     public function due_payment_student(Request $request) {
         $data = DB::table('students')
             ->leftJoin('invoice_masters', 'students.id', '=', 'invoice_masters.students_id')
@@ -330,63 +383,6 @@ class StudentPaymentController extends Controller {
 
         $invoice_details = InvoiceDetail::find($request->invoice_detail_id);
         return $invoice_details;
-    }
-
-    public function refundPayment($invoice_detail_id, $student_id) {
-        
-        $invoice_details = InvoiceDetail::find($invoice_detail_id);
-        $current_date = new Carbon('first day of this month');
-        $current_date = $current_date->toDateString();
-        
-        if ($current_date == $invoice_details->payment_to) {
-            
-            $invoice_details->refund = true;
-            $invoice_details->save();
-            
-            $refund = new Refund();
-            $refund->refund_from = $invoice_details->payment_to;
-            $refund->amount = $invoice_details->price;
-            $refund->invoice_details_id = $invoice_details->id;
-            $refund->save();
-
-            $last_payment_date = new Carbon('first day of last month');
-            $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
-                                                    ->where('students_id', $student_id)
-                                                    ->update(['last_paid_date' => $last_payment_date->toDateString()]);
-            return back();
-        }
-        elseif ( $invoice_details->payment_to < $current_date ) {
-
-            $invoice_details->refund = true;
-            $invoice_details->save();
-
-            $refund = new Refund();
-            $refund->refund_from = $current_date;
-            $refund->amount = $invoice_details->price;
-            $refund->invoice_details_id = $invoice_details->id;
-            $refund->save();
-
-            $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
-                                                    ->where('students_id', $student_id)
-                                                    ->update(['last_paid_date' =>$current_date]);
-            
-            return back();
-        }
-        else {
-            
-            // $invoice_details->delete();
-            $invoice_details->refund = true;
-            $invoice_details->save();
-            
-            $refDate = Carbon::createFromFormat('Y-m-d', $invoice_details->payment_to);
-            $last_payment_date = $refDate->subMonths(1);
-            $last_payment_date = $last_payment_date->toDateString();
-            $batch_has_student = BatchHasStudent::where('batch_id',$invoice_details->batch_id)
-                                                    ->where('students_id', $student_id)
-                                                    ->update(['last_paid_date' => $last_payment_date]);
-            
-            return back();
-        }
     }
 
     public function lastPaidUpdatePage($id)

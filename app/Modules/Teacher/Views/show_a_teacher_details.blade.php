@@ -518,7 +518,7 @@
 
 
 
-    <!-- Delete Batch Modal -->
+   <!-- Delete Batch Modal -->
    <div class="modal fade" id="confirm_delete" role="dialog">
        <div class="modal-dialog">
            <!-- Modal content-->

@@ -247,8 +247,9 @@
                             student_id: $('select[id=student_id]').val(),
                     })
                     .done(function( data ) {
-                        // console.log("other_payment_form");
-                        // console.log(data);
+                        console.log("other_payment_form");
+                        console.log(data);
+                        console.log('other Payment Show slow');
                         $("#other_payment_print").show('slow');
                         let msg = '<div class="alert alert-success alert-dismissible">'+
                                     '<button type="button" id="success_othre_payment_msg" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+
@@ -554,7 +555,7 @@
                     	<tr>
                             <td style="text-align: center;">Admission Fee</th>
                             <td><input id="admission_dsecription" class="form-control" type="text" name="description" placeholder="Description"></td>
-                            <td><input id="admission_fee" class="form-control" type="number" name="admission_fee" placeholder="Amount"></td>
+                            <td><input id="admission_fee" class="form-control" type="number" name="admission_fee" value="1000"></td>
                         </tr>                          
                     </tbody >
                 </table>

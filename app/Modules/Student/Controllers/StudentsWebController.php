@@ -251,13 +251,17 @@ class StudentsWebController extends Controller {
 
 
 	public function addStudentProcess(\App\Http\Requests\StudentCreateRequest $request) {
-        
+        /* Saving info to 'students' table */
         $student = Student::create($request->all());
-		$student->subject()->attach($request->input('subject'));
-        // $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => "2017-01-01"]);
-        $student->batch()->attach($request->input('batch_name'));
 
-        
+        /* Saving info to 'students_has_subjects' table => Many To Many */
+		$student->subject()->attach($request->input('subject'));
+
+        /* Saving info to 'batch_has_students' table => Many To Many */
+        $student->batch()->attach($request->input('batch_name'));
+        // $student->batch()->attach($request->input('batch_name'), ['last_paid_date' => "2017-01-01"]);
+
+        /* Saving the Profile Picture to File and Url to 'students' table */
         $filename = Carbon::now();
         $filename = $filename->timestamp;
         if ($request->file("pic") !== null) {
@@ -266,7 +270,7 @@ class StudentsWebController extends Controller {
             $student->save();
         }
 
-        /* Creating Student's Permanent ID */
+        /* Creating Student's Permanent ID and ID to 'students' table */
         $refDate = Carbon::now();
         $formated_serial_number = 0;
         $data = Student::where('student_permanent_id', 'LIKE', ''. $refDate->year .'%')->get();
@@ -353,16 +357,20 @@ class StudentsWebController extends Controller {
     }
 
     public function studentUpdateProcess(\App\Http\Requests\StudentCreateRequest $request, $id) {
-    	// return $request->all();
+        /* Finding the Student */
         $student = Student::find($id);
     	
+        /* Updating the Basic Info of the Students of the 'students' table */
         if( !$student->update( $request->all()) )
     		return "error";
     	
+
     	if ($request->has('subject')) {
-            
-        
-        	$student->subject()->sync($request->input('subject'));
+
+            /* Updating info to 'students_has_subjects' table => Many To Many */
+            $student->subject()->sync($request->input('subject'));
+
+            /* Updating info to 'students_has_subjects' table => Many To Many */
             $student->batch()->sync($request->input('batch_name'));
 
             /* Updating the Joining Date */
@@ -376,7 +384,7 @@ class StudentsWebController extends Controller {
 
                 $student = Student::with('batch')->find($student->id);
 
-                if ($student->batch[$i]->pivot->last_paid_date == NULL) {
+                if ($student->batch[$i]->pivot->last_paid_date == NULL) { // If new Batch added at Edit Page
                     $last_paid_date = Carbon::createFromFormat('d/m/Y', $class_start_date[$i])->format('Y-m-d');
                     $last_paid_date = Carbon::parse($last_paid_date);
                     $last_paid_date->day = 01;

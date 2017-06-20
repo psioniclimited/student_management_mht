@@ -91,6 +91,7 @@ $(document).ready(function () {
     $(".sub_checkbox").change(function() {
 
         $("#class_start_date" + this.value).val('');
+        $("#subject" + this.value).val(''); 
         if(this.checked) {
            // console.log(this.value);
            // console.log($( this ).siblings());

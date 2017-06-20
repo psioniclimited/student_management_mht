@@ -165,8 +165,14 @@ class BatchWebController extends Controller {
     * Delete a Batch *
     ******************/
     public function deleteBatch(Request $request, $id) {
-        BatchHasStudent::where('batch_id', $id)->delete();
-        Batch::where('id', $id)->delete();
+        // BatchHasStudent::where('batch_id', $id)->delete();
+        $batch = Batch::find($id);
+        
+        // Batch::where('id', $id)->delete();
+        $batch->delete();
+        $batch->student()->detach();
+        $batch->subject()->detach();
+
         return back();
     }
 
@@ -351,7 +357,8 @@ class BatchWebController extends Controller {
                     ->leftJoin('schools', 'schools.id', '=', 'students.schools_id')
                     ->where('batch.id', '=', $request->batch_id)
                     ->where('joining_date', '>', $current_date)
-                    ->whereNull('deleted_at')
+                    ->whereNull('students.deleted_at')
+                    ->whereNull('batch.deleted_at')
                     ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
         
         return Datatables::of($students)
@@ -392,10 +399,12 @@ class BatchWebController extends Controller {
                     ->leftJoin('batch_types', 'batch_types.id', '=', 'students.batch_types_id')
                     ->leftJoin('schools', 'schools.id', '=', 'students.schools_id')
                     ->where('batch.id', '=', $request->batch_id)
-                    ->where('last_paid_date', '<=', $current_date)
-                    ->whereNull('deleted_at')
+                    // ->where('last_paid_date', '<=', $current_date)
+                    ->where('joining_date', '<=', $current_date)
+                    ->whereNull('students.deleted_at')
+                    ->whereNull('batch.deleted_at')
                     ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
-        
+
         return Datatables::of($students)
         ->addColumn('payment_status', function ($students) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {

@@ -65,11 +65,11 @@ class ReportRepository {
 	}
 
 
-	public function getDueByDate($date)	{
+	public function getDueByDate($first_day_of_current_month)	{
 		
-		$payments = Student::with(['batch' => function ($query) use( $date )  {
+		$payments = Student::with(['batch' => function ($query) use( $first_day_of_current_month )  {
     		
-    		$query->where('last_paid_date', '<', $date);
+    		$query->where('last_paid_date', '<', $first_day_of_current_month);
 		
 		}])->get();
 

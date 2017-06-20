@@ -47,8 +47,6 @@ class Student extends Model
         return $this->belongsTo('App\Modules\Student\Models\BatchType', 'batch_types_id');
     }
 
-
-
     public function batch()
     {
         return $this->belongsToMany('App\Modules\Student\Models\Batch', 'batch_has_students', 'students_id', 'batch_id')->withPivot('last_paid_date', 'joining_date');

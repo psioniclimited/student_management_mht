@@ -3,9 +3,13 @@
 namespace App\Modules\Student\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Batch extends Model
 {
+    use SoftDeletes;
+    protected $dates = ['deleted_at'];
+
     protected $table = 'batch';
 
     public $timestamps = false;
@@ -27,7 +31,7 @@ class Batch extends Model
         'end_date',
         'schedule',
         'subjects_id',
-        'expected_students'
+        'expected_students' 
     ];
     
     public function student()
@@ -47,7 +51,7 @@ class Batch extends Model
 
     public function subject()
     {
-        return $this->belongsTo('App\Modules\Student\Models\Subject','subjects_id');
+        return $this->belongsToMany('App\Modules\Student\Models\Subject', 'students_has_subjects', 'students_id', 'subjects_id');
     }
 
     public function teacherDetail()
