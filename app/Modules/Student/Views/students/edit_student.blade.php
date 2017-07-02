@@ -30,44 +30,44 @@ $(document).ready(function () {
     });
 
     // initialize validate plugin on the form
-    $('#add_user_form').validate({
-        errorPlacement: function (error, element) {
+    // $('#add_user_form').validate({
+    //     errorPlacement: function (error, element) {
 
-            var lastError = $(element).data('lastError'),
-                    newError = $(error).text();
+    //         var lastError = $(element).data('lastError'),
+    //                 newError = $(error).text();
 
-            $(element).data('lastError', newError);
+    //         $(element).data('lastError', newError);
 
-            if (newError !== '' && newError !== lastError) {
-                $(element).tooltipster('content', newError);
-                $(element).tooltipster('show');
-            }
-        },
-        success: function (label, element) {
-            $(element).tooltipster('hide');
-        },
-        rules: {
-            name: {required: true, minlength: 4},
-            fathers_name: {required: true, minlength: 4},
-            mothers_name: {required: true, minlength: 4},
-            student_phone_number: {required: true},
-            guardian_phone_number: {required: true},
-            schools_id: {valueNotEquals: "default"},
-            grades_id: {valueNotEquals: "default"},
-            batch_types_id: {valueNotEquals: "default"},
+    //         if (newError !== '' && newError !== lastError) {
+    //             $(element).tooltipster('content', newError);
+    //             $(element).tooltipster('show');
+    //         }
+    //     },
+    //     success: function (label, element) {
+    //         $(element).tooltipster('hide');
+    //     },
+    //     rules: {
+    //         name: {required: true, minlength: 4},
+    //         fathers_name: {required: true, minlength: 4},
+    //         mothers_name: {required: true, minlength: 4},
+    //         student_phone_number: {required: true},
+    //         guardian_phone_number: {required: true},
+    //         schools_id: {valueNotEquals: "default"},
+    //         grades_id: {valueNotEquals: "default"},
+    //         batch_types_id: {valueNotEquals: "default"},
 
-        },
-        messages: {
-            name: {required: "Enter Student Name"},
-            fathers_name: {required: "Enter Student's Father Name"},
-            mothers_name: {required: "Enter Student's Mother's Name"},
-            student_phone_number: {required: "Enter Student's Phone Number"},
-            guardian_phone_number: {required: "Enter Guardian's Phone Number"},
-            schools_id: {valueNotEquals: "Select a School"},
-            grades_id: {valueNotEquals: "Select a Grade"},
-            batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
-        }
-    });
+    //     },
+    //     messages: {
+    //         name: {required: "Enter Student Name"},
+    //         fathers_name: {required: "Enter Student's Father Name"},
+    //         mothers_name: {required: "Enter Student's Mother's Name"},
+    //         student_phone_number: {required: "Enter Student's Phone Number"},
+    //         guardian_phone_number: {required: "Enter Guardian's Phone Number"},
+    //         schools_id: {valueNotEquals: "Select a School"},
+    //         grades_id: {valueNotEquals: "Select a Grade"},
+    //         batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
+    //     }
+    // });
 
     $.get("/get_student_batch_for_edit", {
             student_id: "{{ $getStudent->id }}" 
@@ -318,23 +318,35 @@ $(document).ready(function () {
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="schools_id" >School*</label>
-                    
                         <select class="form-control" name="schools_id">
-                                <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
-                                @foreach ($Schools as $school)
-                                    <option value="{{ $school->id }}">{{ $school->name }}</option>
-                                @endforeach
-                            </select>
-                        
+                        @if ($getStudent->school)
+                            <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
+                            @foreach ($Schools as $school)
+                                <option value="{{ $school->id }}">{{ $school->name }}</option>
+                            @endforeach
+                        @else
+                            <option value="default">Choose...</option>
+                            @foreach ($Schools as $school)
+                                <option value="{{ $school->id }}">{{ $school->name }}</option>
+                            @endforeach
+                        @endif
+                        </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="batch_types_id" >Education Board*</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
+                        @if ($getStudent->batch_type)
                             <option value="{{ $getStudent->batch_type->id }}">{{ $getStudent->batch_type->name}}</option>
                             @foreach ($batchTypes as $batchType)
                                 <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
                             @endforeach
+                        @else
+                            <option value="default">Choose...</option>
+                            @foreach ($batchTypes as $batchType)
+                                <option value="{{ $batchType->id }}">{{ $batchType->name }}</option>
+                            @endforeach
+                        @endif
                     </select>
                 </div>
 

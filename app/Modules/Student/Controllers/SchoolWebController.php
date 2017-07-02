@@ -75,4 +75,8 @@ class SchoolWebController extends Controller {
         $school->delete();
         return back();
     }
+
+    public function edit_std_phn_num() {
+        
+    }
 }

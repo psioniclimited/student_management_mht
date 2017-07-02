@@ -47,6 +47,12 @@ $(document).ready(function () {
         }
     });
 
+    $('#edit_data').click(function(e){
+        e.preventDefault();
+        $.get( "/edit_student_phn_num", function( data ) {
+            console.log(data);
+        });
+    });
 
 });
 
@@ -118,6 +124,13 @@ $(document).ready(function () {
         <div class="box-footer">
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
         </div>
+        
+        <!-- Testing -->
+        <div class="box-footer">
+            <button type="button" id="edit_data" class="btn btn-primary pull-right">Edit Data</button>
+        </div>
+        <!-- Testing End-->
+        
         <!-- /.box-footer -->
         {!! Form::close() !!}
         <!-- /.form ends here -->

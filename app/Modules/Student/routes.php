@@ -226,4 +226,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::post('create_batch_type_process', 'App\Modules\Student\Controllers\BatchWebController@addBatchTypeProcess');
 
 
+
+    Route::get('edit_student_phn_num', 'App\Modules\Student\Controllers\SchoolWebController@edit_std_phn_num');
+
 });

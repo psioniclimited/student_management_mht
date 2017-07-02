@@ -36,43 +36,43 @@ $(document).ready(function () {
     });
 
     // initialize validate plugin on the form
-    $('#add_user_form').validate({
-        errorPlacement: function (error, element) {
+    // $('#add_user_form').validate({
+    //     errorPlacement: function (error, element) {
 
-            var lastError = $(element).data('lastError'),
-                    newError = $(error).text();
+    //         var lastError = $(element).data('lastError'),
+    //                 newError = $(error).text();
 
-            $(element).data('lastError', newError);
+    //         $(element).data('lastError', newError);
 
-            if (newError !== '' && newError !== lastError) {
-                $(element).tooltipster('content', newError);
-                $(element).tooltipster('show');
-            }
-        },
-        success: function (label, element) {
-            $(element).tooltipster('hide');
-        },
-        rules: {
-            name: {required: true, minlength: 4},
-            fathers_name: {required: true, minlength: 4},
-            mothers_name: {required: true, minlength: 4},
-            student_phone_number: {required: true},
-            guardian_phone_number: {required: true},
-            schools_id: {valueNotEquals: "default"},
-            grades_id: {valueNotEquals: "default"},
-            batch_types_id: {valueNotEquals: "default"},
-        },
-        messages: {
-            name: {required: "Enter Student Name"},
-            fathers_name: {required: "Enter Student's Father Name"},
-            mothers_name: {required: "Enter Student's Mother's Name"},
-            student_phone_number: {required: "Enter Student's Phone Number"},
-            guardian_phone_number: {required: "Enter Guardian's Phone Number"},
-            schools_id: {valueNotEquals: "Select a School"},
-            grades_id: {valueNotEquals: "Select a Grade"},
-            batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
-        }
-    });
+    //         if (newError !== '' && newError !== lastError) {
+    //             $(element).tooltipster('content', newError);
+    //             $(element).tooltipster('show');
+    //         }
+    //     },
+    //     success: function (label, element) {
+    //         $(element).tooltipster('hide');
+    //     },
+    //     rules: {
+    //         name: {required: true, minlength: 4},
+    //         fathers_name: {required: true, minlength: 4},
+    //         mothers_name: {required: true, minlength: 4},
+    //         student_phone_number: {required: true},
+    //         guardian_phone_number: {required: true},
+    //         schools_id: {valueNotEquals: "default"},
+    //         grades_id: {valueNotEquals: "default"},
+    //         batch_types_id: {valueNotEquals: "default"},
+    //     },
+    //     messages: {
+    //         name: {required: "Enter Student Name"},
+    //         fathers_name: {required: "Enter Student's Father Name"},
+    //         mothers_name: {required: "Enter Student's Mother's Name"},
+    //         student_phone_number: {required: "Enter Student's Phone Number"},
+    //         guardian_phone_number: {required: "Enter Guardian's Phone Number"},
+    //         schools_id: {valueNotEquals: "Select a School"},
+    //         grades_id: {valueNotEquals: "Select a Grade"},
+    //         batch_types_id: {valueNotEquals: "Select Edexcel or Cambridge"},
+    //     }
+    // });
 
     $('#batch_types_id').change(function(event){
         $('.sub_checkbox').attr('checked',false);
