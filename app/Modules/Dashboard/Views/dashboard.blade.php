@@ -115,6 +115,8 @@ $(document).ready(function () {
             <div class="info-box-content">
               <span class="info-box-text">Total Number of Students</span>
               <span class="info-box-number count">{{ $total_students }}</span>
+              <span class="info-box-text">Total Number of Active Students</span>
+              <span class="info-box-number count">{{ $total_active_students }}</span>
             </div>
             <!-- /.info-box-content -->
           </div>

@@ -8,6 +8,7 @@
 <!-- DataTables Printing Operation -->
 <link rel="stylesheet" href="{{asset('plugins/DataTablePrint/jquery.dataTables.min.css')}}">
 <link rel="stylesheet" href="{{asset('plugins/DataTablePrint/buttons.dataTables.min.css')}}">
+<link rel="stylesheet" href="{{asset('plugins/datatables/dataTables.bootstrap.css')}}">
 @endsection
 
 @section('scripts')
@@ -19,6 +20,8 @@
 <!-- DataTables -->
 <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
 <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
+
+
 <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
 <script src="{{asset('plugins/momentjs/moment.min.js')}}"></script>
 <script type="text/JavaScript" src="{{asset('plugins/JQueryPrintJS/jQuery.print.js')}}" ></script>
@@ -112,15 +115,16 @@
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     
-                    var total_price = 0;
-                    for ( var i=0 ; i<aaData.length ; i++ ) {
+                    let total_price = 0;
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
                         console.log(aaData[i]['calculated_price']);
-                        total_price += aaData[i]['calculated_price'];
+                        total_price += parseInt(aaData[i]['calculated_price'], 10);
                     }
 
-                    var nCells = nRow.getElementsByTagName('th');
-                    total_money = total_price;
-                    nCells[6].innerHTML = total_price;
+                    // let nCells = nRow.getElementsByTagName('th');
+                    // total_money = total_price;
+                    // nCells[6].innerHTML = total_price;
+                    $('#total_teacher_payment').text(total_price);
             },
             dom: 'Bfrtip',
             buttons: [

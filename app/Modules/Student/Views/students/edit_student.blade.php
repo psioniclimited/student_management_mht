@@ -279,45 +279,45 @@ $(document).ready(function () {
                 </div>
                 
                 <div class="form-group">
-                    <label for="student_email" >Email*</label>
+                    <label for="student_email" >Email</label>
                     <input type="email" class="form-control" id="student_email" name="student_email" size="35" value="{{ $getStudent->student_email }}">
                     
                 </div>
                 
                 <div class="form-group">
-                    <label for="fathers_name">Father's name*</label>
+                    <label for="fathers_name">Father's name</label>
                     <input type="text" class="form-control" id="fathers_name" name="fathers_name" placeholder="Enter Father's name" value="{{$getStudent->fathers_name}}">
                 </div>
                 
                 <div class="form-group">
-                    <label for="mothers_name">Mother's name*</label>
+                    <label for="mothers_name">Mother's name</label>
                     <input type="text" class="form-control" id="mothers_name" name="mothers_name" placeholder="Enter Mother's name" value="{{$getStudent->mothers_name}}">
                 </div>
                 
                 <div class="form-group">
-                    <label for="student_phone_number">Student's Phone Number*</label>
+                    <label for="student_phone_number">Student's Phone Number</label>
                     <input type="text" class="form-control" id="student_phone_number" name="student_phone_number" placeholder="Enter Phone number" value="{{$getStudent->student_phone_number}}">
                 </div>
                 
                 <div class="form-group">
-                    <label for="guardian_phone_number">Guardian's Phone Number*</label>
+                    <label for="guardian_phone_number">Guardian's Phone Number</label>
                     <input type="text" class="form-control" id="guardian_phone_number" name="guardian_phone_number" placeholder="Enter additinal Phone number" value="{{ $getStudent->guardian_phone_number }}">
                 </div>
 
                 <div class="form-group">
-                    <label for="driving_license_number" >Driving License Number*</label>
+                    <label for="driving_license_number" >Car Registration Number</label>
                     <input type="text" class="form-control" id="driving_license_number" name="driving_license_number" size="255" placeholder="Enter Driving License Number">
                 </div>                
                 
                 <div class="form-group">
-                    <label for="pic" >Upload Photo*</label>
+                    <label for="pic" >Upload Photo</label>
                     <input type="file" name="pic" id="pic">
                 </div>
             </div>
             <div class="col-md-2"></div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="schools_id" >School*</label>
+                    <label for="schools_id" >School</label>
                         <select class="form-control" name="schools_id">
                         @if ($getStudent->school)
                             <option value="{{$getStudent->school->id}}">{{$getStudent->school->name}}</option>
@@ -334,7 +334,7 @@ $(document).ready(function () {
                 </div>
                 
                 <div class="form-group">
-                    <label for="batch_types_id" >Education Board*</label>
+                    <label for="batch_types_id" >Education Board</label>
                     <select class="form-control" id="batch_types_id" name="batch_types_id">
                         @if ($getStudent->batch_type)
                             <option value="{{ $getStudent->batch_type->id }}">{{ $getStudent->batch_type->name}}</option>
@@ -351,7 +351,7 @@ $(document).ready(function () {
                 </div>
 
                 <div class="form-group">
-                    <label for="subjects_id">Choose Subject*</label>
+                    <label for="subjects_id">Choose Subject</label>
                     @if( ! $getStudent->subject->isEmpty() )
                     @foreach($Subjects as $subject)
                     <div class="checkbox">

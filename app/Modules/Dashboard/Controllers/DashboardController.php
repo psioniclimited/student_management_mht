@@ -17,7 +17,12 @@ class DashboardController extends Controller {
         if (Auth::check()) {
 			/* Calculating Total number of Students for current month */
 	        $students = Student::with('batch','school')->has('batch')->get();
+	        $students = Student::all();
 	        $total_students = count($students);
+
+	        /* Calculating Total number of Students for current month */
+	        $active_students = Student::with('batch','school')->has('batch')->get();
+	        $total_active_students = count($active_students);
 	        
 	        
 	        /* Calculating Total Expected Amount current month */
@@ -63,6 +68,7 @@ class DashboardController extends Controller {
 
 			return view('Dashboard::dashboard')
 	        ->with('total_students', $total_students)
+	        ->with('total_active_students', $total_active_students)
 	        ->with('total_expected_amount', $total_expected_amount)
 	        ->with('total_paid_amount', $total_paid_amount)
 	        ->with('total_unpaid_amount', $total_unpaid_amount);

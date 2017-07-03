@@ -234,7 +234,7 @@ $(document).ready(function () {
                 </div>
 
                 <div class="form-group">
-                    <label for="driving_license_number" >Driving License Number</label>
+                    <label for="driving_license_number" >Car Registration Number</label>
                     <input type="text" class="form-control" id="driving_license_number" name="driving_license_number" size="255" placeholder="Enter Driving License Number">
                 </div>
                 
