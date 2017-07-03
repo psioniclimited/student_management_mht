@@ -77,7 +77,7 @@ class SchoolWebController extends Controller {
     }
 
     public function edit_std_phn_num() {
-        // // return 'asdfasdf';
+        
 
         // $old_data = DB::connection('myconnection')->select("select id, phone_home, phone_away from students");
         // foreach ($old_data as $old) {
@@ -89,6 +89,19 @@ class SchoolWebController extends Controller {
         //                                                 guardian_phone_number = ?  
         //                                                 where id = ?', [$old->phone_home, $old->phone_away, $old->id]);
         // }
+        
+        $students = Student::with('batch')->has('batch')->get();
+
+        foreach ($students as $student) {
+            $batches = $student->batch;
+            return $batches;
+        }
+
+
+
+
+
+
         // return "Updated";
     }
 }
