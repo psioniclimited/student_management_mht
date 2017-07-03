@@ -77,6 +77,18 @@ class SchoolWebController extends Controller {
     }
 
     public function edit_std_phn_num() {
-        
+        // // return 'asdfasdf';
+
+        // $old_data = DB::connection('myconnection')->select("select id, phone_home, phone_away from students");
+        // foreach ($old_data as $old) {
+        //     // return $old->id;
+        //     // return $old;
+        //     // $student = Student::find($old->id);
+        //     // $student = DB::connection('mysql')->update("select id, phone_home, phone_away from students");
+        //     $affected = DB::connection('mysql')->update('update students set student_phone_number = ?, 
+        //                                                 guardian_phone_number = ?  
+        //                                                 where id = ?', [$old->phone_home, $old->phone_away, $old->id]);
+        // }
+        // return "Updated";
     }
 }

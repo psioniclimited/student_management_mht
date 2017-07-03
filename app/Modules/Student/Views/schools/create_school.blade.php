@@ -126,9 +126,9 @@ $(document).ready(function () {
         </div>
         
         <!-- Testing -->
-        <div class="box-footer">
+        <!-- <div class="box-footer">
             <button type="button" id="edit_data" class="btn btn-primary pull-right">Edit Data</button>
-        </div>
+        </div> -->
         <!-- Testing End-->
         
         <!-- /.box-footer -->
