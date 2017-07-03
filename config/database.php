@@ -66,19 +66,7 @@ return [
             'engine' => null,
         ],
 
-        'myconnection' => [
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'port' => env('DB_PORT', '3306'),
-            'database' => 'psionicd_mht_db_four',
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-            'strict' => false,
-            'engine' => null,
-        ],
+        
 
         'pgsql' => [
             'driver' => 'pgsql',
