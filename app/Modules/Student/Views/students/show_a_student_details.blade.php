@@ -147,11 +147,19 @@
                     </div>
                     <div class="form-group">
                         <label for="school" >School</label>
-                        <p>{{ $getStudent->school->name }}</p>  
+                        @if ($getStudent->school)
+                            <p>{{ $getStudent->school->name }}</p>
+                        @else
+                            <p></p>
+                        @endif  
                     </div>
                     <div class="form-group">
                         <label for="batch_type">Education Board</label>
-                        <p>{{ $getStudent->batch_type->name }}</p>
+                        @if ($getStudent->batch_type)
+                            <p>{{ $getStudent->batch_type->name }}</p>
+                        @else
+                            <p></p>
+                        @endif 
                     </div>
                     <div class="form-group">
                         <label for="driving_license_number">Driving License Number</label>
