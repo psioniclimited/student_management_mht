@@ -165,8 +165,12 @@ class TeachersWebController extends Controller {
                     ->where('students.deleted_at', '=', NULL)
                     ->where('invoice_details.payment_from', '=', $get_payment_date_month_year)
                     ->where('teacher_details.id', '=', $teacher_id)
+                    // ->where('batch.start_date', '<=', $get_payment_date_month_year)
+                    // ->where('batch.end_date', '>=', $get_payment_date_month_year)
                     ->groupBy('batch.id')
-                    ->select('batch.id as batch_id', 
+                    ->select('batch.id as batch_id',
+                        'batch.start_date', 
+                        'batch.end_date',
                         'batch.name as batch_name',
                         'batch.schedule as batch_schedule',
                         DB::raw("COUNT(DISTINCT(students.id)) as total_no_students"),

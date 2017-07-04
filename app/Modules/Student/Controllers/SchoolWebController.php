@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 
 use App\Modules\Student\Models\School;
 use App\Modules\Student\Models\Student;
-
+use App\Modules\Student\Models\Batch;
+use App\Modules\Student\Models\BatchHasStudent;
 
 
 use Illuminate\Http\Request;
@@ -17,6 +18,8 @@ use File;
 use Entrust;
 use DB;
 use Log;
+use Carbon\Carbon;
+
 class SchoolWebController extends Controller {
 
 	/******************************************************
@@ -94,7 +97,38 @@ class SchoolWebController extends Controller {
 
         foreach ($students as $student) {
             $batches = $student->batch;
-            return $batches;
+            foreach ($batches as $batch) {
+                // $batch_has_student = BatchHasStudent::where('batch_id', $batch->id)->where('students_id', $student->id)->get();
+                $current_date = new Carbon('first day of this month');
+                $current_date = Carbon::parse($current_date->toDateString());
+                $batch_start_date = Carbon::createFromFormat('d/m/Y', '01/01/2018')->format('Y-m-d '); 
+                $batch_start_date = Carbon::parse($batch_start_date);
+                $joining_date = $batch_start_date->toDateString();
+                // $batch_has_student = BatchHasStudent::where('batch_id',$batch->id)
+                //                                     ->where('students_id', $student->id)
+                //                                     ->update(['joining_date' => $joining_date]);
+                // if ($batch_start_date->gte($current_date)) {
+                //     $joining_date = $batch_start_date->toDateString();
+                //     $last_payment_date = $batch_start_date->subMonths(1);
+                //     $last_payment_date = $last_payment_date->toDateString();
+                //     $batch_has_student = BatchHasStudent::where('batch_id',$batch->id)
+                //                                     ->where('students_id', $student->id)
+                //                                     ->update([
+                //                                         'last_paid_date' => $last_payment_date,
+                //                                         'joining_date' => $joining_date
+                //                                         ]);
+                //     return $joining_date . " " . $last_payment_date;
+                // }
+                // else {
+                //     $joining_date = $batch_start_date->toDateString();
+                //     $batch_has_student = BatchHasStudent::where('batch_id',$batch->id)
+                //                                     ->where('students_id', $student->id)
+                //                                     ->update(['joining_date' => $joining_date]);
+                //     return $joining_date;
+                // }
+
+                // return $temp . " " . $current_date . " " . $batch_start_date;
+            }
         }
 
 

@@ -119,7 +119,7 @@ class BatchWebController extends Controller {
         //                             ->get(['id', 'CONCAT(name, " ", start_date) as text']);
         
         $batch_information = Batch::where('subjects_id', $request->input('subject_id'))
-                                    ->selectRaw('id, CONCAT(name, " => ", start_date) as text')
+                                    ->selectRaw('id, CONCAT(name, " ( ", start_date, " -> ", end_date, " )") as text')
                                     ->get();
 
         return response()->json($batch_information);

@@ -380,7 +380,9 @@
             if (($('select[id=student_id]').val() != null) && ($('input[id=ref_date]').val() != null) && !jQuery.isEmptyObject(data)) {
                $("#student_payment_div").css({ display: "block" });
                $('p#student_name').text(data.name);
-               $('p#school_name').text(data.school.name);
+               if (data.school) {
+                    $('p#school_name').text(data.school.name);
+               }
                $('p#student_email').text(data.student_email);
                $('p#fathers_name').text(data.fathers_name);
                $('p#mothers_name').text(data.mothers_name);
