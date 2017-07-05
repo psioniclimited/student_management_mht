@@ -27,9 +27,9 @@ class BatchHasStudent extends Model
     //     $this->attributes['last_paid_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
     // }
 
-    public function setJoiningDateAttribute($value) {
-        $this->attributes['joining_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
-    }
+    // public function setJoiningDateAttribute($value) {
+    //     $this->attributes['joining_date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $value)->toDateTimeString();
+    // }
 
     public function getLastPaidDateAttribute($value) {
         return \Carbon\Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y');

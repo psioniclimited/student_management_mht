@@ -147,7 +147,6 @@ class TeachersWebController extends Controller {
 
     
     public function getAllBatchForTeacherPayment(Request $request) {
-        // return $request->all();
         $get_payment_date_month_year = \Carbon\Carbon::createFromFormat('d/m/Y', $request->ref_date);
         $get_payment_date_month_year->day = 01;
         $get_payment_date_month_year = $get_payment_date_month_year->toDateString();
@@ -181,7 +180,8 @@ class TeachersWebController extends Controller {
                     ->leftJoin('students', 'batch_has_students.students_id', '=', 'students.id')
                     ->leftJoin('invoice_details', function ($join) use ($get_payment_date_month_year)  {
                         $join->on('invoice_details.batch_id', '=', 'batch.id')
-                         ->where('invoice_details.payment_from', '=', $get_payment_date_month_year);
+                        ->where('invoice_details.payment_from', '=', $get_payment_date_month_year)
+                        ->where('refund', '=', 0);
                     })
                     ->where('teacher_details.id', '=', $teacher_id)
                     ->where('students.deleted_at', '=', NULL)
@@ -220,11 +220,9 @@ class TeachersWebController extends Controller {
 
     public function getPaidStudentsForABatch(Request $request)
     {
-        
-        $get_date_month_year = Carbon::createFromFormat('Y-m-d', $request->ref_date);
+        $get_date_month_year = Carbon::parse($request->ref_date);
         $get_date_month_year->day = 01;
         $get_date_month_year = $get_date_month_year->toDateString();
-
 
         $batches = DB::table('students')
                     ->leftJoin('invoice_masters', 'students.id', '=', 'invoice_masters.students_id')
@@ -232,13 +230,11 @@ class TeachersWebController extends Controller {
                     ->leftJoin('batch', 'invoice_details.batch_id', '=', 'batch.id')
                     ->where('invoice_details.payment_from', '=', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
-                    ->whereNull('deleted_at')
+                    ->where('students.deleted_at', '=', NULL)
                     ->where('refund', '=', 0)
                     ->select('students.name','students.student_phone_number','invoice_details.price',
                             'invoice_details.invoice_masters_id', 'invoice_details.payment_from', 
                             'invoice_details.batch_id');
-
-        
         $teacher_percentage = Batch::with('teacherDetail')->find($request->batch_id);
         $teacher_percentage = $teacher_percentage->teacherDetail->teacher_percentage;
         return Datatables::of($batches)
@@ -251,7 +247,7 @@ class TeachersWebController extends Controller {
 
     public function getNonPaidStudentsForABatch(Request $request)
     {
-        $get_date_month_year = Carbon::createFromFormat('Y-m-d', $request->ref_date);
+        $get_date_month_year = Carbon::parse($request->ref_date);
         $get_date_month_year->day = 01;
         $get_date_month_year = $get_date_month_year->toDateString();
         
@@ -261,14 +257,14 @@ class TeachersWebController extends Controller {
                     ->leftJoin('batch', 'batch_has_students.batch_id', '=', 'batch.id')
                     ->where('batch_has_students.last_paid_date', '<', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
-                    ->whereNull('deleted_at')
+                    ->where('students.deleted_at', '=', NULL)
                     ->select('students.name','students.student_phone_number');
         
         return Datatables::of($batches)
-        ->addColumn('price', function ($batches){
-                return 0;
-        })
-        ->make(true);
+                ->addColumn('price', function ($batches){
+                    return 0;
+                })
+                ->make(true);
     }
 
     public function getStudentRefundforTeacherPayment(Request $request)
@@ -276,19 +272,6 @@ class TeachersWebController extends Controller {
         $get_current_date_month_year = Carbon::createFromFormat('d/m/Y', $request->ref_date);
         $get_current_date_month_year->day = 01;
         $get_current_date_month_year = $get_current_date_month_year->toDateString();
-
-        // $query =
-        // "
-        // SELECT * FROM refunds
-        // LEFT JOIN invoice_details ON invoice_details.id = refunds.invoice_details_id
-        // LEFT JOIN invoice_masters ON invoice_masters.id = invoice_details.invoice_masters_id
-        // LEFT JOIN students ON students.id = invoice_masters.students_id
-        // LEFT JOIN batch ON batch.id = invoice_details.batch_id
-        // LEFT JOIN teacher_details ON teacher_details.users_id = batch.teacher_details_users_id
-        // WHERE teacher_details.users_id = ". $request->teacher_user_id . " AND refunds.refund_from = '" . $get_current_date_month_year."'";
-
-        
-        // $query = DB::select($query);
 
         $data = DB::table('refunds')
                     ->leftJoin('invoice_details', 'invoice_details.id', '=', 'refunds.invoice_details_id')

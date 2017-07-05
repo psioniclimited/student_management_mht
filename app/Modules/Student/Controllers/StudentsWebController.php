@@ -356,7 +356,7 @@ class StudentsWebController extends Controller {
         $get_batches_only = $get_student_with_batches->batch;
         for ($i=0; $i < count($get_batches_only); $i++) { 
             $get_batches_only[$i]->pivot->joining_date = Carbon::createFromFormat('Y-m-d', $get_batches_only[$i]->pivot->joining_date)
-                                                        ->format('d/m/Y');;
+                                                        ->format('d/m/Y');
         }
         return response()->json($get_batches_only);
     }
@@ -365,7 +365,7 @@ class StudentsWebController extends Controller {
     public function studentUpdateProcess(Request $request, $id) {
         /* Finding the Student */
         $student = Student::find($id);
-    	
+        
         /* Updating the Basic Info of the Students of the 'students' table */
         if( !$student->update( $request->all()) )
     		return "error";
@@ -381,60 +381,45 @@ class StudentsWebController extends Controller {
             $student->subject()->sync($request->input('subject'));
 
             /* Updating info to 'batch_has_students' table => Many To Many */
-            $student->batch()->sync($request->input('batch_name'));
-            
-
-            /* Updating the Joining Date */
-            $collection = collect($request->joining_date);
-            $class_start_date = $collection->reject(function ($value, $key) {
-                return $value == "";
-            })->flatten();
-            
-            $all_batches_backend = Student::with('batch')->find($student->id);
-            $all_batches_backend = $all_batches_backend->batch;
-            $all_batches_frontend = $request->input('batch_name');
-
-            for ($i=0; $i < count($student->batch); $i++) { 
-
-                $batch_id = $all_batches_frontend[$i];
-                $temp_batch = $all_batches_backend;
-                $collection = collect($temp_batch);
-                $student_with_batch = $collection->reject(function ($value, $key) use ($batch_id) {
-                    return $value->id != $batch_id;
-                })->flatten();
+            for ($i=0; $i < count($request->batch_name); $i++) {
                 
+                $batch_has_student = BatchHasStudent::where('batch_id', $request->batch_name[$i])->where('students_id', $id)->first();
                 
-                // if ($batch_has_student->batch[$i]->pivot->last_paid_date == NULL) { // If new Batch added at Edit Page
-                if ($student_with_batch[0]->pivot->last_paid_date == NULL) { // If new Batch added at Edit Page
-                    $last_paid_date = Carbon::createFromFormat('d/m/Y', $class_start_date[$i])->format('Y-m-d');
-                    $last_paid_date = Carbon::parse($last_paid_date);
-                    $last_paid_date->day = 01;
-                    $joining_date = $last_paid_date->toDateString();
-                    $last_paid_date = $last_paid_date->subMonth();
-                    $bast_has_student = BatchHasStudent::where('batch_id', $batch_id)
-                                        ->where('students_id', $student->id)
-                                        ->update([
-                                            'last_paid_date' => $last_paid_date,
-                                            'joining_date' => $joining_date
-                                        ]);
+                $frontend_joining_date = Carbon::createFromFormat('d/m/Y', $request->joining_date[$i])->format('Y-m-d');
+                $frontend_joining_date = Carbon::parse($frontend_joining_date);
+                $frontend_joining_date->day = 01;
+                $frontend_joining_date = $frontend_joining_date->toDateString();
+                $last_paid_date = Carbon::parse($frontend_joining_date);
+                $last_paid_date = $last_paid_date->subMonth();
+                $last_paid_date = $last_paid_date->toDateString();
+                
+                if ($batch_has_student) {
+                    $backend_joining_date = $batch_has_student->joining_date; // Already Formatted
+                    if ($backend_joining_date != $frontend_joining_date) {
+                        $bast_has_student = BatchHasStudent::where('batch_id', $request->batch_name[$i])
+                                            ->where('students_id', $id)
+                                            ->update([
+                                                'last_paid_date' => $last_paid_date,
+                                                'joining_date' => $frontend_joining_date
+                                            ]);
+                    }
                 }
                 else {
-                    $last_paid_date = Carbon::createFromFormat('d/m/Y', $class_start_date[$i])->format('Y-m-d');
-                    $last_paid_date = Carbon::parse($last_paid_date);
-                    $last_paid_date->day = 01;
-                    $joining_date = $last_paid_date->toDateString();
-                    $bast_has_student = BatchHasStudent::where('batch_id', $batch_id)
-                                        ->where('students_id', $student->id)
-                                        ->update([
-                                            'joining_date' => $joining_date
-                                        ]);
+                    $create_new_batch = new BatchHasStudent();
+                    $create_new_batch->batch_id = $request->batch_name[$i];
+                    $create_new_batch->students_id = $id;
+                    $create_new_batch->last_paid_date = $last_paid_date;
+                    $create_new_batch->joining_date = $frontend_joining_date;
+                    $create_new_batch->save();
                 }
-            }
+            }            
+            $student->batch()->sync($request->input('batch_name'));
+
         }
         else {
-            $batch_has_student = BatchHasStudent::where('students_id', $id);
-            $batch_has_student->delete();
+            $student->batch()->detach();
             $student->subject()->detach();
+
         }
         
         if ($request->file("pic") !== null) {
@@ -456,7 +441,6 @@ class StudentsWebController extends Controller {
         
     	return back();
     }
-
 
     /*******************
     * Delete a Student *

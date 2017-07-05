@@ -85,7 +85,7 @@
                 {"data": "price"}
             ]
     	});
-
+    console.log('{{ $refDate }}');
 });
 </script>
 
