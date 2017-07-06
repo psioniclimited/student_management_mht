@@ -381,11 +381,15 @@ class StudentsWebController extends Controller {
             $student->subject()->sync($request->input('subject'));
 
             /* Updating info to 'batch_has_students' table => Many To Many */
+            $class_start_date = collect($request->input('joining_date'));
+            $joining_date = $class_start_date->reject(function ($value, $key) {
+                return $value == "";
+            })->flatten();
             for ($i=0; $i < count($request->batch_name); $i++) {
                 
                 $batch_has_student = BatchHasStudent::where('batch_id', $request->batch_name[$i])->where('students_id', $id)->first();
                 
-                $frontend_joining_date = Carbon::createFromFormat('d/m/Y', $request->joining_date[$i])->format('Y-m-d');
+                $frontend_joining_date = Carbon::createFromFormat('d/m/Y', $joining_date[$i])->format('Y-m-d');
                 $frontend_joining_date = Carbon::parse($frontend_joining_date);
                 $frontend_joining_date->day = 01;
                 $frontend_joining_date = $frontend_joining_date->toDateString();
