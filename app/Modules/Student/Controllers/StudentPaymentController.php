@@ -446,27 +446,13 @@ class StudentPaymentController extends Controller {
                                         ->whereHas('invoiceMaster', function($query) use ($student_id){
                                             $query->where('students_id', $student_id);
                                         })
-                                        ->with('batch')
+                                        ->with(['batch' => function($query){
+                                            $query->withTrashed();
+                                        }])
+                                        ->where('refund', 0)
                                         ->orderBy('payment_to', 'DESC')
                                         ->get();
-                                        
-        
         return Datatables::of($get_student_transaction_history)->make(true);
-        
-        // $get_student_transaction_history = InvoiceMaster::with('student')
-        //                                                 ->with('invoiceDetail.batch')
-        //                                                 ->where('students_id', $student_id)
-        //                                                 ->get();
-
-        // return Datatables::of($get_student_transaction_history)
-        //                 ->addColumn('paid_batches', function ($get_student_transaction_history) {
-        //                    return $get_student_transaction_history->invoiceDetail->map(function($invDetail) {
-        //                        $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
-        //                        return $ready_data;
-        //                    })->implode(', ');
-        //                 })
-        //                 ->make(true);
-
     }
 
     public function otherPayment() {

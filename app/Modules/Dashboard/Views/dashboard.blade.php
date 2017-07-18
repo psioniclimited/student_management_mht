@@ -60,6 +60,13 @@ $(document).ready(function () {
                     {"data": "total_unpaid_amount"},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
             ],
+        "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    let total_engaged_students = 0;
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        total_engaged_students += parseInt(aaData[i]['total_number_of_students'], 10);
+                    }
+                    $('.total_engaged_students').text(total_engaged_students);
+        },
         "aoColumnDefs": [
                     { "sClass": "my_class", "aTargets": [ 7 ] }
         ]
@@ -115,8 +122,8 @@ $(document).ready(function () {
             <div class="info-box-content">
               <span class="info-box-text">Total Number of Students</span>
               <span class="info-box-number count">{{ $total_students }}</span>
-              <span class="info-box-text">Total Number of Active Students</span>
-              <span class="info-box-number count">{{ $total_active_students }}</span>
+              <span class="info-box-text">Total Number of Engaged Students</span>
+              <span class="info-box-number total_engaged_students"></span>
             </div>
             <!-- /.info-box-content -->
           </div>
@@ -143,8 +150,9 @@ $(document).ready(function () {
 
             <div class="info-box-content">
               <span class="info-box-text">Total Paid Amount</span>
-              <span class="info-box-number count" style="float: left">{{ $total_paid_amount }}</span>
-              <strong> &nbsp; /-</strong>
+              <span class="info-box-number count" >{{ $total_paid_amount }}</span>
+              <span class="info-box-text">Total Discount Amount</span>
+              <span class="info-box-number">0</span>
             </div>
             <!-- /.info-box-content -->
           </div>

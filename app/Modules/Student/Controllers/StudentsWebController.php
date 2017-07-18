@@ -45,10 +45,6 @@ class StudentsWebController extends Controller {
     return Datatables::of($students)
                     ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        
-                        // return '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>'.'&nbsp &nbsp &nbsp'.
-                        //     '<a href="' . url('/student') . '/' . $students->id . '/edit/' . '"' . 'class="btn bg-green margin" target="_blank"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp';
-                        
                         return  '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
                             '<a href="' . url('/students_student') . '/' . $students->id . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
                                 '<a class="btn bg-red margin" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
@@ -72,10 +68,7 @@ class StudentsWebController extends Controller {
     }
 
     public function getActiveStudents() {
-    
     $students = Student::with('batch','school')->has('batch')->get();
-    
-     
     return Datatables::of($students)
                     ->addColumn('batch', function (Student $students) {
                        return $students->batch->map(function($bat) {
@@ -87,15 +80,6 @@ class StudentsWebController extends Controller {
                     })
                     ->addColumn('Link', function ($students) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                        
-                        // return  '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>' .'&nbsp &nbsp &nbsp'.
-                        //     '<a href="' . url('/students_student') . '/' . $students->id . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp'.
-                        //         '<a class="btn bg-red margin" id="'. $students->id .'" data-toggle="modal" data-target="#confirm_delete">
-                        //         <i class="glyphicon glyphicon-trash"></i> Delete
-                        //         </a>'.'&nbsp &nbsp &nbsp'.
-                        //         '<a href="' . url('/student') . '/' . $students->id . '/invoice_detail_page/' . '"' . 'class="btn bg-navy margin"><i class="glyphicon glyphicon-edit"></i> Invoice Update</a>'.'&nbsp &nbsp &nbsp'.
-                        //         '<a href="' . url('/student') . '/' . $students->id . '/last_paid_update_page/' . '"' . 'class="btn bg-maroon margin"><i class="glyphicon glyphicon-edit"></i> Last Payment Date Update</a>';
-
                         return '<a href="' . url('/students_student') . '/' . $students->id . '/detail/' . '"' . 'class="btn bg-purple margin" target=_blank><i class="glyphicon glyphicon-edit"></i> Detail</a>'.'&nbsp &nbsp &nbsp'.
                             '<a href="' . url('/students_student') . '/' . $students->id . '/edit/' . '"' . 'class="btn bg-green margin"><i class="glyphicon glyphicon-edit"></i> Edit</a>' .'&nbsp &nbsp &nbsp';
                         }
@@ -108,10 +92,7 @@ class StudentsWebController extends Controller {
 
 
     public function get_all_batches_and_students()  {
-
-        // $batches = Batch::with('student','teacherDetail')->has('student')->get();
         $batches = Batch::with('batchType', 'subject', 'grade','student')->has('student')->get();
-        
         return Datatables::of($batches)
             ->addColumn('total_number_of_students', function ($batches) {
                 if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
@@ -418,12 +399,10 @@ class StudentsWebController extends Controller {
                 }
             }            
             $student->batch()->sync($request->input('batch_name'));
-
         }
         else {
             $student->batch()->detach();
             $student->subject()->detach();
-
         }
         
         if ($request->file("pic") !== null) {

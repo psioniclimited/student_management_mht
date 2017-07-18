@@ -39,8 +39,20 @@ class ReportRepository {
 	}
 
 	
-	public function getRefundReporting() {
-		$refund = Refund::with('invoiceDetail.invoiceMaster.student', 'invoiceDetail.batch')->get();
+	public function getRefundReporting($statement_month, $statement_year) {
+		// $refund = Refund::with('invoiceDetail.invoiceMaster.student', 'invoiceDetail.batch')->get();
+		// $refund = Refund::with('invoiceDetail.invoiceMaster.student', 'invoiceDetail.batch')
+		// 					// ->whereYear('invoiceDetail.payment_from', '=', $statement_year)
+		// 					// ->whereMonth('invoiceDetail.payment_from', '=', $statement_month)
+		// 					->get();
+		$refund = Refund::with(['invoiceDetail.invoiceMaster.student' => function ($query) use( $statement_month, $statement_year)  {
+    		
+    		$query->whereYear('invoice_detail.payment_from', '=', $statement_year)
+    				->whereMonth('invoice_detail.payment_from', '=', $statement_month);
+		}], ['invoiceDetail.batch' => function ($query)  {
+    			$query->withTrashed();
+		}])
+		->get();
 		return $refund;
 	}
 
@@ -104,28 +116,17 @@ class ReportRepository {
 	}
 
 	public function getmonthlyOtherPaymentStatement($statement_month, $statement_year)	{
-		$monthlyOtherPaymentStatement = OtherPaymentMaster::with('student', 'other_payment_type')->whereYear('payment_date', '=', $statement_year)
-									->whereMonth('payment_date', '=', $statement_month)
-            						->get();
+		$monthlyOtherPaymentStatement = OtherPaymentMaster::with('student', 'other_payment_type')
+															->whereYear('payment_date', '=', $statement_year)
+															->whereMonth('payment_date', '=', $statement_month)
+						            						->get();
         return $monthlyOtherPaymentStatement;
 	}
 
 	public function getmonthlyDueStatement($due_statement_date)	{
-		// $dueStatement = Student::with('batch')->get();
-		
-		// $monthlyDueStatement = Student::with(['batch' => function ($query) use( $due_statement_month, $due_statement_year)  {
-		// 	    			$query->whereMonth('last_paid_date', '=', $due_statement_month)
-		// 	    				  ->whereYear('last_paid_date', '=', $due_statement_year);
-		// 				}])->get();
-
-		// return $monthlyDueStatement;
-
 		$payments = Student::with(['batch' => function ($query) use( $due_statement_date )  {
-    		
     		$query->where('last_paid_date', '=', $due_statement_date);
-		
 		}])->get();
-
 		$payments = $payments->map(function($student){
 			            			if (count($student->batch) > 0 ) {
 						                return $student;

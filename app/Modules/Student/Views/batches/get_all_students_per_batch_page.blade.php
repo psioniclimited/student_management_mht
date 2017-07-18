@@ -46,7 +46,7 @@
     var active_students = $('#all_active_students_datatable').DataTable({
         "paging": false,
         "lengthChange": true,
-        "searching": false,
+        "searching": true,
         "ordering": true,
         "destroy": true,
         "info": false,
@@ -123,7 +123,7 @@
     var inactive_students = $('#all_inactive_students_datatable').DataTable({
         "paging": false,
         "lengthChange": true,
-        "searching": false,
+        "searching": true,
         "ordering": true,
         "destroy": true,
         "info": false,

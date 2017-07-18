@@ -61,11 +61,13 @@
         
         /* Test Content */
         $( "#daily_reporting_message").show('slow');
-        $( "#refund_reporting_message").hide('slow');
+        // $( "#refund_reporting_message").hide('slow');
         $( "#due_reporting_message").hide('slow');
         $( "#monthly_statement_div" ).hide('slow');
+        $( "#monthly_refund_div" ).hide('slow');
         $( "#monthly_due_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
+
         $("#second_box_title_border").attr("class","box box-success");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Daily Reporting</h3>");
         /* Test Content */
@@ -135,7 +137,7 @@
             });
     });
 
-    $("#refund_reporting").click(function() {
+    $("#monthly_refund_reporting").click(function() {
 
         /* Test Content */
         $( "#daily_reporting_message").hide('slow');
@@ -165,7 +167,12 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/refund_reporting')}}",
+            "ajax": {
+                'url': "{{URL::to('/refund_reporting')}}",
+                'data': {
+                   refund_statement_date: $('input[id=refund_statement_date]').val() 
+                },
+            },
             "columns": [
                     {"data": "invoice_detail.invoice_master.serial_number"},
                     {"data": "invoice_detail.invoice_master.student.student_permanent_id"},
@@ -292,10 +299,10 @@
         if ($('input[id=statement_date]').val()) {
             $("#box_color").attr("class","box box-warning");
             $("#payment_title").html("<p>Monthly Statement for <b>"+$('input[id=statement_date]').val()+"</b></p>");
-            $("#alternate_data").text("Payment For");
-            $("#batch_info").text("Batches(Batch name)");
+            $("#alternate_data").text("Batches(Batch name)");
+            $("#batch_info").text("Discount");
             $("#invoice_info").text("Invoice ID");
-            $("#phone_num").text("Payment Date");
+            $("#phone_num").text("Payment For");
             $("#total_amount").text("Total Paid Amount/-");
             var table = $('#all_user_list').DataTable({
                 "paging": false,
@@ -317,21 +324,28 @@
                         {"data": "invoice_master.serial_number"},
                         {"data": "invoice_master.student.student_permanent_id"},
                         {"data": "invoice_master.student.name"},
-                        {"data": "invoice_master.payment_date"}, 
                         {"data": "payment_from"},
                         {"data": "batch.name"},
+                        {"data": "discount_amount"},
                         {"data": "price"},
                     ],
                 "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                    // calculating total discount price per batch
+                    let TotalDiscountPrice = parseFloat(0);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        TotalDiscountPrice += parseFloat(aaData[i]['discount_amount']);
+                    }
+                    $("#extra_info").text(TotalDiscountPrice + ' /-');
                     
+                    // calculating total price per batch
                     let TotalRangePrice = parseFloat(0);
                     for ( let i=0 ; i<aaData.length ; i++ ) {
                         TotalRangePrice += parseFloat(aaData[i]['price']);
                     }
-
                     // var nCells = nRow.getElementsByTagName('th');
                     // nCells[nCells.length-1].innerHTML = TotalRangePrice;
                     $('#total_taka').text(TotalRangePrice + ' /-');
+                    
                 },
                 dom: 'Bfrtip',
             buttons: [
@@ -521,11 +535,26 @@
         $( "#monthly_statement_div" ).hide('slow');
         $( "#monthly_due_statement_div" ).hide('slow');
         $( "#daily_reporting_message").hide();
-        $( "#refund_reporting_message").hide();
+        // $( "#refund_reporting_message").hide();
         $( "#due_reporting_message").hide();
+        $( "#monthly_refund_div" ).hide('slow');
 
         $("#second_box_title_border").attr("class","box box-info");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Date Range Reporting</h3>");
+    });
+
+    $('#show_refund_reporting').click(function(e) {
+        e.preventDefault();
+        $( "#monthly_refund_div" ).show('slow');
+        $( "#monthly_statement_div" ).hide('slow');
+        $( "#date_range_statement_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
+        $( "#daily_reporting_message").hide('slow');
+        // $( "#refund_reporting_message").hide('slow');
+        $( "#due_reporting_message").hide('slow');
+
+        $("#second_box_title_border").attr("class","box box-primary");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Refund</h3>");
     });
 
     $('#show_monthly_statement').click(function(e) {
@@ -534,8 +563,9 @@
         $( "#date_range_statement_div" ).hide('slow');
         $( "#monthly_due_statement_div" ).hide('slow');
         $( "#daily_reporting_message").hide('slow');
-        $( "#refund_reporting_message").hide('slow');
+        // $( "#refund_reporting_message").hide('slow');
         $( "#due_reporting_message").hide('slow');
+        $( "#monthly_refund_div" ).hide('slow');
 
         $("#second_box_title_border").attr("class","box box-warning");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Mothly Statement</h3>");
@@ -547,8 +577,9 @@
         $( "#monthly_statement_div" ).hide('slow');
         $( "#date_range_statement_div" ).hide('slow');
         $( "#daily_reporting_message").hide('slow');
-        $( "#refund_reporting_message").hide('slow');
+        // $( "#refund_reporting_message").hide('slow');
         $( "#due_reporting_message").hide('slow');
+        $( "#monthly_refund_div" ).hide('slow');
 
         $("#second_box_title_border").attr("class","box box-danger");
         $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Mothly Due Statement</h3>");
@@ -600,7 +631,7 @@
                     <button type="submit" id="due_payment_reporting" class="btn btn-block bg-red margin btn-lg"><strong>Due</strong> Reporting</button>
                 </div>
                 <div class="col-md-2">
-                    <button type="submit" id="refund_reporting" class="btn btn-block bg-light-blue color-palette margin btn-lg"><strong>Refund</strong> Reporting</button>
+                    <button type="submit" id="show_refund_reporting" class="btn btn-block bg-light-blue color-palette margin btn-lg"><strong>Refund</strong> Reporting</button>
                 </div>
                 <div class="col-md-2">
                     <button  id="show_range_payment_reporting" class="btn btn-block bg-aqua margin btn-lg"><strong>Show Date Range</strong>  Collection</button>
@@ -622,12 +653,26 @@
         </div>
         
         <div class="box-body second_content_section">
-
-
             <h3 id="daily_reporting_message"   style="display: none;">Showing Daily Payment Reporting</h3>
             <h3 id="refund_reporting_message"   style="display: none;">Showing Refund Payment Reporting</h3>
             <h3 id="due_reporting_message"   style="display: none;">Showing Due Payment Reporting</h3>
-
+            <div id="monthly_refund_div" class="row" style="display: none;">
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="refund_statement_date">Month (For Monthly Refund Statement)</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input id="refund_statement_date" type="text" class="form-control ref_date" name="refund_statement_date" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <label for="" ></label>
+                    <button type="submit" id="monthly_refund_reporting" class="btn btn-block btn-primary"><strong>Monthly Refund </strong> Statement</button>
+                </div>
+            </div>
             <div id="date_range_statement_div" class="row" style="display: none;">
                 <div class="col-xs-6">
                     <div class="form-group">
@@ -697,108 +742,6 @@
     </div>
     <!-- Test content -->
 
-
-    <!-- Horizontal Form -->
-<!--     <div class="box box-primary">
-        
-        <div class="box-body">
-        
-            <div class="box-header with-border">
-              <h3 class="box-title">Choose Payment Reporting</h3>
-            </div>
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <label for="start_date">From</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input id="start_date" type="text" class="form-control ref_date" name="start_date" autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="daily_payment_reporting" class="btn btn-block btn-success"><strong>Daily</strong> Collection</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <label for="end_date">To</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input id="end_date" type="text" class="form-control ref_date" name="end_date" autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="refund_reporting" class="btn btn-block btn-primary"><strong>Refund</strong> Reporting</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="range_payment_reporting" class="btn btn-block btn-info"><strong>Show Date Range</strong>  Collection</button>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="due_payment_reporting" class="btn btn-block btn-danger"><strong>Due</strong> Reporting</button>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <label for="statement_date">Month (For Monthly Payment Statement)</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input id="statement_date" type="text" class="form-control ref_date" name="statement_date" autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="form-group">
-                            <label for="due_statement_date">Month (For Monthly Due Statement)</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input id="due_statement_date" type="text" class="form-control ref_date" name="due_statement_date" autocomplete="off">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-6">
-                        <label for="" ></label>
-                        <button type="submit" id="due_statement" class="btn btn-block btn-danger"><strong>Monthly Due</strong> Statement</button>
-                    </div>
-                </div>
-
-
-            </div>
-
-        </div>
-            
-    </div> -->
-    
-    
-
-
     <div id="box_color" class="box box-primary">
             <div class="box-header">
                 <h3 class="box-title" id="payment_title">Payment Reporting</h3>
@@ -824,7 +767,7 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        <th>Total:</th>
+                        <th id="extra_info"></th>
                         <th id="total_taka"></th> 
                     </tr>
                 </tfoot>                

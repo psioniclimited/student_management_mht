@@ -44,12 +44,15 @@ class ReportingWebController extends Controller {
         $today = Carbon::today();
         $today = $today->toDateString();
         $dailyReporting = $report->getDailyPaymentReportingByDate($today);
-        
+        // return $dailyReporting;
         return Datatables::of($dailyReporting)
                         ->addColumn('paid_batches', function ($dailyReporting) {
                            return $dailyReporting->invoiceDetail->map(function($invDetail) {
-                               $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
-                               return $ready_data;
+                              if ($invDetail->refund == 0) {
+                                $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
+                                return $ready_data;
+                              }
+                               return "";
                            })->implode(', ');
                         })
                         ->make(true);
@@ -57,7 +60,9 @@ class ReportingWebController extends Controller {
 
     public function refundReporting(Request $request, ReportRepository $report)
     {
-        $refundReporting = $report->getRefundReporting();
+        $refundStatementDate = Carbon::createFromFormat('d/m/Y', $request->refund_statement_date);
+        $refundReporting = $report->getRefundReporting($refundStatementDate->month, $refundStatementDate->year);
+        // $refundReporting = $report->getRefundReporting();
         return Datatables::of($refundReporting)->make(true);
     }
 
@@ -123,7 +128,6 @@ class ReportingWebController extends Controller {
         $due_statement_date->day = 01;
         $due_statement_date = $due_statement_date->subMonth();
         $due_statement_date = $due_statement_date->toDateString();
-        // dd($due_statement_date);
         $monthlyDueStatement = $report->getmonthlyDueStatement($due_statement_date);
         return Datatables::of($monthlyDueStatement)
         ->addColumn('TotalDuePrice', function ($dueReporting) {
@@ -134,9 +138,11 @@ class ReportingWebController extends Controller {
                $last_paid_date = Carbon::parse($batch->pivot->last_paid_date); 
                $now = Carbon::now();
                
-               $diff_in_months = $now->diffInMonths($last_paid_date);
-               $amount = $diff_in_months * $batch->price;
-               $total_due = $total_due + $amount;
+               // $diff_in_months = $now->diffInMonths($last_paid_date);
+               // $amount = $diff_in_months * $batch->price;
+               // $total_due = $total_due + $amount;
+
+               $total_due = $total_due + $batch->price;
             }
             return $total_due;
         })

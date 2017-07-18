@@ -140,7 +140,7 @@
           user_id = e.relatedTarget.id;
          }
          
-             console.log(user_id);
+          console.log(user_id);
           if (user_id!=null) {
             $('#delete_batch').click(function(e){    
                $.ajax({
@@ -150,6 +150,7 @@
                    data: user_id,
                    success: function(data) {
                        console.log("Deleted Successfully");
+                       console.log(data);
                        table.ajax.reload(null, false);
                        $('#confirm_delete').modal('toggle');
                    },

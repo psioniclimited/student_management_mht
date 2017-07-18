@@ -39,10 +39,10 @@ class DashboardController extends Controller {
 	        
 	        /* Calculating Total Paid Amount for a Particular Month */
 	        $total_paid_amount = 0;
-	        for ($i=0; $i < count($batches); $i++) {
+	        for ($i=0; $i < count($batches); $i++) { // operation for a single batch
 	            $no_of_paid_students = 0;
 	            $student = $batches[$i]->student;
-	            for ($c=0; $c < count($student); $c++) { 
+	            for ($c=0; $c < count($student); $c++) {  // operation for a single student
 	                if ($student[$c]->pivot->last_paid_date >= $now)  {
 	                    $no_of_paid_students = $no_of_paid_students + 1;
 	                }

@@ -166,14 +166,17 @@ class BatchWebController extends Controller {
     ******************/
     public function deleteBatch(Request $request, $id) {
         // BatchHasStudent::where('batch_id', $id)->delete();
-        $batch = Batch::find($id);
-        
-        // Batch::where('id', $id)->delete();
+        $batch = Batch::with('student')->find($id);
+        $students = $batch->student;
+        foreach ($students as $student) {
+            DB::table('students_has_subjects')
+                ->where('students_id', '=', $student->id)
+                ->where('subjects_id', '=', $batch->subjects_id)
+                ->delete();
+        }
         $batch->delete();
         $batch->student()->detach();
         $batch->subject()->detach();
-
-        return back();
     }
 
     public function batchWiseStudentPage() {
