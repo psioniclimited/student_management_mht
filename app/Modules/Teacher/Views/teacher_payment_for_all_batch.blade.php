@@ -45,8 +45,8 @@
     var months = ["January","February","March", "April",
                 "May", "June","July", "August",
                 "September","October","November","December"];
-    let month = "";
-    let year = "";
+    var month = "";
+    var year = "";
 
     //Date picker for Start Date
     $('.ref_date').datepicker({
@@ -139,6 +139,7 @@
                     let payment_for = $('input[id=ref_date]').val();
                     month = months[parseInt(payment_for.substring(3, 5)) - 1];
                     year = parseInt(payment_for.substring(6, 10));
+                    console.log(month +"-"+year);
             },
             dom: 'Bfrtip',
             buttons: [

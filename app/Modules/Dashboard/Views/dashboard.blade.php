@@ -120,7 +120,7 @@ $(document).ready(function () {
             <span class="info-box-icon bg-navy color-palette"><i class="ion ion-ios-people-outline"></i></span>
 
             <div class="info-box-content">
-              <span class="info-box-text">Total Number of Students</span>
+              <span class="info-box-text">Total Number of Active Students</span>
               <span class="info-box-number count">{{ $total_students }}</span>
               <span class="info-box-text">Total Number of Engaged Students</span>
               <span class="info-box-number total_engaged_students"></span>
