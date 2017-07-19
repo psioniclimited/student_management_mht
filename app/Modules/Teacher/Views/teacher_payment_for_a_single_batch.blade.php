@@ -98,7 +98,7 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'DailyPaymentReporting',
+                        title: "{{ $batchName }},"+"\n"+" Date: {{ $refDate }}",
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -106,7 +106,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'Payment for '+$('#teacher_user_id').text()+"\n"+" Date: "+ $('input[id=ref_date]').val(),
+                        title: "{{ $batchName }},"+"\n"+" Date: {{ $refDate }}",
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -166,7 +166,7 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'DailyPaymentReporting',
+                        title: 'Payment for '+"{{ $batchName }}"+"\n"+" Date: {{ $refDate }}",
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -174,7 +174,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'Payment for '+$('#teacher_user_id').text()+"\n"+" Date: "+ $('input[id=ref_date]').val(),
+                        title: 'Payment for '+"{{ $batchName }}"+"\n"+" Date: {{ $refDate }}",
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]

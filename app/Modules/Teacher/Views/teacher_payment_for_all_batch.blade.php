@@ -41,10 +41,14 @@
     }, "Value must not equal arg.");
 
     $(document).ready(function () {
+    
+    var months = ["January","February","March", "April",
+                "May", "June","July", "August",
+                "September","October","November","December"];
+    let month = "";
+    let year = "";
 
-    var total_money = 0;
-
-	//Date picker for Start Date
+    //Date picker for Start Date
     $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
       autoclose: true
@@ -86,11 +90,10 @@
 
 
     $("#all_batch_for_teacher_payment").click(function() {
-        console.log($('input[id=ref_date]').val());
         var table = $('#teacher_payment_datatable').DataTable({
             "paging": false,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "destroy": true,
             "info": false,
@@ -105,26 +108,37 @@
                     },
                 },
             "columns": [
-                    {"data": "batch_name"},
-                    {"data": "batch_schedule"},
-                    {"data": "total_no_students"},
-                    {"data": "no_of_paid_students"},
-                    {"data": "no_of_unpaid_students"},
-                    {"data": "calculated_price"},
+                    {"data": "batch_name", "name": "batch.name"},
+                    {"data": "batch_schedule", searchable: false},
+                    {"data": "total_no_students", searchable: false},
+                    {"data": "no_of_paid_students", searchable: false},
+                    {"data": "no_of_unpaid_students", searchable: false},
+                    {"data": "calculated_price", searchable: false},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    
-                    let total_price = 0;
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['calculated_price']);
-                        total_price += parseInt(aaData[i]['calculated_price'], 10);
-                    }
+                    let total_batch_no = 0;
+                    let total_number_of_students = 0;
+                    let total_paid_students = 0;
+                    let total_unpaid_students = 0;
+                    let total_teacher_payment = 0;
 
-                    // let nCells = nRow.getElementsByTagName('th');
-                    // total_money = total_price;
-                    // nCells[6].innerHTML = total_price;
-                    $('#total_teacher_payment').text(total_price);
+                    for ( let i=0 ; i<aaData.length ; i++ ) {
+                        total_batch_no += 1;
+                        total_teacher_payment += parseInt(aaData[i]['calculated_price'], 10);
+                        total_number_of_students += parseInt(aaData[i]['total_no_students'], 10);
+                        total_paid_students += parseInt(aaData[i]['no_of_paid_students'], 10);
+                        total_unpaid_students += parseInt(aaData[i]['no_of_unpaid_students'], 10);
+                    }
+                    $('#total_batch_no').text(total_batch_no);
+                    $('#total_teacher_payment').text(total_teacher_payment);
+                    $('#total_number_of_students').text(total_number_of_students);
+                    $('#total_paid_students').text(total_paid_students);
+                    $('#total_unpaid_students').text(total_unpaid_students);
+
+                    let payment_for = $('input[id=ref_date]').val();
+                    month = months[parseInt(payment_for.substring(3, 5)) - 1];
+                    year = parseInt(payment_for.substring(6, 10));
             },
             dom: 'Bfrtip',
             buttons: [
@@ -147,7 +161,7 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'DailyPaymentReporting',
+                        title: $('#teacher_user_id').text()+"\n"+", Date: "+ month +"-"+year,
                         "footer": true,
                         exportOptions: {
                             columns: [ 0, 1,2,3,4,5 ]
@@ -155,7 +169,7 @@
                     },
                     {
                         extend: 'print',
-                        title: 'Payment for '+$('#teacher_user_id').text()+"\n"+" Date: "+ $('input[id=ref_date]').val(),
+                        title: $('#teacher_user_id').text()+"\n"+", Date: "+ month +"-"+year,
                         "footer": true,
                         exportOptions: {
                             columns: [ 0, 1,2,3,4,5 ]
@@ -262,11 +276,11 @@
                     </thead>
                     <tfoot>
                       <tr>
-                      <th></th>
-                      <th></th>
-                      <th></th>
-                      <th></th>
+                      <th id="total_batch_no"></th>
                       <th>Total:</th>
+                      <th id="total_number_of_students"></th>
+                      <th id="total_paid_students"></th>
+                      <th id="total_unpaid_students"></th>
                       <th id="total_teacher_payment"></th> 
                       <th></th>
                       </tr>
