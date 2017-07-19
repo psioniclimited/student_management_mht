@@ -61,13 +61,13 @@
             },
         "columns": [
                 {"data": "student_permanent_id"},
-                {"data": "student_name"},
-                {"data": "school_name"},
-                {"data": "batch_type_name"},
-                {"data": "student_phone_number"},
-                {"data": "guardian_phone_number"},
+                {"data": "student_name", "name": "students.name"},
+                {"data": "school_name", "name": "schools.name"},
+                {"data": "batch_type_name", "name": "batch_types.name"},
+                {"data": "student_phone_number",},
+                {"data": "guardian_phone_number", },
                 {"data": "last_paid_date"},
-                {"data": "Link"}
+                {"data": "Link", searchable: false}
 
             ],
         "fnCreatedRow": function ( row, data, index ) {

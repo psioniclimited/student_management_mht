@@ -75,6 +75,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::post('clear_due_payment', 'App\Modules\Student\Controllers\StudentPaymentController@clear_due_payment');
     Route::get('get_student_payment_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_payment_history');
     Route::get('get_student_transaction_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_transaction_history');
+    Route::get('get_student_refund_history', 'App\Modules\Student\Controllers\StudentPaymentController@get_student_refund_history');
 
     Route::get('students_payment_other', 'App\Modules\Student\Controllers\StudentPaymentController@otherPayment');
     Route::get('admission_payment_info', 'App\Modules\Student\Controllers\StudentPaymentController@admission_payment_info');
@@ -89,7 +90,7 @@ Route::group(['middleware' => ['web','auth']], function () {
     Route::get('refund/{invoice_details}/{students}/', 'App\Modules\Student\Controllers\StudentPaymentController@refundPayment');
     
     Route::get('student/{student}/last_paid_update_page/', 'App\Modules\Student\Controllers\StudentPaymentController@lastPaidUpdatePage');
-    Route::get('student/get_all_batches_for_last_paid_upddate/', 'App\Modules\Student\Controllers\StudentPaymentController@get_all_batches_for_last_paid_upd');
+    Route::get('student/get_all_batches_for_last_paid_update/', 'App\Modules\Student\Controllers\StudentPaymentController@get_all_batches_for_last_paid_update');
     Route::post('student/last_payment_date_update', 'App\Modules\Student\Controllers\StudentPaymentController@last_payment_date_update');
 
 
@@ -228,5 +229,8 @@ Route::group(['middleware' => ['web','auth']], function () {
 
 
     Route::get('edit_student_phn_num', 'App\Modules\Student\Controllers\SchoolWebController@edit_std_phn_num');
+
+    // Test export option for datatable
+    Route::get('students', 'App\Modules\Student\Controllers\StudentsWebController@testDatatable');
 
 });

@@ -277,7 +277,9 @@ class StudentPaymentController extends Controller {
                                             $query->where('students_id', $student_id);
                                         })
                                         ->where('refund',false)
-                                        ->with('batch')
+                                        ->with(['batch' => function($query){
+                                            $query->withTrashed();
+                                        }])
                                         ->orderBy('payment_to', 'DESC')
                                         ->get()
                                         ->unique('batch_id');
@@ -391,10 +393,10 @@ class StudentPaymentController extends Controller {
         return view('Student::student_payment/last_paid_update_page')->with('studentDetails', $student_details);
     }
 
-    public function get_all_batches_for_last_paid_upd(Request $request)
+    public function get_all_batches_for_last_paid_update(Request $request)
     {
         $student_id = $request->student_id;
-        $student_details = Student::with('batch')->find($student_id);
+        $student_details = Student::withTrashed('batch')->find($student_id);
         $student_details = $student_details->batch;
         
         return Datatables::of($student_details)
@@ -453,6 +455,21 @@ class StudentPaymentController extends Controller {
                                         ->orderBy('payment_to', 'DESC')
                                         ->get();
         return Datatables::of($get_student_transaction_history)->make(true);
+    }
+
+    public function get_student_refund_history(Request $request)
+    {
+        $student_id = $request->student_id;
+
+        $get_student_refund_history = Refund::with('invoiceDetail.invoiceMaster')
+                                            ->whereHas('invoiceDetail.invoiceMaster', function($query) use ($student_id){
+                                                $query->where('students_id', $student_id);
+                                            })
+                                            ->with(['invoiceDetail.batch' => function($query){
+                                                $query->withTrashed();
+                                            }])
+                                            ->get();
+        return Datatables::of($get_student_refund_history)->make(true);
     }
 
     public function otherPayment() {

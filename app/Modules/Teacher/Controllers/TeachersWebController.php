@@ -185,6 +185,7 @@ class TeachersWebController extends Controller {
                     })
                     ->where('teacher_details.id', '=', $teacher_id)
                     ->where('students.deleted_at', '=', NULL)
+                    ->where('batch.deleted_at', '=', NULL)
                     ->where('batch.start_date', '<=', $get_payment_date_month_year)
                     ->where('batch.end_date', '>=', $get_payment_date_month_year)
                     ->groupBy('batch.id')
@@ -237,6 +238,7 @@ class TeachersWebController extends Controller {
                             'invoice_details.batch_id');
         $teacher_percentage = Batch::with('teacherDetail')->find($request->batch_id);
         $teacher_percentage = $teacher_percentage->teacherDetail->teacher_percentage;
+        
         return Datatables::of($batches)
                     ->addColumn('paid_money', function ($batches) use($teacher_percentage) {
                         if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {

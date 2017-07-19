@@ -43,7 +43,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                    'url': "{{URL::to('/student/get_all_batches_for_last_paid_upddate')}}",
+                    'url': "{{URL::to('/student/get_all_batches_for_last_paid_update')}}",
                     'data': {
                        student_id: {{ $studentDetails->id }},
                     },

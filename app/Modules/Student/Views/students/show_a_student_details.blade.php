@@ -42,7 +42,30 @@
                     {"data": "pivot.last_paid_date"},
                 ]
         });
-
+        var refund_table = $('#get_student_refund_history').DataTable({
+            "paging": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": true,
+            "destroy": true,
+            "info": false,
+            "autoWidth": false,
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                    'url': "{{URL::to('/get_student_refund_history')}}",
+                    'data': {
+                       student_id: "{{ $getStudent->id }}",
+                    },
+                },
+            "columns": [
+                    {"data": "invoice_detail.invoice_master.serial_number"},
+                    {"data": "invoice_detail.invoice_master.payment_date"},
+                    {"data": "invoice_detail.batch.name"},
+                    {"data": "invoice_detail.payment_from"},
+                    {"data": "amount"},
+                ],
+        });
         var transaction_table = $('#student_transaction_history').DataTable({
             "paging": false,
             "lengthChange": true,
@@ -66,12 +89,6 @@
                     {"data": "payment_from"},
                     {"data": "price"},
                 ],
-            "fnCreatedRow": function ( row, data, index ) {
-                // if (data.refund) {
-                //     $(row).css("color", "red");
-                // }
-            
-        },
         });   
     });
 </script>
@@ -176,45 +193,8 @@
     <!-- /.box -->
 
 
-    
-<!--     <div class="box box-widget widget-user-2">
-        
-        <div class="widget-user-header bg-yellow">
-            <div class="widget-user-image">
-                <img src="{{ URL::to('/') }}/{{ $getStudent->students_image }}" class='img-circle' alt='Student profile picture'>
-            </div>
-            
-            <h1 class="widget-user-username">{{ $getStudent->name }}</h1>
-            <h3 class="widget-user-desc">Permanent ID : {{ $getStudent->student_permanent_id }}</h3>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="box-footer no-padding">
-                  <ul class="nav nav-stacked">
-                    <li><a href="#">Fathers Name <span class="pull-right badge bg-blue">{{ $getStudent->fathers_name }}</span></a></li>
-                    <li><a href="#">Mothers Name <span class="pull-right badge bg-aqua">{{ $getStudent->mothers_name }}</span></a></li>
-                    <li><a href="#">Student's Phone Number <span class="pull-right badge bg-green">{{ $getStudent->student_phone_number }}</span></a></li>
-                    <li><a href="#">Guardian's Phone Number <span class="pull-right badge bg-red">{{ $getStudent->guardian_phone_number }}</span></a></li>
-                  </ul>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="box-footer no-padding">
-                  <ul class="nav nav-stacked">
-                    <li><a href="#">Projects <span class="pull-right badge bg-blue">31</span></a></li>
-                    <li><a href="#">Tasks <span class="pull-right badge bg-aqua">5</span></a></li>
-                    <li><a href="#">Completed Projects <span class="pull-right badge bg-green">12</span></a></li>
-                    <li><a href="#">Followers <span class="pull-right badge bg-red">842</span></a></li>
-                  </ul>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    
-
     <!-- Stydent Payment History -->
-    <div class="box box-warning">
+    <div class="box box-success">
         <div class="box-header animated fadeInUp">
                 <h4><strong>Payment Status</strong></h4>
         </div><!-- /.box-header -->
@@ -236,11 +216,36 @@
     </div>
     <!-- /.box -->
 
+    <!-- Stydent Refund History -->
+    <div class="box box-primary">
+        <div class="box-header animated fadeInUp">
+                <h4><strong>All Refunds</strong></h4>
+        </div><!-- /.box-header -->
+            
+            <div class="box-body">
+                <table id="get_student_refund_history" class="table table-bordered table-striped animated fadeInUp">
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Payment Date</th>
+                            <th>Batch Name</th>
+                            <th>Payment For</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>                            
+                        <!-- user list -->
+                    </tbody>                        
+                </table>
+            </div><!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+
 
     <!-- Stydent Transaction History -->
     <div class="box box-warning">
         <div class="box-header animated fadeInUp">
-                <h4>All transactions of <strong>{{ $getStudent->name }}</strong></h4>
+                <h4><strong>All Transactions</strong></h4>
         </div><!-- /.box-header -->
             
             <div class="box-body">

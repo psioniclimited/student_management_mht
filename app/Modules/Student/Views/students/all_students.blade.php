@@ -18,7 +18,7 @@
             "lengthChange": true,
             "searching": true,
             "ordering": true,
-            "info": false,
+            "info": true,
             "autoWidth": false,
             "processing": true,
             "serverSide": true,

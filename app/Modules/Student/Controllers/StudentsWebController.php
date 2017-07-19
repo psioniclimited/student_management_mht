@@ -27,6 +27,7 @@ use Entrust;
 use DB;
 use Log;
 use Carbon\Carbon;
+use App\Modules\Student\Datatables\StudentsDatatable;
 
 class StudentsWebController extends Controller {
 
@@ -431,5 +432,14 @@ class StudentsWebController extends Controller {
 	public function deleteStudent(Request $request, $id) {
 		Student::where('id', $id)->delete();
 	}
+
+    public function testDatatable(Request $request, StudentsDatatable $dataTable)
+    {
+        $dataTable->setSubscriptionType($request->subscription_type);
+        $dataTable->setTerritory($request->territory);
+        $dataTable->setSector($request->sector);
+
+        return $dataTable->render('Student::students.test_datatable_students');
+    }
 
 }

@@ -162,7 +162,7 @@
                         }
                     },
                 ]
-            }); // #teacher_payment_datatable ends
+        }); // #teacher_payment_datatable ends
 
 
 
@@ -266,9 +266,9 @@
                       <th></th>
                       <th></th>
                       <th></th>
+                      <th>Total:</th>
+                      <th id="total_teacher_payment"></th> 
                       <th></th>
-                      <th>Total:</th> 
-                      <th id="total_teacher_payment"></th>
                       </tr>
                     </tfoot>                      
                     <tbody>                            
