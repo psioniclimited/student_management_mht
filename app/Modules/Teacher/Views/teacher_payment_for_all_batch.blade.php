@@ -128,7 +128,7 @@
                         total_paid_students += parseInt(aaData[i]['no_of_paid_students'], 10);
                         total_unpaid_students += parseInt(aaData[i]['no_of_unpaid_students'], 10);
                     }
-                    $('#total_batch_no').text(total_batch_no);
+                    $('#total_batch_no').text("Total number of Batches: " + total_batch_no);
                     $('#total_teacher_payment').text(total_teacher_payment);
                     $('#total_number_of_students').text(total_number_of_students);
                     $('#total_paid_students').text(total_paid_students);
@@ -139,7 +139,7 @@
                     let year = parseInt(payment_for.substring(6, 10));
                     $('#month').text(month);
                     $('#year').text(year);
-                    console.log(month +"-"+year);
+                    // console.log(month +"-"+year);
             },
             dom: 'Bfrtip',
             buttons: [
@@ -191,7 +191,7 @@
             let payment_for = $('input[id=ref_date]').val();
             let month = months[parseInt(payment_for.substring(3, 5)) - 1];
             let year = parseInt(payment_for.substring(6, 10));
-            return $('#teacher_user_id').text()+"\n"+", Date: "+ month + "-" + year;
+            return $('#select2-teacher_user_id-container').attr( "title" )+"\n"+", Date: "+ month + "-" + year;
         }
 
     });// #all_batch_for_teacher_payment ends
