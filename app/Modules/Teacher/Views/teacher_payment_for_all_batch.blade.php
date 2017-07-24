@@ -45,9 +45,7 @@
     var months = ["January","February","March", "April",
                 "May", "June","July", "August",
                 "September","October","November","December"];
-    var month = "";
-    var year = "";
-
+    
     //Date picker for Start Date
     $('.ref_date').datepicker({
       format: 'dd/mm/yyyy',
@@ -137,8 +135,10 @@
                     $('#total_unpaid_students').text(total_unpaid_students);
 
                     let payment_for = $('input[id=ref_date]').val();
-                    month = months[parseInt(payment_for.substring(3, 5)) - 1];
-                    year = parseInt(payment_for.substring(6, 10));
+                    let month = months[parseInt(payment_for.substring(3, 5)) - 1];
+                    let year = parseInt(payment_for.substring(6, 10));
+                    $('#month').text(month);
+                    $('#year').text(year);
                     console.log(month +"-"+year);
             },
             dom: 'Bfrtip',
@@ -146,7 +146,9 @@
                     'copy',
                     {
                         extend: 'csvHtml5',
-                        title: 'Payment for '+$('select[id=teacher_user_id]').val(),
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 0, 1,2,3,4,5 ]
@@ -154,7 +156,9 @@
                     },
                     {
                         extend: 'excelHtml5',
-                        title: 'DailyPaymentReporting',
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 0, 1,2,3,4,5 ]
@@ -162,7 +166,9 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: $('#teacher_user_id').text()+"\n"+", Date: "+ month +"-"+year,
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 0, 1,2,3,4,5 ]
@@ -170,7 +176,9 @@
                     },
                     {
                         extend: 'print',
-                        title: $('#teacher_user_id').text()+"\n"+", Date: "+ month +"-"+year,
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 0, 1,2,3,4,5 ]
@@ -179,7 +187,12 @@
                 ]
         }); // #teacher_payment_datatable ends
 
-
+        function document_title() {
+            let payment_for = $('input[id=ref_date]').val();
+            let month = months[parseInt(payment_for.substring(3, 5)) - 1];
+            let year = parseInt(payment_for.substring(6, 10));
+            return $('#teacher_user_id').text()+"\n"+", Date: "+ month + "-" + year;
+        }
 
     });// #all_batch_for_teacher_payment ends
 
@@ -252,9 +265,6 @@
             <!-- /.box-body -->
     </div>
     <!-- /.box-body -->
-
-
-
 
     <!-- Teacher payment Datatable -->
     <div class="box box-warning">

@@ -82,7 +82,9 @@
                     'copy',
                     {
                         extend: 'csvHtml5',
-                        title: 'Payment for '+$('select[id=teacher_user_id]').val(),
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [  1,2,3 ]
@@ -90,7 +92,9 @@
                     },
                     {
                         extend: 'excelHtml5',
-                        title: 'DailyPaymentReporting',
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [  1,2,3 ]
@@ -98,7 +102,9 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: "{{ $batchName }},"+"\n"+" Date: {{ $refDate }}",
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -106,7 +112,9 @@
                     },
                     {
                         extend: 'print',
-                        title: "{{ $batchName }},"+"\n"+" Date: {{ $refDate }}",
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -150,7 +158,9 @@
                     'copy',
                     {
                         extend: 'csvHtml5',
-                        title: 'Payment for '+$('select[id=teacher_user_id]').val(),
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [  1,2,3 ]
@@ -158,7 +168,9 @@
                     },
                     {
                         extend: 'excelHtml5',
-                        title: 'DailyPaymentReporting',
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [  1,2,3 ]
@@ -166,7 +178,9 @@
                     },
                     {
                         extend: 'pdfHtml5',
-                        title: 'Payment for '+"{{ $batchName }}"+"\n"+" Date: {{ $refDate }}",
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -174,7 +188,9 @@
                     },
                     {
                         extend: 'print',
-                        title: 'Payment for '+"{{ $batchName }}"+"\n"+" Date: {{ $refDate }}",
+                        title: function(e) {
+                            return document_title();
+                        },
                         "footer": true,
                         exportOptions: {
                             columns: [ 1,2,3 ]
@@ -182,6 +198,17 @@
                     },
             ]
     });
+    function document_title() {
+        let months = ["January","February","March", "April",
+            "May", "June","July", "August",
+            "September","October","November","December"];
+        let payment_for = $('input[id=ref_date]').val();
+        let batchName = "{{ $batchName }}";
+        let date = "{{ $refDate }}";
+        let month = months[parseInt(date.substring(5, 7)) - 1];
+        let year = parseInt(date.substring(0, 4));
+        return batchName + ", " + month + "-" + year;
+    }
 });
 </script>
 
