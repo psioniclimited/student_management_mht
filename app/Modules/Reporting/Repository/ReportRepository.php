@@ -125,7 +125,7 @@ class ReportRepository {
 
 	public function getmonthlyDueStatement($due_statement_date)	{
 		$payments = Student::with(['batch' => function ($query) use( $due_statement_date )  {
-    		$query->where('last_paid_date', '=', $due_statement_date);
+    		$query->where('last_paid_date', '<=', $due_statement_date);
 		}])->get();
 		$payments = $payments->map(function($student){
 			            			if (count($student->batch) > 0 ) {

@@ -151,7 +151,7 @@ class TeachersWebController extends Controller {
         $get_payment_date_month_year->day = 01;
         $get_payment_date_month_year = $get_payment_date_month_year->toDateString();
         
-        
+         
         $teacher_details = TeacherDetail::where('users_id', $request->teacher_user_id)->first();
         $teacher_id = $teacher_details->id;
         $teacher_percentage = $teacher_details->teacher_percentage;
@@ -183,6 +183,7 @@ class TeachersWebController extends Controller {
                         ->where('invoice_details.payment_from', '=', $get_payment_date_month_year)
                         ->where('refund', '=', 0);
                     })
+                    ->where('batch_has_students.joining_date', '=', $get_payment_date_month_year)
                     ->where('teacher_details.id', '=', $teacher_id)
                     ->where('students.deleted_at', '=', NULL)
                     ->where('batch.deleted_at', '=', NULL)
