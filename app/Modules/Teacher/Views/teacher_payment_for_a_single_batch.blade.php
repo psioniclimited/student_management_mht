@@ -67,10 +67,13 @@
             ],
         "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     var total_price = 0;
+                    let total_paid_student_no = 0;
                     for ( var i=0 ; i<aaData.length ; i++ ) {
                         total_price += aaData[i]['paid_money'];
+                        total_paid_student_no += 1;
                     }
                     $('#total_paid_money').text(total_price);
+                    $('#total_paid_student_no').text("Total Student: " + total_paid_student_no); 
                 },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ){
                 var index = iDisplayIndex +1;
@@ -152,6 +155,13 @@
                 var index = iDisplayIndex +1;
                 $('td:eq(0)',nRow).html(index);
                 return nRow;
+        },
+        "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+                let total_non_paid_student_no = 0;
+                for ( let i=0 ; i<aaData.length ; i++ ) {
+                        total_non_paid_student_no += 1;
+                }
+                $('#total_non_paid_student_no').text("Total Student: " + total_non_paid_student_no); 
         },
         dom: 'Bfrtip',
             buttons: [
@@ -267,11 +277,11 @@
                             <tfoot>
                                   <tr>
                                     <th></th>
-                                    <th></th>  
+                                    <th id="total_paid_student_no"></th> 
                                     <th>Total:</th>
                                     <th id="total_paid_money"></th>
                                   </tr>
-                                </tfoot>
+                            </tfoot>
                             <tbody>                            
                                 <!-- user list -->
                             </tbody>                        
@@ -300,6 +310,14 @@
                                         <th>Paid Price</th>
                                     </tr>
                                 </thead>
+                                <tfoot>
+                                  <tr>
+                                    <th></th>
+                                    <th id="total_non_paid_student_no"></th> 
+                                    <th>Total:</th>
+                                    <th>0</th>
+                                  </tr>
+                                </tfoot>
                                 <tbody>                            
                                     <!-- user list -->
                                 </tbody>                        
