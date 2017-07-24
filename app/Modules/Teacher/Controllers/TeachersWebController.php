@@ -183,7 +183,7 @@ class TeachersWebController extends Controller {
                         ->where('invoice_details.payment_from', '=', $get_payment_date_month_year)
                         ->where('refund', '=', 0);
                     })
-                    ->where('batch_has_students.joining_date', '=', $get_payment_date_month_year)
+                    ->where('batch_has_students.joining_date', '<=', $get_payment_date_month_year)
                     ->where('teacher_details.id', '=', $teacher_id)
                     ->where('students.deleted_at', '=', NULL)
                     ->where('batch.deleted_at', '=', NULL)
