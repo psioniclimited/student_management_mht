@@ -44,7 +44,7 @@
         var table = $('#all_batches_datatable').DataTable({
             "paging": true,
             "lengthChange": true,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "destroy": true,
             "info": false,

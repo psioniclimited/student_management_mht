@@ -362,7 +362,7 @@ class BatchWebController extends Controller {
                     ->where('joining_date', '>', $current_date)
                     ->whereNull('students.deleted_at')
                     ->whereNull('batch.deleted_at')
-                    ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
+                    ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date', 'joining_date');
         
         return Datatables::of($students)
         ->addColumn('payment_status', function ($students) {
@@ -406,7 +406,7 @@ class BatchWebController extends Controller {
                     ->where('joining_date', '<=', $current_date)
                     ->whereNull('students.deleted_at')
                     ->whereNull('batch.deleted_at')
-                    ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date');
+                    ->select('student_permanent_id', 'students.id as student_id', 'students.student_phone_number as student_phone_number','students.guardian_phone_number as guardian_phone_number','students.name as student_name','schools.name as school_name', 'batch_types.name as batch_type_name','last_paid_date', 'joining_date');
 
         return Datatables::of($students)
         ->addColumn('payment_status', function ($students) {

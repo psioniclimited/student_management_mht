@@ -41,7 +41,9 @@
     }, "Value must not equal arg.");
 
     $(document).ready(function () {
-	
+	var months = ["January","February","March", "April",
+                "May", "June","July", "August",
+                "September","October","November","December"];   
 	var paid_table = $('#paid_students').DataTable({
         "paging": false,
         "lengthChange": false,
@@ -63,8 +65,15 @@
                 {"data": "name", "name": "students.name"},
                 {"data": "name", "name": "students.name"},
                 {"data": "student_phone_number"},
+                {"data": "joining_date"},
                 {"data": "paid_money", "searchable": false}
             ],
+        "fnCreatedRow": function ( row, data, index ) {
+            // if (data.last_paid_date !== null) {
+                let human_readable_joining_date = moment(data.joining_date);
+                human_readable_joining_date = months[human_readable_joining_date.month()] + " - " + human_readable_joining_date.year();
+                $(row).children()[3].innerHTML = human_readable_joining_date;
+        },
         "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     var total_price = 0;
                     let total_paid_student_no = 0;
@@ -73,7 +82,7 @@
                         total_paid_student_no += 1;
                     }
                     $('#total_paid_money').text(total_price);
-                    $('#total_paid_student_no').text("Total Student: " + total_paid_student_no); 
+                    $('#total_paid_student_no').text("Total no. of  Students : " + total_paid_student_no); 
                 },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ){
                 var index = iDisplayIndex +1;
@@ -90,7 +99,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [  1,2,3 ]
+                            columns: [  1,2,4 ]
                         }
                     },
                     {
@@ -100,7 +109,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [  1,2,3 ]
+                            columns: [  1,2,4 ]
                         }
                     },
                     {
@@ -110,7 +119,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 1,2,3 ]
+                            columns: [ 1,2,4 ]
                         }
                     },
                     {
@@ -120,7 +129,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 1,2,3 ]
+                            columns: [ 1,2,4 ]
                         }
                     },
             ]
@@ -149,8 +158,15 @@
                 {"data": "name", "name": "students.name"},
                 {"data": "name", "name": "students.name"},
                 {"data": "student_phone_number"},
+                {"data": "joining_date"},
                 {"data": "price", searchable: false }
         ],
+        "fnCreatedRow": function ( row, data, index ) {
+            // if (data.joining_date !== null) {
+                let human_readable_joining_date = moment(data.joining_date);
+                human_readable_joining_date = months[human_readable_joining_date.month()] + " - " + human_readable_joining_date.year();
+                $(row).children()[3].innerHTML = human_readable_joining_date;
+        },
         "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ){
                 var index = iDisplayIndex +1;
                 $('td:eq(0)',nRow).html(index);
@@ -173,7 +189,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [  1,2,3 ]
+                            columns: [  1,2,4 ]
                         }
                     },
                     {
@@ -183,7 +199,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [  1,2,3 ]
+                            columns: [  1,2,4 ]
                         }
                     },
                     {
@@ -193,7 +209,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 1,2,3 ]
+                            columns: [ 1,2,4 ]
                         }
                     },
                     {
@@ -203,7 +219,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 1,2,3 ]
+                            columns: [ 1,2,4 ]
                         }
                     },
             ]
@@ -271,13 +287,15 @@
                                     <th></th>
                                     <th>Student Name</th>
                                     <th>Student's Phone Number</th>
+                                    <th>Joining Date</th>
                                     <th>Paid Price</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                   <tr>
                                     <th></th>
-                                    <th id="total_paid_student_no"></th> 
+                                    <th id="total_paid_student_no"></th>
+                                    <th></th> 
                                     <th>Total:</th>
                                     <th id="total_paid_money"></th>
                                   </tr>
@@ -307,6 +325,7 @@
                                         <th></th>
                                         <th>Student Name</th>
                                         <th>Student's Phone Number</th>
+                                        <th>Joining Date</th>
                                         <th>Paid Price</th>
                                     </tr>
                                 </thead>
@@ -314,6 +333,7 @@
                                   <tr>
                                     <th></th>
                                     <th id="total_non_paid_student_no"></th> 
+                                    <th></th>
                                     <th>Total:</th>
                                     <th>0</th>
                                   </tr>

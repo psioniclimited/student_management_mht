@@ -66,20 +66,25 @@
                 {"data": "batch_type_name", "name": "batch_types.name"},
                 {"data": "student_phone_number",},
                 {"data": "guardian_phone_number", },
+                {"data": "joining_date"},
                 {"data": "last_paid_date"},
                 {"data": "Link", searchable: false}
 
             ],
         "fnCreatedRow": function ( row, data, index ) {
-            if (data.last_paid_date !== null) {
+            // if (data.last_paid_date !== null) {
+                let human_readable_joining_date = moment(data.joining_date);
+                human_readable_joining_date = month[human_readable_joining_date.month()] + " - " + human_readable_joining_date.year();
+                $(row).children()[6].innerHTML = human_readable_joining_date;
+                
                 let human_readable_last_paid_date = moment(data.last_paid_date);
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
-                $(row).children()[6].innerHTML = human_readable_last_paid_date;
+                $(row).children()[7].innerHTML = human_readable_last_paid_date;
                 
                 if (!data.payment_status) {
                     $(row).css("color", "red");
                 }
-            }
+            // }
         },
         dom: 'Bfrtip',
         buttons: [
@@ -143,20 +148,24 @@
                 {"data": "batch_type_name"},
                 {"data": "student_phone_number"},
                 {"data": "guardian_phone_number"},
+                {"data": "joining_date"},
                 {"data": "last_paid_date"},
                 {"data": "Link"}
 
             ],
         "fnCreatedRow": function ( row, data, index ) {
-            if (data.last_paid_date !== null) {
+                let human_readable_joining_date = moment(data.joining_date);
+                human_readable_joining_date = month[human_readable_joining_date.month()] + " - " + human_readable_joining_date.year();
+                $(row).children()[6].innerHTML = human_readable_joining_date;
+
                 let human_readable_last_paid_date = moment(data.last_paid_date);
                 human_readable_last_paid_date = month[human_readable_last_paid_date.month()] + " - " + human_readable_last_paid_date.year();
-                $(row).children()[6].innerHTML = human_readable_last_paid_date;
+                $(row).children()[7].innerHTML = human_readable_last_paid_date;
                 
                 if (!data.payment_status) {
                     $(row).css("color", "red");
                 }
-            }
+            // }
         },
         dom: 'Bfrtip',
         buttons: [
@@ -259,6 +268,7 @@
                             <th>Education Board</th>
                             <th>Student's Phone Number</th>
                             <th>Guardian's Phone Number</th>
+                            <th>Joining Date</th>
                             <th>Last Paid</th>
                             <th>Action</th>
                         </tr>
@@ -289,6 +299,7 @@
                             <th>Education Board</th>
                             <th>Student's Phone Number</th>
                             <th>Guardian's Phone Number</th>
+                            <th>Joining Date</th>
                             <th>Last Paid</th>
                             <th>Action</th>
                         </tr>

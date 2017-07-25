@@ -230,13 +230,15 @@ class TeachersWebController extends Controller {
                     ->leftJoin('invoice_masters', 'students.id', '=', 'invoice_masters.students_id')
                     ->leftJoin('invoice_details', 'invoice_details.invoice_masters_id', '=', 'invoice_masters.id')
                     ->leftJoin('batch', 'invoice_details.batch_id', '=', 'batch.id')
+                    ->leftJoin('batch_has_students', 'batch_has_students.students_id', '=', 'students.id')
                     ->where('invoice_details.payment_from', '=', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
                     ->where('students.deleted_at', '=', NULL)
                     ->where('refund', '=', 0)
+                    ->groupBy('students.id')
                     ->select('students.name','students.student_phone_number','invoice_details.price',
                             'invoice_details.invoice_masters_id', 'invoice_details.payment_from', 
-                            'invoice_details.batch_id');
+                            'invoice_details.batch_id', 'batch_has_students.joining_date');
         $teacher_percentage = Batch::with('teacherDetail')->find($request->batch_id);
         $teacher_percentage = $teacher_percentage->teacherDetail->teacher_percentage;
         
@@ -261,7 +263,8 @@ class TeachersWebController extends Controller {
                     ->where('batch_has_students.last_paid_date', '<', $get_date_month_year)
                     ->where('batch.id', '=', $request->batch_id)
                     ->where('students.deleted_at', '=', NULL)
-                    ->select('students.name','students.student_phone_number');
+                    ->groupBy('students.id')
+                    ->select('students.name','students.student_phone_number', 'batch_has_students.joining_date');
         
         return Datatables::of($batches)
                 ->addColumn('price', function ($batches){
