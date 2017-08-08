@@ -36,7 +36,8 @@ class ReportingWebController extends Controller {
 
     public function paymentReporting()
     {
-        return view('Reporting::payment_reporting');
+        // return view('Reporting::payment_reporting');
+        return view('Reporting::payment_reporting_test');
     }
 
     public function getDailyReporting(ReportRepository $report)
@@ -50,6 +51,24 @@ class ReportingWebController extends Controller {
                            return $dailyReporting->invoiceDetail->map(function($invDetail) {
                               if ($invDetail->refund == 0) {
                                 $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
+                                return $ready_data;
+                              }
+                               return "";
+                           })->implode(', ');
+                        })
+                        ->addColumn('discount_per_batch', function ($dailyReporting) {
+                           return $dailyReporting->invoiceDetail->map(function($invDetail) {
+                              if ($invDetail->refund == 0) {
+                                $ready_data = $invDetail->batch->name . " = " . $invDetail->discount_amount . "/-" ;
+                                return $ready_data;
+                              }
+                               return "";
+                           })->implode(', ');
+                        })
+                        ->addColumn('due_per_batch', function ($dailyReporting) {
+                           return $dailyReporting->invoiceDetail->map(function($invDetail) {
+                              if ($invDetail->refund == 0) {
+                                $ready_data = $invDetail->batch->name . " = " . $invDetail->due_amount . "/-" ;
                                 return $ready_data;
                               }
                                return "";
