@@ -57,22 +57,9 @@
     });
 
     
-    $("#daily_payment_reporting_btn").click(function() {
-        $( "#daily_reporting_message").show('slow');
-        $( "#due_reporting_message").hide('slow');
-
-        $("#table_box_color").attr("class","box box-success");
-        $("#table_payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
-        $("#second_box_title_border").attr("class","box box-success");
-        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Daily Reporting</h3>");
-        
-        $( "#monthly_statement_div" ).hide('slow');
-        $( "#monthly_refund_div" ).hide('slow');
-        $( "#monthly_due_statement_div" ).hide('slow');
-        $( "#date_range_statement_div" ).hide('slow');
-
-        
-        var daily_payment_reporting_table = $('#daily_reporting_table').DataTable({
+    // $("#daily_payment_reporting_btn").click(function() {
+    function noInputDataTable(parameter) {
+        let daily_payment_reporting_table = $(parameter.table_id).DataTable({
             "paging": false,
             "lengthChange": false,
             "searching": true,
@@ -82,15 +69,10 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to('/get_daily_reporting')}}",
+            "ajax": "{{URL::to(" + parameter.url + ")}}",
             "columns": [
-                    {"data": "serial_number"},
-                    {"data": "student.name"},
-                    {"data": "paid_batches"},
-                    {"data": "discount_per_batch"},                    
-                    {"data": "due_per_batch"},
-                    {"data": "total"},
-                ],
+                    parameter.columns
+            ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     let total_price = parseFloat(0);;
                     for ( let i=0 ; i<aaData.length ; i++ ) {
@@ -123,7 +105,8 @@
                     }
                 ]
             });
-    });
+    }
+    // });
 
     $("#monthly_refund_reporting").click(function() {
 
@@ -516,7 +499,36 @@
         }
     });
 
-    /* Test content */
+    
+    $("#daily_payment_reporting_btn").click(function() {
+        $( "#daily_reporting_message").show('slow');
+        $( "#due_reporting_message").hide('slow');
+
+        $("#table_box_color").attr("class","box box-success");
+        $("#table_payment_title").html("<p><b>Daily</b> Payment Reporting</p>");
+        $("#second_box_title_border").attr("class","box box-success");
+        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Daily Reporting</h3>");
+        
+        $( "#monthly_statement_div" ).hide('slow');
+        $( "#monthly_refund_div" ).hide('slow');
+        $( "#monthly_due_statement_div" ).hide('slow');
+        $( "#date_range_statement_div" ).hide('slow');
+        let parameter = {
+            'url': '/get_daily_reporting',
+            'table_id': '#daily_reporting_table'
+            'columns': {
+                    {"data": "serial_number"},
+                    {"data": "student.name"},
+                    {"data": "paid_batches"},
+                    {"data": "discount_per_batch"},                    
+                    {"data": "due_per_batch"},
+                    {"data": "total"}
+            }
+
+        }
+        noInputDataTable(parameter);
+    });
+
     $('#show_range_payment_reporting').click(function(e) {
         e.preventDefault();
         $( "#date_range_statement_div" ).show('slow');
@@ -744,7 +756,7 @@
             <div class="box-body">
 
             	<!-- Daily Reporting Table -->
-                <table id='daily_reporting_table' class='table table-bordered table-striped'>
+                <table id='daily_reporting_table' class='table table-bordered table-striped' style="display: none;">
 	                <thead>
 	                    <tr>
 	                        <th>Invoice ID</th>
@@ -771,7 +783,7 @@
                 </table>
                 
                 <!-- Due Reporting Table -->
-                <table id='due_reporting_table' class='table table-bordered table-striped'>
+                <table id='due_reporting_table' class='table table-bordered table-striped' style="display: none;">
 	                <thead>
 	                    <tr>
 	                        <th>Student Name</th>
@@ -794,8 +806,9 @@
 	                    <!-- Due Reporting Rows -->
 	                </tbody>
                 </table>
+                
                 <!-- Refund Reporting Table -->
-                <table id='daily_reporting_table' class='table table-bordered table-striped'>
+                <table id='monthly_refund_reporting' class='table table-bordered table-striped' style="display: none;">
 	                <thead>
 	                    <tr>
 	                        <th>Invoice ID</th>
@@ -819,8 +832,36 @@
 	                    <!-- Refund Reporting Rows -->
 	                </tbody>
                 </table>
+
+                <!-- Date Range Reporting Table -->
+                <table id='date_range_reporting_table' class='table table-bordered table-striped' style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Invoice ID</th>
+                            <th>Student Name</th>
+                            <th>Batches(name, price, payment for)</th>
+                            <th>Discount</th>
+                            <th>Pending</th>
+                            <th>Paid Amount /-</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th id="total_range_pending"></th>
+                            <th id="total_range_discount"></th>
+                            <th id="total_range_amount"></th> 
+                        </tr>
+                    </tfoot>                
+                    <tbody>
+                        <!-- Date Range Reporting Rows -->
+                    </tbody>
+                </table>
+                
                 <!-- Monthly Reporting Table -->
-                <table id='monthly_reporting_table' class='table table-bordered table-striped'>
+                <table id='monthly_reporting_table' class='table table-bordered table-striped' style="display: none;">
 	                <thead>
 	                    <tr>
 	                        <th>Invoice ID</th>
@@ -847,8 +888,9 @@
 	                    <!-- Monthly Reporting Rows -->
 	                </tbody>
                 </table>
+                
                 <!-- Monthly Due Reporting Table -->
-                <table id='due_reporting_table' class='table table-bordered table-striped'>
+                <table id='due_reporting_table' class='table table-bordered table-striped' style="display: none;">
 	                <thead>
 	                    <tr>
 	                        <th>Student Name</th>
