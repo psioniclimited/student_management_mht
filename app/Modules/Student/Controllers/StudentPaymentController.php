@@ -355,7 +355,7 @@ class StudentPaymentController extends Controller {
             ->leftJoin('invoice_details', 'invoice_masters.id', '=', 'invoice_details.invoice_masters_id')
             ->leftJoin('batch', 'invoice_details.batch_id', '=', 'batch.id')
             ->whereNull('students.deleted_at')
-            ->whereNull('batch.deleted_at')
+            // ->whereNull('batch.deleted_at')
             ->where('students.id', '=', $request->student_id)
             // ->where('students.phone_home', '=', $request->input('student_phonenumber'))
             ->where('due_amount','!=', 0)
