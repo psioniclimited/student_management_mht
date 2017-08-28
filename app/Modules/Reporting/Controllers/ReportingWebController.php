@@ -37,7 +37,7 @@ class ReportingWebController extends Controller {
     public function paymentReporting()
     {
         return view('Reporting::payment_reporting');
-        return view('Reporting::payment_reporting_test');
+        // return view('Reporting::payment_reporting_test');
     }
 
     public function getDailyReporting(ReportRepository $report)
