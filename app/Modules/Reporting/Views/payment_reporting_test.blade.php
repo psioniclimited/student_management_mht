@@ -59,6 +59,8 @@
     
     // $("#daily_payment_reporting_btn").click(function() {
     function noInputDataTable(parameter) {
+        let base_url = "{{ URL::to('/') }}";
+        console.log(base_url + parameter.url);
         let daily_payment_reporting_table = $(parameter.table_id).DataTable({
             "paging": false,
             "lengthChange": false,
@@ -69,9 +71,14 @@
             "autoWidth": false,
             "processing": true,
             "serverSide": true,
-            "ajax": "{{URL::to(" + parameter.url + ")}}",
-            "columns": [
-                    parameter.columns
+            "ajax": base_url + parameter.url,
+            'columns': [
+                    {"data": "serial_number"},
+                    {"data": "student.name"},
+                    {"data": "paid_batches"},
+                    {"data": "discount_per_batch"},                    
+                    {"data": "due_per_batch"},
+                    {"data": "total"}
             ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     let total_price = parseFloat(0);;
@@ -515,16 +522,15 @@
         $( "#date_range_statement_div" ).hide('slow');
         let parameter = {
             'url': '/get_daily_reporting',
-            'table_id': '#daily_reporting_table'
-            'columns': {
+            'table_id': '#daily_reporting_table',
+            'columns': [
                     {"data": "serial_number"},
                     {"data": "student.name"},
                     {"data": "paid_batches"},
                     {"data": "discount_per_batch"},                    
                     {"data": "due_per_batch"},
                     {"data": "total"}
-            }
-
+            ]
         }
         noInputDataTable(parameter);
     });
