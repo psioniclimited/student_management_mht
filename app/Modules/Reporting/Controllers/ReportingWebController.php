@@ -36,7 +36,8 @@ class ReportingWebController extends Controller {
 
     public function paymentReporting()
     {
-        return view('Reporting::payment_reporting');
+        // return view('Reporting::payment_reporting');
+        return view('Reporting::payment_reporting_test2');
         // return view('Reporting::payment_reporting_test');
     }
 

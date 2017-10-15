@@ -1,14 +1,6 @@
 <?php
 
-/*
-  |--------------------------------------------------------------------------
-  | User Routes
-  |--------------------------------------------------------------------------
-  |
-  | All the routes for User module has been written here
-  |
-  |
- */
+
 Route::group(['middleware' => ['web','auth']], function () {
 
     Route::get('payment_reporting', 'App\Modules\Reporting\Controllers\ReportingWebController@paymentReporting');
