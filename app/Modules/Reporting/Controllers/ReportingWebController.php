@@ -46,7 +46,6 @@ class ReportingWebController extends Controller {
         $today = Carbon::today();
         $today = $today->toDateString();
         $dailyReporting = $report->getDailyPaymentReportingByDate($today);
-        // return $dailyReporting;
         return Datatables::of($dailyReporting)
                         ->addColumn('paid_batches', function ($dailyReporting) {
                            return $dailyReporting->invoiceDetail->map(function($invDetail) {
@@ -74,16 +73,25 @@ class ReportingWebController extends Controller {
                               }
                                return "";
                            })->implode(', ');
-                        })
-                        ->make(true);
+                        })->make(true);
     }
 
     public function refundReporting(Request $request, ReportRepository $report)
     {
         $refundStatementDate = Carbon::createFromFormat('d/m/Y', $request->refund_statement_date);
-        $refundReporting = $report->getRefundReporting($refundStatementDate->month, $refundStatementDate->year);
-        // $refundReporting = $report->getRefundReporting();
-        return Datatables::of($refundReporting)->make(true);
+        $refundReporting = $report->getRefundReporting($refundStatementDate->toDateString());
+        
+        return Datatables::of($refundReporting)
+                        ->addColumn('paid_batches', function ($refundReporting) {
+                           return $refundReporting->invoiceDetail->map(function($invDetail) {
+                              if ($invDetail->refund == 1) {
+                                $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
+                                return $ready_data;
+                              }
+                               return "";
+                           })->implode(', ');
+                        })
+                        ->make(true);
     }
 
     public function paymentDateRange(Request $request, ReportRepository $report)
@@ -98,7 +106,25 @@ class ReportingWebController extends Controller {
                            $ready_data = "(" . $invDetail->batch->name . ", ".$invDetail->price. ", ". $invDetail->payment_from . ")";
                            return $ready_data;
                        })->implode(', ');
-                    })->make(true);
+                    })
+                    ->addColumn('discount_per_batch', function ($dateRangeReporting) {
+                           return $dateRangeReporting->invoiceDetail->map(function($invDetail) {
+                              if ($invDetail->refund == 0) {
+                                $ready_data = $invDetail->batch->name . " = " . $invDetail->discount_amount . "/-" ;
+                                return $ready_data;
+                              }
+                               return "";
+                           })->implode(', ');
+                        })
+                        ->addColumn('due_per_batch', function ($dateRangeReporting) {
+                           return $dateRangeReporting->invoiceDetail->map(function($invDetail) {
+                              if ($invDetail->refund == 0) {
+                                $ready_data = $invDetail->batch->name . " = " . $invDetail->due_amount . "/-" ;
+                                return $ready_data;
+                              }
+                               return "";
+                           })->implode(', ');
+                        })->make(true);
     }
 
     public function monthlyStatement(Request $request, ReportRepository $report)
@@ -141,9 +167,6 @@ class ReportingWebController extends Controller {
 
     public function monthlyDueStatement(Request $request, ReportRepository $report)
     {
-        error_log("Monthly Due Statement" . $request->due_statement_date);
-        
-        
         $due_statement_date = Carbon::createFromFormat('d/m/Y', $request->due_statement_date);
         $due_statement_date->day = 01;
         $due_statement_date = $due_statement_date->subMonth();

@@ -186,7 +186,7 @@
    $("#show_monthly_due_statement").click(function() {
    		hide_divs();
    		$("#monthly_due_statement_div").show('slow');
-   		set_attributes("", "", "box box-danger", "<h3 class='box-title animated fadeInUp'>Due Reporting</h3>","");
+   		set_attributes("", "", "box box-danger", "<h3 class='box-title animated fadeInUp'>Mothly Due Reporting</h3>","");
    		$("#btn_monthly_due_statement").click(function() {
    			if ($('input[id=due_statement_date]').val()) {
 	   			set_attributes("box box-danger", 
@@ -213,12 +213,12 @@
 	                },
 	            },
 	            "columns": [
-	                    {"data": "student_permanent_id"},
-	                    {"data": "name"},
-	                    {"data": "student_phone_number"},                    
-	                    {"data": "guardian_phone_number"},
-	                    {"data": "due_batches"},
-	                    {"data": "TotalDuePrice"},
+	                    {"data": "serial_number"},
+	                    {"data": "student.name"},
+	                    {"data": "paid_batches"},
+	                    {"data": "discount_per_batch"},
+	                    {"data": "due_per_batch"},                    
+	                    {"data": "total"},
 	                ],
 	            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 	                    
@@ -297,12 +297,18 @@
 		                    {"data": "total"},
 	                    ],
 	                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-	                    
-	                    let TotalRangePrice = parseFloat(0);
+	                    let total_date_range_discount = parseFloat(0);
+	                    let total_date_range_pending = parseFloat(0);
+	                    let total_date_range_price = parseFloat(0);
+
 	                    for ( let i=0 ; i<aaData.length ; i++ ) {
-	                        TotalRangePrice += parseFloat(aaData[i]['total']);
+	                        total_date_range_discount += parseFloat(aaData[i]['invoice_detail'][0]['discount_amount']);
+	                        total_date_range_pending += parseFloat(aaData[i]['invoice_detail'][0]['due_amount']);
+	                        total_date_range_price += parseFloat(aaData[i]['total']);
 	                    }
-						$('#total_taka').text(TotalRangePrice + ' /-');
+						$('#total_date_range_discount').text(total_date_range_discount + ' /-');
+	                    $('#total_date_range_pending').text(total_date_range_pending + ' /-');
+	                    $('#total_date_range_price').text(total_date_range_price + ' /-');
 	                },
 	                dom: 'Bfrtip',
 	            buttons: [
@@ -331,8 +337,162 @@
 	            });
 	        }	
    		});
-        
+    });
 
+	$("#show_monthly_statement").click(function() {
+		hide_divs();
+   		$("#monthly_statement_div").show('slow');
+   		set_attributes("", "", "box box-warning", "<h3 class='box-title animated fadeInUp'>Mothly Statement</h3>","");
+        $("#btn_monthly_statement").click(function() {
+        	if ($('input[id=statement_date]').val()) {
+	            set_attributes("box box-warning", 
+					   				"<h3 class='box-title animated fadeInUp'><p>Monthly Payment Statement for <b>"+$('input[id=statement_date]').val()+"</b></p></h3>", 
+					            	"box box-warning", 
+					            	"<h3 class='box-title animated fadeInUp'><p>Monthly Payment Statement for <b>"+$('input[id=statement_date]').val()+"</b></p></h3>", 
+					            	"");
+		            hide_tables();
+			    	$("#monthly_reporting_table").show();
+	            let monthly_reporting_table = $('#monthly_reporting_table').DataTable({
+	                "paging": false,
+	                "lengthChange": false,
+	                "searching": true,
+	                "ordering": true,
+	                "destroy": true,
+	                "info": false,
+	                "autoWidth": false,
+	                "processing": true,
+	                "serverSide": true, 
+	                "ajax": {
+	                    'url': "{{URL::to('/monthly_statement')}}",
+	                    'data': {
+	                       statement_date: $('input[id=statement_date]').val() 
+	                    },
+	                },
+	                "columns": [
+	                        {"data": "invoice_master.serial_number"},
+	                        {"data": "invoice_master.student.name"},
+	                        {"data": "payment_from"},
+	                        {"data": "batch.name"},
+	                        {"data": "discount_amount"},
+	                        {"data": "due_amount"},
+	                        {"data": "price"},
+					],
+	                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+	                    let total_monthly_statement_discount = parseFloat(0);
+	                    let total_monthly_statement_pending = parseFloat(0);
+	                    let total_monthly_statement_price = parseFloat(0);
+
+	                    for ( let i=0 ; i<aaData.length ; i++ ) {
+	                        total_monthly_statement_discount += parseFloat(aaData[i]['discount_amount']);
+	                        total_monthly_statement_pending += parseFloat(aaData[i]['due_amount']);
+	                        total_monthly_statement_price += parseFloat(aaData[i]['price']);
+	                    }
+						$('#total_monthly_statement_discount').text(total_monthly_statement_discount + ' /-');
+	                    $('#total_monthly_statement_pending').text(total_monthly_statement_pending + ' /-');
+	                    $('#total_monthly_statement_price').text(total_monthly_statement_price + ' /-');
+	                    
+	                },
+	                dom: 'Bfrtip',
+	            buttons: [
+	                    'copy',
+	                    {
+	                        extend: 'csvHtml5',
+	                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
+	                        "footer": true
+	                    },
+	                    {
+	                        extend: 'excelHtml5',
+	                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
+	                        "footer": true
+	                    },
+	                    {
+	                        extend: 'pdfHtml5',
+	                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
+	                        "footer": true
+	                    },
+	                    {
+	                        extend: 'print',
+	                        title: 'Monthly Payment Statement for '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
+	                        "footer": true
+	                    }
+	                ]
+	            });
+	        }
+        });
+        
+	});
+
+	$("#show_refund_reporting").click(function() {
+		hide_divs();
+   		$("#monthly_refund_div").show('slow');
+   		set_attributes("", "", "box box-primary", "<h3 class='box-title animated fadeInUp'>Mothly Refund Statement</h3>","");
+   		$("#btn_monthly_refund_reporting").click(function() {
+
+   			if($('input[id=refund_statement_date]').val()) {
+   				set_attributes("box box-primary", 
+					   				"<h3 class='box-title animated fadeInUp'><p>Refund Statement for <b>"+$('input[id=refund_statement_date]').val()+"</b></p></h3>", 
+					            	"box box-warning", 
+					            	"<h3 class='box-title animated fadeInUp'><p>Refund Statement for <b>"+$('input[id=refund_statement_date]').val()+"</b></p></h3>", 
+					            	"");
+		            hide_tables();
+			    	$("#monthly_refund_reporting_table").show();
+		        let monthly_refund_reporting_table = $('#monthly_refund_reporting_table').DataTable({
+		            "paging": false,
+		            "lengthChange": false,
+		            "searching": true,
+		            "ordering": true,
+		            "destroy": true,
+		            "info": false,
+		            "autoWidth": false,
+		            "processing": true,
+		            "serverSide": true,
+		            "ajax": {
+		                'url': "{{URL::to('/refund_reporting')}}",
+		                'data': {
+		                   refund_statement_date: $('input[id=refund_statement_date]').val() 
+		                },
+		            },
+		            "columns": [
+		                    {"data": "serial_number"},
+		                    {"data": "student.name"},
+		                    {"data": "paid_batches"},                    
+		                    {"data": "total"}
+		                ],
+		            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
+		                    let total_refund_amount = parseFloat(0);
+		                    for ( let i=0 ; i<aaData.length ; i++ ) {
+		                        total_refund_amount += parseFloat(aaData[i]['total']);
+		                    }
+						    $('#total_refund_amount').text(total_refund_amount + ' /-');
+		                },
+		            dom: 'Bfrtip',
+		            buttons: [
+		                    'copy',
+		                    {
+		                        extend: 'csvHtml5',
+		                        title: 'Refund Reporting',
+		                        "footer": true
+		                    },
+		                    {
+		                        extend: 'excelHtml5',
+		                        title: 'Refund Reporting',
+		                        "footer": true
+		                    },
+		                    {
+		                        extend: 'pdfHtml5',
+		                        title: 'Refund Reporting',
+		                        "footer": true
+		                    },
+		                    {
+		                        extend: 'print',
+		                        title: 'Refund Reporting',
+		                        "footer": true
+		                    }
+		                ]
+		        });
+			}
+   		});
+    
     });
 
    function hide_tables () {
@@ -342,6 +502,12 @@
     	$( "#due_reporting_table_wrapper").hide();
     	$( "#monthly_due_reporting_table").hide();
     	$( "#monthly_due_reporting_table_wrapper").hide();
+    	$("#date_range_reporting_table").hide();
+    	$("#date_range_reporting_table_wrapper").hide();
+		$("#monthly_reporting_table").hide();
+    	$("#monthly_reporting_table_wrapper").hide();
+		$("#monthly_refund_reporting_table").hide();
+    	$("#monthly_refund_reporting_table_wrapper").hide();
     }
 
     function hide_divs () {
@@ -361,213 +527,9 @@
         	$("#table_payment_title").html(table_payment_title);
         }
 		$("#reporting_message").text(reporting_message);
-    }
+    }    
 
-    $("#monthly_refund_reporting").click(function() {
 
-        /* Test Content */
-        $( "#daily_reporting_message").hide('slow');
-        $( "#refund_reporting_message").show('slow');
-        $( "#due_reporting_message").hide('slow');
-        $( "#monthly_statement_div" ).hide('slow');
-        $( "#date_range_statement_div" ).hide('slow');
-        $( "#monthly_due_statement_div" ).hide('slow');
-        $("#second_box_title_border").attr("class","box box-primary");
-        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Refund Reporting</h3>");
-        /* Test Content */
-
-        $("#box_color").attr("class","box box-primary");
-        $("#payment_title").html("<p><b>Refund</b> Payment Reporting</p>");
-        $("#alternate_data").text("Batch Name");
-        $("#batch_info").text("Payment For");
-        $("#invoice_info").text("Invoice ID");
-        $("#phone_num").text("Payment Date");
-        $("#total_amount").text("Total Amount/-");
-        var daily_payment_reporting_table = $('#all_user_list').DataTable({
-            "paging": false,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "destroy": true,
-            "info": false,
-            "autoWidth": false,
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                'url': "{{URL::to('/refund_reporting')}}",
-                'data': {
-                   refund_statement_date: $('input[id=refund_statement_date]').val() 
-                },
-            },
-            "columns": [
-                    {"data": "invoice_detail.invoice_master.serial_number"},
-                    {"data": "invoice_detail.invoice_master.student.student_permanent_id"},
-                    {"data": "invoice_detail.invoice_master.student.name"},
-                    {"data": "invoice_detail.invoice_master.payment_date"},                    
-                    {"data": "invoice_detail.batch.name"},
-                    {"data": "invoice_detail.payment_from"},
-                    {"data": "amount"},
-                ],
-            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    let total_price = parseFloat(0);;
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        total_price += parseFloat(aaData[i]['amount']);
-                    }
-
-                    // let nCells = nRow.getElementsByTagName('th');
-                    // nCells[nCells.length-1].innerHTML = total_price;
-                    $('#total_taka').text(total_price + ' /-');
-                    // nCells = total_price;
-                },
-            dom: 'Bfrtip',
-            buttons: [
-                    'copy',
-                    {
-                        extend: 'csvHtml5',
-                        title: 'Refund Reporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Refund Reporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Refund Reporting',
-                        "footer": true
-                    },
-                    {
-                        extend: 'print',
-                        title: 'Refund Reporting',
-                        "footer": true
-                    }
-                ]
-            });
-    });
-    
-    $("#monthly_statement").click(function() {
-        if ($('input[id=statement_date]').val()) {
-            $("#box_color").attr("class","box box-warning");
-            $("#payment_title").html("<p>Monthly Statement for <b>"+$('input[id=statement_date]').val()+"</b></p>");
-            $("#alternate_data").text("Batches(Batch name)");
-            $("#batch_info").text("Discount");
-            $("#invoice_info").text("Invoice ID");
-            $("#phone_num").text("Payment For");
-            $("#total_amount").text("Total Paid Amount/-");
-            var table = $('#all_user_list').DataTable({
-                "paging": false,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "destroy": true,
-                "info": false,
-                "autoWidth": false,
-                "processing": true,
-                "serverSide": true, 
-                "ajax": {
-                    'url': "{{URL::to('/monthly_statement')}}",
-                    'data': {
-                       statement_date: $('input[id=statement_date]').val() 
-                    },
-                },
-                "columns": [
-                        {"data": "invoice_master.serial_number"},
-                        {"data": "invoice_master.student.student_permanent_id"},
-                        {"data": "invoice_master.student.name"},
-                        {"data": "payment_from"},
-                        {"data": "batch.name"},
-                        {"data": "discount_amount"},
-                        {"data": "price"},
-                    ],
-                "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    // calculating total discount price per batch
-                    let TotalDiscountPrice = parseFloat(0);
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        TotalDiscountPrice += parseFloat(aaData[i]['discount_amount']);
-                    }
-                    $("#extra_info").text(TotalDiscountPrice + ' /-');
-                    
-                    // calculating total price per batch
-                    let TotalRangePrice = parseFloat(0);
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        TotalRangePrice += parseFloat(aaData[i]['price']);
-                    }
-                    // var nCells = nRow.getElementsByTagName('th');
-                    // nCells[nCells.length-1].innerHTML = TotalRangePrice;
-                    $('#total_taka').text(TotalRangePrice + ' /-');
-                    
-                },
-                dom: 'Bfrtip',
-            buttons: [
-                    'copy',
-                    {
-                        extend: 'csvHtml5',
-                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
-                        "footer": true
-                    },
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
-                        "footer": true
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Monthly Payment Statement for '+$('input[id=statement_date]').val(),
-                        "footer": true
-                    },
-                    {
-                        extend: 'print',
-                        title: 'Monthly Payment Statement for '+$('input[id=start_date]').val()+' to '+ $('input[id=end_date]').val(),
-                        "footer": true
-                    }
-                ]
-            });
-        }
-
-    });
-
-    // $('#show_range_payment_reporting').click(function(e) {
-    //     e.preventDefault();
-    //     $( "#date_range_statement_div" ).show('slow');
-    //     $( "#monthly_statement_div" ).hide('slow');
-    //     $( "#monthly_due_statement_div" ).hide('slow');
-    //     $( "#daily_reporting_message").hide();
-    //     // $( "#refund_reporting_message").hide();
-    //     $( "#due_reporting_message").hide();
-    //     $( "#monthly_refund_div" ).hide('slow');
-
-    //     $("#second_box_title_border").attr("class","box box-info");
-    //     $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Date Range Reporting</h3>");
-    // });
-
-    $('#show_refund_reporting').click(function(e) {
-        e.preventDefault();
-        $( "#monthly_refund_div" ).show('slow');
-        $( "#monthly_statement_div" ).hide('slow');
-        $( "#date_range_statement_div" ).hide('slow');
-        $( "#monthly_due_statement_div" ).hide('slow');
-        $( "#daily_reporting_message").hide('slow');
-        // $( "#refund_reporting_message").hide('slow');
-        $( "#due_reporting_message").hide('slow');
-
-        $("#second_box_title_border").attr("class","box box-primary");
-        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Refund</h3>");
-    });
-
-    $('#show_monthly_statement').click(function(e) {
-        e.preventDefault();
-        $( "#monthly_statement_div" ).show('slow');
-        $( "#date_range_statement_div" ).hide('slow');
-        $( "#monthly_due_statement_div" ).hide('slow');
-        $( "#daily_reporting_message").hide('slow');
-        // $( "#refund_reporting_message").hide('slow');
-        $( "#due_reporting_message").hide('slow');
-        $( "#monthly_refund_div" ).hide('slow');
-
-        $("#second_box_title_border").attr("class","box box-warning");
-        $("#second_box_title").html("<h3 class='box-title animated fadeInUp'>Mothly Statement</h3>");
-    });
 
 });
 </script>
@@ -650,7 +612,7 @@
                 </div>
                 <div class="col-xs-6">
                     <label for="" ></label>
-                    <button type="submit" id="monthly_refund_reporting" class="btn btn-block btn-primary"><strong>Monthly Refund </strong> Statement</button>
+                    <button type="submit" id="btn_monthly_refund_reporting" class="btn btn-block btn-primary"><strong>Monthly Refund </strong> Statement</button>
                 </div>
             </div>
             <div id="date_range_statement_div" class="row" style="display: none;">
@@ -696,7 +658,7 @@
                 </div>
                 <div class="col-xs-6">
                     <label for="" ></label>
-                    <button type="submit" id="monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
+                    <button type="submit" id="btn_monthly_statement" class="btn btn-block btn-warning"><strong>Monthly Payment </strong> Statement</button>
                 </div>
             </div>
 
@@ -781,11 +743,10 @@
                 </table>
                 
                 <!-- Refund Reporting Table -->
-                <table id='monthly_refund_reporting' class='table table-bordered table-striped' style="display: none;">
+                <table id='monthly_refund_reporting_table' class='table table-bordered table-striped' style="display: none;">
 	                <thead>
 	                    <tr>
 	                        <th>Invoice ID</th>
-	                        <th>Refund ID</th>
 	                        <th>Student Name</th>
 	                        <th>Invoice Details(name, price, payment for)</th>
 	                        <th>Paid Amount /-</th>
@@ -793,8 +754,6 @@
 	                </thead>
 	                <tfoot>
 	                    <tr>
-	                        <th></th>
-	                        <th></th>
 	                        <th></th>
 	                        <th></th>
 	                        <th></th>
@@ -823,9 +782,9 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th id="total_range_pending"></th>
-                            <th id="total_range_discount"></th>
-                            <th id="total_range_amount"></th> 
+                            <th id="total_date_range_discount"></th>
+                            <th id="total_date_range_pending"></th>
+                            <th id="total_date_range_price"></th> 
                         </tr>
                     </tfoot>                
                     <tbody>
@@ -850,11 +809,11 @@
 	                    <tr>
 	                        <th></th>
 	                        <th></th>
-	                        <th></th>
-	                        <th></th>
-	                        <th></th>
-	                        <th></th>
-	                        <th id="total_monthly_amount"></th> 
+                            <th></th>
+                            <th></th>
+                            <th id="total_monthly_statement_discount"></th>
+                            <th id="total_monthly_statement_pending"></th>
+                            <th id="total_monthly_statement_price"></th>
 	                    </tr>
 	                </tfoot>                
 	                <tbody>

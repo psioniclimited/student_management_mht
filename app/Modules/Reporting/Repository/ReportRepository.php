@@ -39,21 +39,55 @@ class ReportRepository {
 	}
 
 	
-	public function getRefundReporting($statement_month, $statement_year) {
-		// $refund = Refund::with('invoiceDetail.invoiceMaster.student', 'invoiceDetail.batch')->get();
-		// $refund = Refund::with('invoiceDetail.invoiceMaster.student', 'invoiceDetail.batch')
-		// 					// ->whereYear('invoiceDetail.payment_from', '=', $statement_year)
-		// 					// ->whereMonth('invoiceDetail.payment_from', '=', $statement_month)
-		// 					->get();
-		$refund = Refund::with(['invoiceDetail.invoiceMaster.student' => function ($query) use( $statement_month, $statement_year)  {
-    		
-    		$query->whereYear('invoice_detail.payment_from', '=', $statement_year)
-    				->whereMonth('invoice_detail.payment_from', '=', $statement_month);
-		}], ['invoiceDetail.batch' => function ($query)  {
-    			$query->withTrashed();
-		}])
-		->get();
+	public function getRefundReporting($payment_for) {
+		$refund = InvoiceMaster::with(['student'=> function($query){
+						$query->withTrashed();
+					}])
+					->with(['invoiceDetail.batch'=> function($query){
+						$query->withTrashed();
+					}])
+					->with(['invoiceDetail' => function($query) use ($payment_for) {
+						$query->where('invoice_details.refund', '=', 1)->where('invoice_details.payment_from', '=', $payment_for);
+					}])
+					->get();
+		
+		$refund = $refund->map(function($invoiceMaster) {
+            if (count($invoiceMaster->invoiceDetail) > 0 ) {
+            	return $invoiceMaster;
+            }
+        })
+        ->reject(function ($invoiceMaster) {
+            return empty($invoiceMaster->invoiceDetail);
+        });
+
 		return $refund;
+	}
+
+		public function getmonthlyPaymentStatement($statement_month, $statement_year)	{
+		$monthlyStatement = InvoiceDetail::with('invoiceMaster.student','batch')
+										->whereYear('payment_from', '=', $statement_year)
+										->whereMonth('payment_from', '=', $statement_month)
+	            						->where('refund', 0)
+	            						->get();
+        
+        $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
+            if ($invoicedetail->invoiceMaster->student != null ) {
+                return $invoicedetail;
+            }
+        })
+        ->reject(function ($invoicedetail) {
+            return empty($invoicedetail->invoiceMaster->student);
+        });
+
+        $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
+            if ($invoicedetail->batch != null ) {
+                return $invoicedetail;
+            }
+        })
+        ->reject(function ($invoicedetail) {
+            return empty($invoicedetail->batch);
+        });
+        return $monthlyStatement;
 	}
 
 	public function getRangePaymentReportingByDate($startDate, $endDate)	{
@@ -96,23 +130,6 @@ class ReportRepository {
 		
 		return $payments;
 		
-	}
-
-	public function getmonthlyPaymentStatement($statement_month, $statement_year)	{
-		$monthlyStatement = InvoiceDetail::with('invoiceMaster.student','batch')->whereYear('payment_from', '=', $statement_year)
-									->where('refund', 0)
-            						->whereMonth('payment_from', '=', $statement_month)
-            						->get();
-        
-        $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
-            if ($invoicedetail->invoiceMaster->student != null ) {
-                return $invoicedetail;
-            }
-        })
-        ->reject(function ($invoicedetail) {
-            return empty($invoicedetail->invoiceMaster->student);
-        });
-        return $monthlyStatement;
 	}
 
 	public function getmonthlyOtherPaymentStatement($statement_month, $statement_year)	{
