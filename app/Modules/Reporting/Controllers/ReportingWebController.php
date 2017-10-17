@@ -79,8 +79,8 @@ class ReportingWebController extends Controller {
     public function refundReporting(Request $request, ReportRepository $report)
     {
         $refundStatementDate = Carbon::createFromFormat('d/m/Y', $request->refund_statement_date);
+        $refundStatementDate->day = 01;
         $refundReporting = $report->getRefundReporting($refundStatementDate->toDateString());
-        
         return Datatables::of($refundReporting)
                         ->addColumn('paid_batches', function ($refundReporting) {
                            return $refundReporting->invoiceDetail->map(function($invDetail) {
@@ -180,17 +180,13 @@ class ReportingWebController extends Controller {
 
                $last_paid_date = Carbon::parse($batch->pivot->last_paid_date); 
                $now = Carbon::now();
-               
-               // $diff_in_months = $now->diffInMonths($last_paid_date);
-               // $amount = $diff_in_months * $batch->price;
-               // $total_due = $total_due + $amount;
 
                $total_due = $total_due + $batch->price;
             }
             return $total_due;
         })
-        ->addColumn('due_batches', function ($allReporting) {
-           return $allReporting->batch->map(function($bat) {
+        ->addColumn('due_batches', function ($dueReporting) {
+           return $dueReporting->batch->map(function($bat) {
                $ready_data = "(" . $bat->name . ", ".$bat->price. ", ". $bat->pivot->last_paid_date . ")";
                return $ready_data;
            })->implode(', ');

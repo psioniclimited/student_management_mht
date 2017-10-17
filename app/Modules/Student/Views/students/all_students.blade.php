@@ -12,7 +12,7 @@
 
 <script>
     $(document).ready(function () {        
-        var table = $('#all_user_list').DataTable({
+        var table = $('#all_students_list').DataTable({
             "paging": true,
             "pageLength": 50,
             "lengthChange": true,
@@ -24,7 +24,6 @@
             "serverSide": true,
             "ajax": "{{URL::to('/students_get_students')}}",
             "columns": [
-                    {"data": "student_permanent_id"},
                     {"data": "name"},
                     {"data": "student_phone_number"},
                     {"data": "guardian_phone_number"},
@@ -88,15 +87,14 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table id="all_user_list" class="table table-bordered table-striped">
+                    <table id="all_students_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Student Permanent ID</th>
-                                <th>Student Name</th>
-                                <th>Student's Phone Number</th>
-                                <th>Guardian's Phone Number</th>
-                                <th>Car Registration Number</th>
-                                <th>Email</th>
+                                <th>Student name</th>
+                                <th>Student number</th>
+                                <th>Guardian number</th>
+                                <th>Car reg. number</th>
+                                <th>e-mail address</th>
                                 <th>Action</th>                            
                             </tr>
                         </thead>

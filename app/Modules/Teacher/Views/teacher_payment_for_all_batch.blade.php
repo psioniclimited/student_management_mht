@@ -111,28 +111,35 @@
                     {"data": "total_no_students", searchable: false},
                     {"data": "no_of_paid_students", searchable: false},
                     {"data": "no_of_unpaid_students", searchable: false},
+                    {"data": "total_expected_amount", searchable: false},
+                    {"data": "pending_amount", searchable: false},
                     {"data": "calculated_price", searchable: false},
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
                 ],
             "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
                     let total_batch_no = 0;
-                    let total_number_of_students = 0;
-                    let total_paid_students = 0;
-                    let total_unpaid_students = 0;
-                    let total_teacher_payment = 0;
-
+                    let total_no_students = 0;
+                    let no_of_paid_students = 0;
+                    let no_of_unpaid_students = 0;
+                    let total_expected_amount = 0;
+                    let pending_amount = 0;
+                    let calculated_price = 0;
                     for ( let i=0 ; i<aaData.length ; i++ ) {
                         total_batch_no += 1;
-                        total_teacher_payment += parseInt(aaData[i]['calculated_price'], 10);
-                        total_number_of_students += parseInt(aaData[i]['total_no_students'], 10);
-                        total_paid_students += parseInt(aaData[i]['no_of_paid_students'], 10);
-                        total_unpaid_students += parseInt(aaData[i]['no_of_unpaid_students'], 10);
+                        total_no_students += parseInt(aaData[i]['total_no_students'], 10);
+                        no_of_paid_students += parseInt(aaData[i]['no_of_paid_students'], 10);
+                        no_of_unpaid_students += parseInt(aaData[i]['no_of_unpaid_students'], 10);
+                        total_expected_amount += parseInt(aaData[i]['total_expected_amount'], 10);
+                        pending_amount += parseInt(aaData[i]['pending_amount'], 10);
+                        calculated_price += parseInt(aaData[i]['calculated_price'], 10);
                     }
                     $('#total_batch_no').text("Total number of Batches: " + total_batch_no);
-                    $('#total_teacher_payment').text(total_teacher_payment);
-                    $('#total_number_of_students').text(total_number_of_students);
-                    $('#total_paid_students').text(total_paid_students);
-                    $('#total_unpaid_students').text(total_unpaid_students);
+                    $('#total_no_students').text(total_no_students);
+                    $('#no_of_paid_students').text(no_of_paid_students);
+                    $('#no_of_unpaid_students').text(no_of_unpaid_students);
+                    $('#total_expected_amount').text(total_expected_amount + ' /-');
+                    $('#pending_amount').text(pending_amount + ' /-');
+                    $('#calculated_price').text(calculated_price + ' /-');
 
                     let payment_for = $('input[id=ref_date]').val();
                     let month = months[parseInt(payment_for.substring(3, 5)) - 1];
@@ -151,7 +158,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4,5 ]
+                            columns: [ 0, 1,2,3,4,5,6,7 ]
                         }
                     },
                     {
@@ -161,7 +168,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4,5 ]
+                            columns: [ 0, 1,2,3,4,5,6,7 ]
                         }
                     },
                     {
@@ -171,7 +178,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4,5 ]
+                            columns: [ 0, 1,2,3,4,5,6,7 ]
                         }
                     },
                     {
@@ -181,7 +188,7 @@
                         },
                         "footer": true,
                         exportOptions: {
-                            columns: [ 0, 1,2,3,4,5 ]
+                            columns: [ 0, 1,2,3,4,5,6,7 ]
                         }
                     },
                 ]
@@ -281,7 +288,9 @@
                             <th>Total Students</th>
                             <th>Total Paid Students</th>
                             <th>Total Unpaid Students</th>
-                            <th>Price Tk/=</th>
+                            <th>Total Expected Amount</th>
+                            <th>Pending amount/=</th>
+                            <th>Paid amount/=</th>
                             <th>Action</th>                            
                         </tr>
                     </thead>
@@ -289,10 +298,12 @@
                       <tr>
                       <th id="total_batch_no"></th>
                       <th>Total:</th>
-                      <th id="total_number_of_students"></th>
-                      <th id="total_paid_students"></th>
-                      <th id="total_unpaid_students"></th>
-                      <th id="total_teacher_payment"></th> 
+                      <th id="total_no_students"></th>
+                      <th id="no_of_paid_students"></th>
+                      <th id="no_of_unpaid_students"></th>
+                      <th id="total_expected_amount"></th>
+                      <th id="pending_amount"></th>
+                      <th id="calculated_price"></th>  
                       <th></th>
                       </tr>
                     </tfoot>                      

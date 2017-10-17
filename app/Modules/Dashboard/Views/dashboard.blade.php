@@ -42,7 +42,7 @@ $(document).ready(function () {
         "paging": true,
         "pageLength": 50,
         "lengthChange": true,
-        "searching": false,
+        "searching": true,
         "ordering": true,
         "info": false,
         "autoWidth": false,
@@ -61,11 +61,33 @@ $(document).ready(function () {
                     {"data": "Link", name: 'link', orderable: false, searchable: false}
             ],
         "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
-                    let total_engaged_students = 0;
-                    for ( let i=0 ; i<aaData.length ; i++ ) {
-                        total_engaged_students += parseInt(aaData[i]['total_number_of_students'], 10);
-                    }
-                    $('.total_engaged_students').text(total_engaged_students);
+                   //  let total_engaged_students = 0;
+                   //  for ( let i=0 ; i<aaData.length ; i++ ) {
+                   //      total_engaged_students += parseInt(aaData[i]['total_number_of_students'], 10);
+                   //  }
+                   // $('.total_engaged_students').text(total_engaged_students);
+                  
+                  let total_number_of_students = parseFloat(0);
+                  let number_of_paid_students = parseFloat(0);
+                  let number_of_unpaid_students = parseFloat(0);
+                  let total_expected_amount = parseFloat(0);
+                  let total_paid_amount = parseFloat(0);
+                  let total_unpaid_amount = parseFloat(0);
+                  for ( let i=0 ; i<aaData.length ; i++ ) {
+                      total_number_of_students += parseFloat(aaData[i]['total_number_of_students']);
+                      number_of_paid_students += parseFloat(aaData[i]['number_of_paid_students']);
+                      number_of_unpaid_students += parseFloat(aaData[i]['number_of_unpaid_students']);
+                      total_expected_amount += parseFloat(aaData[i]['total_expected_amount']);
+                      total_paid_amount += parseFloat(aaData[i]['total_paid_amount']);
+                      total_unpaid_amount += parseFloat(aaData[i]['total_unpaid_amount']);
+                  }
+                  $('.total_engaged_students').text(total_number_of_students);
+                  $('#total_number_of_students').text(total_number_of_students);
+                  $('#number_of_paid_students').text(number_of_paid_students);
+                  $('#number_of_unpaid_students').text(number_of_unpaid_students);
+                  $('#total_expected_amount').text(total_expected_amount + ' /-');
+                  $('#total_paid_amount').text(total_paid_amount + ' /-');
+                  $('#total_unpaid_amount').text(total_unpaid_amount + ' /-');
         },
         "aoColumnDefs": [
                     { "sClass": "my_class", "aTargets": [ 7 ] }
@@ -203,9 +225,22 @@ $(document).ready(function () {
                         <th>Search for all the students</th> 
                     </tr>
                 </thead>
-                <tbody>                            
-                    <!-- user list -->
-                </tbody>                        
+                <tfoot>
+                  <tr>
+                    <th></th>
+                    <th></th>
+                    <th id="total_number_of_students"></th>
+                    <th id="number_of_paid_students"></th>
+                    <th id="number_of_unpaid_students"></th>
+                    <th id="total_expected_amount"></th>
+                    <th id="total_paid_amount"></th>
+                    <th id="total_unpaid_amount"></th>
+                    <th></th> 
+                </tr>
+              </tfoot>
+              <tbody>                            
+                  <!-- user list -->
+              </tbody>                        
             </table>
         </div>
             <!-- /.box-body -->

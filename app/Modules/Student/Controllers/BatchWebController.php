@@ -22,7 +22,7 @@ use Log;
 use Carbon\Carbon;
 
 class BatchWebController extends Controller {
-	    /******************************************************
+	/******************************************************
     * Show the information of all Batches in a data table *
     *******************************************************/
     public function allBatches() {
@@ -187,131 +187,74 @@ class BatchWebController extends Controller {
 
     public function get_all_batches_for_a_subject(Request $request)  {
         
-        $batches = Batch::with('batchType', 'subject', 'grade','teacherDetail','student')
+        $batches = Batch::with('batchType', 'subject', 'grade','teacherDetail.user','student')
                             ->where('subjects_id',$request->subjects_id)
                             ->get();
         
         return Datatables::of($batches)
-            ->addColumn('teacher_name', function ($batches) {
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                $teacher_name =  TeacherDetail::with('user')->find($batches->teacherDetail->id);
-                    return $teacher_name->user->name;
-                }
-                else {
-                    return 'N/A';
-                }
-            })
             ->addColumn('total_number_of_students', function ($batches) {
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    return count($batches->student);
-                }
-                else {
-                    return 'N/A';
-                }
+                return count($batches->student);
             })
             ->addColumn('total_expected_amount', function ($batches) {
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    return count($batches->student) * $batches->price;
-                }
-                else {
-                    return 'N/A';
-                }
+                return count($batches->student) * $batches->price;
             })
             ->addColumn('number_of_paid_students', function ($batches) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                    $std =  $batches->student;
                     $no_of_paid_students = 0;
                     $now = new Carbon('first day of this month');
                     $now = $now->toDateString();
-                    $std = $batches->student;
-                    for ($i=0; $i < count($std); $i++) { 
-                        $sss = $std[$i];
-                        if ($sss->pivot->last_paid_date >= $now)  {
+                    $all_students = $batches->student;
+                    for ($i=0; $i < count($all_students); $i++) { 
+                        $student = $all_students[$i];
+                        if ($student->pivot->last_paid_date >= $now)  {
                             $no_of_paid_students = $no_of_paid_students + 1;
                         }
                     }
                     return $no_of_paid_students;
-                }
-                else {
-                    return 'N/A';
-                }
+                
             })
             ->addColumn('total_paid_amount', function ($batches) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                    $std =  $batches->student;
                     $no_of_paid_students = 0;
                     $now = new Carbon('first day of this month');
                     $now = $now->toDateString();
-                    $std = $batches->student;
-                    for ($i=0; $i < count($std); $i++) { 
-                        $sss = $std[$i];
-                        if ($sss->pivot->last_paid_date >= $now)  {
+                    $all_students = $batches->student;
+                    for ($i=0; $i < count($all_students); $i++) { 
+                        $student = $all_students[$i];
+                        if ($student->pivot->last_paid_date >= $now)  {
                             $no_of_paid_students = $no_of_paid_students + 1;
                         }
                     }
                     return $no_of_paid_students * $batches->price;
-                }
-                else {
-                    return 'N/A';
-                }
+                
             })
             ->addColumn('number_of_unpaid_students', function ($batches) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                    $std =  $batches->student;
                     $no_of_unpaid_students = 0;
                     $now = new Carbon('first day of this month');
                     $now = $now->toDateString();
-                    error_log($now);
-                    $std = $batches->student;
-                    for ($i=0; $i < count($std); $i++) { 
-                        $sss = $std[$i];
-                        if ($sss->pivot->last_paid_date < $now)  {
+                    $all_students = $batches->student;
+                    for ($i=0; $i < count($all_students); $i++) { 
+                        $student = $all_students[$i];
+                        if ($student->pivot->last_paid_date < $now)  {
                             $no_of_unpaid_students = $no_of_unpaid_students + 1;
                         }
                     }
                     return $no_of_unpaid_students;
-                }
-                else {
-                    return 'N/A';
-                }
             })
             ->addColumn('total_unpaid_amount', function ($batches) {
-                
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                    
-                    $std =  $batches->student;
                     $no_of_unpaid_students = 0;
                     $now = new Carbon('first day of this month');
                     $now = $now->toDateString();
-                    error_log($now);
-                    $std = $batches->student;
-                    for ($i=0; $i < count($std); $i++) { 
-                        $sss = $std[$i];
-                        if ($sss->pivot->last_paid_date < $now)  {
+                    $all_students =  $batches->student;
+                    for ($i=0; $i < count($all_students); $i++) { 
+                        $student = $all_students[$i];
+                        if ($student->pivot->last_paid_date < $now)  {
                             $no_of_unpaid_students = $no_of_unpaid_students + 1;
                         }
                     }
                     return $no_of_unpaid_students * $batches->price;
-                }
-                else {
-                    return 'N/A';
-                }
+                
             })
             ->addColumn('Link', function ($batches) {
-                if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-                
                 return '<a href="' . url('/students_all_students_per_batch_page') . '/' . $batches->id . '/'.count($batches->student) . '"' . 'class="btn bg-purple margin" target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
-                }
-                else {
-                    return 'N/A';
-                }
             })
             ->make(true);
     }

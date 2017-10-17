@@ -196,18 +196,13 @@ class TeachersWebController extends Controller {
                         DB::raw("COUNT(DISTINCT(students.id)) as total_no_students"),
                         DB::raw("COUNT(DISTINCT(invoice_details.id)) as no_of_paid_students"),
                         DB::raw("(COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) as no_of_unpaid_students"), 
-                        DB::raw("(COUNT(DISTINCT(invoice_details.id)) * batch.price) as price"),
+                        DB::raw("(COUNT(DISTINCT(students.id)) * batch.price * " . $teacher_percentage . " / 100 ) as total_expected_amount"),
+                        DB::raw("((COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) * batch.price * " . $teacher_percentage . " / 100 ) as pending_amount"),
                         DB::raw("(COUNT(DISTINCT(invoice_details.id)) * batch.price * " . $teacher_percentage . " / 100 ) as calculated_price"));
         
         return Datatables::of($teacher_payment_per_batch)
         ->addColumn('Link', function ($invoice_details) use($get_payment_date_month_year) {
-            if((Entrust::can('user.update') && Entrust::can('user.delete')) || true) {
-            
-                return '<a id="batch_'. $invoice_details->batch_id .'"" href="' . url('/batch') . '/' . $invoice_details->batch_id .'/'.$get_payment_date_month_year.'/'.$invoice_details->batch_name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn bg-purple margin"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
-            }
-            else {
-                return 'N/A';
-            }
+            return '<a id="batch_'. $invoice_details->batch_id .'"" href="' . url('/batch') . '/' . $invoice_details->batch_id .'/'.$get_payment_date_month_year.'/'.$invoice_details->batch_name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn bg-purple margin"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';
         })
         ->make(true);
     }

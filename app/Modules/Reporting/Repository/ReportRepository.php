@@ -12,15 +12,24 @@ use App\Modules\Student\Models\Refund;
 use App\Modules\Student\Models\OtherPaymentMaster;
 use App\Modules\Student\Models\OtherPaymentDetail;
 use App\Modules\Student\Models\OtherPaymentType;
-
-
 use DB;
 
 class ReportRepository {
 
 	public function getDailyPaymentReportingByDate($date)	{
-		$payments = InvoiceMaster::with('student')
-					->with('invoiceDetail.batch')
+		// $payments = InvoiceMaster::with('student')
+		// 			->with('invoiceDetail.batch')
+		// 			->whereHas('invoiceDetail', function($query){
+		// 				$query->where('refund', 0);
+		// 			})
+		// 			->where('payment_date', $date)
+		// 			->get();
+		$payments = InvoiceMaster::with(['student'=> function($query){
+						$query->withTrashed();
+					}])
+					->with(['invoiceDetail.batch'=> function($query){
+						$query->withTrashed();
+					}])
 					->whereHas('invoiceDetail', function($query){
 						$query->where('refund', 0);
 					})
@@ -64,42 +73,53 @@ class ReportRepository {
 	}
 
 		public function getmonthlyPaymentStatement($statement_month, $statement_year)	{
-		$monthlyStatement = InvoiceDetail::with('invoiceMaster.student','batch')
+		// $monthlyStatement = InvoiceDetail::with('invoiceMaster.student','batch')
+		// 								->whereYear('payment_from', '=', $statement_year)
+		// 								->whereMonth('payment_from', '=', $statement_month)
+	 //            						->where('refund', 0)
+	 //            						->get();
+        $monthlyStatement = InvoiceDetail::with(['invoiceMaster.student'=> function($query){
+											$query->withTrashed();
+										}])
+										->with(['batch'=> function($query){
+											$query->withTrashed();
+										}])
 										->whereYear('payment_from', '=', $statement_year)
 										->whereMonth('payment_from', '=', $statement_month)
 	            						->where('refund', 0)
 	            						->get();
-        
-        $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
-            if ($invoicedetail->invoiceMaster->student != null ) {
-                return $invoicedetail;
-            }
-        })
-        ->reject(function ($invoicedetail) {
-            return empty($invoicedetail->invoiceMaster->student);
-        });
+        // $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
+        //     if ($invoicedetail->invoiceMaster->student != null ) {
+        //         return $invoicedetail;
+        //     }
+        // })
+        // ->reject(function ($invoicedetail) {
+        //     return empty($invoicedetail->invoiceMaster->student);
+        // });
 
-        $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
-            if ($invoicedetail->batch != null ) {
-                return $invoicedetail;
-            }
-        })
-        ->reject(function ($invoicedetail) {
-            return empty($invoicedetail->batch);
-        });
+        // $monthlyStatement = $monthlyStatement->map(function($invoicedetail) {
+        //     if ($invoicedetail->batch != null ) {
+        //         return $invoicedetail;
+        //     }
+        // })
+        // ->reject(function ($invoicedetail) {
+        //     return empty($invoicedetail->batch);
+        // });
         return $monthlyStatement;
 	}
 
 	public function getRangePaymentReportingByDate($startDate, $endDate)	{
 		$payments = InvoiceMaster::with(['student'=> function($query){
-						$query->withTrashed();
-					}])
-					->with('invoiceDetail.batch')
-					->whereHas('invoiceDetail', function($query){
-						$query->where('refund', 0);
-					})
-					->whereBetween('payment_date', [$startDate, $endDate])
-					->get();
+								$query->withTrashed();
+							}])
+							->with(['invoiceDetail.batch'=> function($query){
+								$query->withTrashed();
+							}])
+							->whereHas('invoiceDetail', function($query){
+								$query->where('refund', 0);
+							})
+							->whereBetween('payment_date', [$startDate, $endDate])
+							->get();
 		return $payments;
 	}
 
@@ -114,10 +134,8 @@ class ReportRepository {
 	public function getDueByDate($first_day_of_current_month)	{
 		
 		$payments = Student::with(['batch' => function ($query) use( $first_day_of_current_month )  {
-    		
-    		$query->where('last_paid_date', '<', $first_day_of_current_month);
-		
-		}])->get();
+					    		$query->where('last_paid_date', '<', $first_day_of_current_month);
+							}])->get();
 
 		$payments = $payments->map(function($student){
 			            			if (count($student->batch) > 0 ) {

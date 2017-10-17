@@ -24,7 +24,7 @@
 
 <script>
     $(document).ready(function () {        
-        var table = $('#all_user_list').DataTable({
+        var table = $('#all_active_students_list').DataTable({
             "paging": true,
             "pageLength": 50,
             "lengthChange": true,
@@ -36,7 +36,6 @@
             "serverSide": true,
             "ajax": "{{URL::to('/students_get_active_students')}}",
             "columns": [
-                    {"data": "student_permanent_id"},
                     {"data": "name"},
                     {"data": "student_phone_number"},
                     {"data": "guardian_phone_number"},
@@ -49,7 +48,6 @@
                     
                     let total_price = 0;
                     for ( var i=0 ; i<aaData.length ; i++ ) {
-                        console.log(aaData[i]['payable']);
                         total_price += aaData[i]['payable'];
                     }
 
@@ -154,10 +152,9 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table id="all_user_list" class="table table-bordered table-striped">
+                    <table id="all_active_students_list" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Student Permanent ID</th>
                                 <th>Student Name</th>
                                 <th>Student's Phone Number</th>
                                 <th>Guardian's Phone Number</th>
@@ -169,7 +166,6 @@
                         </thead>
                         <tfoot>
                           <tr>
-                            <th></th>
                             <th></th>
                             <th></th>
                             <th></th>

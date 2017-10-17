@@ -27,7 +27,7 @@
         var table = $('#all_user_list').DataTable({
             "paging": true,
             "lengthChange": false,
-            "searching": false,
+            "searching": true,
             "ordering": true,
             "info": false,
             "autoWidth": false,

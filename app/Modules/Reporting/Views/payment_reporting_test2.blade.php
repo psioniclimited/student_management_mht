@@ -195,7 +195,7 @@
 				            	"<h3 class='box-title animated fadeInUp'><p>Due Payment Statement for <b>"+$('input[id=due_statement_date]').val()+"</b></p></h3>", 
 				            	"");
 	            hide_tables();
-		    	$("#monthly_due_reporting_table").show();
+		    $("#monthly_due_reporting_table").show();
 		        let monthly_due_reporting_table = $('#monthly_due_reporting_table').DataTable({
 	            "paging": false,
 	            "lengthChange": false,
@@ -213,12 +213,12 @@
 	                },
 	            },
 	            "columns": [
-	                    {"data": "serial_number"},
-	                    {"data": "student.name"},
-	                    {"data": "paid_batches"},
-	                    {"data": "discount_per_batch"},
-	                    {"data": "due_per_batch"},                    
-	                    {"data": "total"},
+	                    {"data": "student_permanent_id"},
+	                    {"data": "name"},
+	                    {"data": "student_phone_number"},                    
+	                    {"data": "guardian_phone_number"},
+	                    {"data": "due_batches"},
+	                    {"data": "TotalDuePrice"},
 	                ],
 	            "fnFooterCallback": function ( nRow, aaData, iStart, iEnd, aiDisplay ) {
 	                    
