@@ -233,12 +233,7 @@
     </div>
     <!-- /.box -->
 
-
-
-
-
-
-    <!-- Horizontal Form -->
+  <!-- Horizontal Form -->
     <div class="box box-success">
         
         <div class="box-body">

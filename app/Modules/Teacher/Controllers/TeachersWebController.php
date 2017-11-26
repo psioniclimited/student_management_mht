@@ -189,7 +189,7 @@ class TeachersWebController extends Controller {
                     ->where('batch.deleted_at', '=', NULL)
                     ->where('batch.start_date', '<=', $get_payment_date_month_year)
                     ->where('batch.end_date', '>=', $get_payment_date_month_year)
-                    ->groupBy('batch.id')
+                    ->groupBy('invoice_details.batch_id')
                     ->select('batch.id as batch_id',
                         'batch.name as batch_name',
                         'batch.schedule as batch_schedule',
@@ -198,8 +198,12 @@ class TeachersWebController extends Controller {
                         DB::raw("(COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) as no_of_unpaid_students"), 
                         DB::raw("(COUNT(DISTINCT(students.id)) * batch.price * " . $teacher_percentage . " / 100 ) as total_expected_amount"),
                         DB::raw("((COUNT(DISTINCT(students.id)) - COUNT(DISTINCT(invoice_details.id))) * batch.price * " . $teacher_percentage . " / 100 ) as pending_amount"),
-                        DB::raw("(COUNT(DISTINCT(invoice_details.id)) * batch.price * " . $teacher_percentage . " / 100 ) as calculated_price"));
-        
+                        // DB::raw("(COUNT(DISTINCT(invoice_details.id)) * batch.price * " . $teacher_percentage . " / 100 ) as calculated_price"),
+                        DB::raw("((COUNT(DISTINCT(invoice_details.id)) * batch.price - invoice_details.discount_amount - invoice_details.due_amount) * " . $teacher_percentage . " / 100 ) as calculated_price"),
+                        DB::raw("COUNT(invoice_details.due_amount)  as sum_price"),
+                        DB::raw("SUM(invoice_details.price) as final_price")
+                        );
+                    // return $teacher_payment_per_batch->get();
         return Datatables::of($teacher_payment_per_batch)
         ->addColumn('Link', function ($invoice_details) use($get_payment_date_month_year) {
             return '<a id="batch_'. $invoice_details->batch_id .'"" href="' . url('/batch') . '/' . $invoice_details->batch_id .'/'.$get_payment_date_month_year.'/'.$invoice_details->batch_name. '/get_paid_and_non_paid_std_teacher_payment/'. '"' . 'class="btn bg-purple margin"target="_blank"><i class="glyphicon glyphicon-edit"></i> Detail</a>';

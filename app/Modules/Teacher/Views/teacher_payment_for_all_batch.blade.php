@@ -131,7 +131,13 @@
                         no_of_unpaid_students += parseInt(aaData[i]['no_of_unpaid_students'], 10);
                         total_expected_amount += parseInt(aaData[i]['total_expected_amount'], 10);
                         pending_amount += parseInt(aaData[i]['pending_amount'], 10);
-                        calculated_price += parseInt(aaData[i]['calculated_price'], 10);
+                        if (aaData[i]['calculated_price']) {
+                            calculated_price += parseInt(aaData[i]['calculated_price'], 10);
+                        }
+                        // else {
+                        //     calculated_price += 0;
+                        // }
+                        // calculated_price += parseInt(aaData[i]['calculated_price'], 10);
                     }
                     $('#total_batch_no').text("Total number of Batches: " + total_batch_no);
                     $('#total_no_students').text(total_no_students);
